@@ -14,7 +14,7 @@ final class CollectorRegistry[F[_]: Sync] private(private val cr: JCollectorRegi
   def unregister(c: Collector): F[Unit] =
     Sync[F].delay(cr.unregister(Collector.Unsafe.asJava(c)))
 
-  def write: F[String] = Sync[F].delay {
+  def write004: F[String] = Sync[F].delay {
     val writer = new StringWriter
     TextFormat.write004(writer, cr.metricFamilySamples)
     writer.toString
