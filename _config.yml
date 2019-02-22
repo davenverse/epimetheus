@@ -1,0 +1,11 @@
+name: epimetheus
+baseurl: /epimetheus
+description: An Afterthought of Prometheus
+highlighter: rouge
+docs: true
+collections:
+  tut:
+    output: true
+version: 0.0.1-SNAPSHOT
+org: io.chrisdavenport
+markdown: kramdown
