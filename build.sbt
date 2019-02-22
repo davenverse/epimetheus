@@ -62,6 +62,8 @@ lazy val commonSettings = Seq(
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % betterMonadicForV),
   libraryDependencies ++= Seq(
     "io.prometheus"               % "simpleclient"                % prometheusV,
+    "io.prometheus"               % "simpleclient_common"         % prometheusV,
+    "io.prometheus"               % "simpleclient_hotspot"        % prometheusV,
 
     "org.typelevel"               %% "cats-core"                  % catsV,
 
