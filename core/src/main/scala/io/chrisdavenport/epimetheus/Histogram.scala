@@ -5,6 +5,7 @@ import cats.effect._
 import cats.implicits._
 import io.prometheus.client.{Histogram => JHistogram}
 import scala.concurrent.duration.TimeUnit
+import shapeless._
 
 final class Histogram[F[_]: Sync: Clock] private (private val h: JHistogram.Child){
   def observe(d: Double): F[Unit] = Sync[F].delay(h.observe(d))
@@ -19,7 +20,7 @@ object Histogram {
   def buildBuckets[F[_]: Sync: Clock](cr: CollectorRegistry, name: String, help: String, buckets: Double*): F[Histogram[F]] = for {
     c <- Sync[F].delay(JHistogram.build().name(name).help(help).buckets(buckets:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new SafeUnlabelledHistogram[F, Unit](out, _ => List.empty).label(())
+  } yield new UnlabelledHistogram[F, Unit](out, _ => List.empty).label(())
 
 
   /**
@@ -27,34 +28,20 @@ object Histogram {
    *  or else `label` will fail
    * FUTURE IMPROVEMENT: Size these lists to make this safe.
    */
-  def construct[F[_]: Sync: Clock, A](
+  def construct[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry, 
     name: String, 
     help: String, 
-    labels: List[String], 
-    f: A => List[String],
+    labels: Sized[List[String], N], 
+    f: A => Sized[List[String], N],
     buckets: Double*
   ): F[UnlabelledHistogram[F, A]] = for {
       c <- Sync[F].delay(JHistogram.build().name(name).help(help).labelNames(labels:_*).buckets(buckets:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogram[F, A](out, f)
+  } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
 
 
-  /**
-   * Generic Unlabeled Histogram
-   * 
-   * Unsafe Conversion as labels may not align so `label` operation
-   * can fail
-   */
   final class UnlabelledHistogram[F[_]: Sync: Clock, A] private[epimetheus](
-    private val c: JHistogram, 
-    private val f: A => List[String]
-  ) {
-    def label(a: A): F[Histogram[F]] =
-      Sync[F].delay(c.labels(f(a):_*)).map(new Histogram[F](_))
-  }
-
-  final class SafeUnlabelledHistogram[F[_]: Sync: Clock, A] private[epimetheus](
     private val c: JHistogram, 
     private val f: A => List[String]
   ) {
