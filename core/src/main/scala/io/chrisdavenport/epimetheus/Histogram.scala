@@ -7,43 +7,36 @@ import io.prometheus.client.{Histogram => JHistogram}
 import scala.concurrent.duration.TimeUnit
 import shapeless._
 
-final class Histogram[F[_]: Sync: Clock] private (private val h: JHistogram.Child){
-  def observe(d: Double): F[Unit] = Sync[F].delay(h.observe(d))
-  def timed[A](fa: F[A], unit: TimeUnit): F[A] = for {
-    start <- Clock[F].monotonic(unit)
-    out <- Sync[F].guarantee(fa)(Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble)))
-  } yield out
+final class Histogram[F[_]: Sync: Clock] private (private val underlying: JHistogram.Child){
+  def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
+  def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
+    Sync[F].bracket(Clock[F].monotonic(unit))
+      {_: Long => fa}
+      {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
 }
 
 object Histogram {
 
-  def buildBuckets[F[_]: Sync: Clock](cr: CollectorRegistry, name: String, help: String, buckets: Double*): F[Histogram[F]] = for {
+  def buildBuckets[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, buckets: Double*): F[Histogram[F]] = for {
     c <- Sync[F].delay(JHistogram.build().name(name).help(help).buckets(buckets:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogram[F, Unit](out, _ => List.empty).label(())
+  } yield new UnlabelledHistogram[F, Unit](out, _ => IndexedSeq()).label(())
 
-
-  /**
-   * Labels and the string returned by f MUST have the same size
-   *  or else `label` will fail
-   * FUTURE IMPROVEMENT: Size these lists to make this safe.
-   */
   def construct[F[_]: Sync: Clock, A, N <: Nat](
-    cr: CollectorRegistry, 
+    cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
-    labels: Sized[List[String], N], 
-    f: A => Sized[List[String], N],
+    labels: Sized[IndexedSeq[String], N], 
+    f: A => Sized[IndexedSeq[String], N],
     buckets: Double*
   ): F[UnlabelledHistogram[F, A]] = for {
-      c <- Sync[F].delay(JHistogram.build().name(name).help(help).labelNames(labels:_*).buckets(buckets:_*))
+    c <- Sync[F].delay(JHistogram.build().name(name).help(help).labelNames(labels:_*).buckets(buckets:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
-
-
-  final class UnlabelledHistogram[F[_]: Sync: Clock, A] private[epimetheus](
+  
+  final class UnlabelledHistogram[F[_]: Sync: Clock, A] private[Histogram] (
     private val c: JHistogram, 
-    private val f: A => List[String]
+    private val f: A => IndexedSeq[String]
   ) {
     def label(a: A): Histogram[F] = new Histogram[F](c.labels(f(a):_*))
   }

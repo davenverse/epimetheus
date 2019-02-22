@@ -3,42 +3,40 @@ package io.chrisdavenport.epimetheus
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Gauge => JGauge}
+import shapeless._
 
-// import scala.concurrent.duration.MILLISECONDS
+final class Gauge[F[_]: Sync] private (private val underlying: JGauge.Child){
+  def get: F[Double] = Sync[F].delay(underlying.get())
 
-
-final class Gauge[F[_]: Sync] private (private val g: JGauge.Child){
-  def dec: F[Unit] = Sync[F].delay(g.dec())
-  def decBy(d: Double): F[Unit] = Sync[F].delay(g.dec(d))
+  def dec: F[Unit] = Sync[F].delay(underlying.dec())
+  def decBy(d: Double): F[Unit] = Sync[F].delay(underlying.dec(d))
   
-  def inc: F[Unit] = Sync[F].delay(g.inc())
-  def incBy(d: Double): F[Unit] = Sync[F].delay(g.inc(d))
+  def inc: F[Unit] = Sync[F].delay(underlying.inc())
+  def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
 
-  def set(d: Double): F[Unit] = Sync[F].delay(g.set(d))
+  def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
 
 }
 object Gauge {
 
-  def build[F[_]: Sync](cr: CollectorRegistry, name: String, help: String): F[Gauge[F]] = for {
+  def build[F[_]: Sync](cr: CollectorRegistry[F], name: String, help: String): F[Gauge[F]] = for {
     c <- Sync[F].delay(JGauge.build().name(name).help(help))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new SafeUnlabelledGauge[F, Unit](out, _ => List.empty).label(())
+  } yield new UnlabelledGauge[F, Unit](out, _ => IndexedSeq()).label(())
 
     /**
-   * Labels and the string returned by f MUST have the same size
-   *  or else `label` will fail
-   * FUTURE IMPROVEMENT: Size these lists to make this safe.
+   * Construct a Safe Gauge that guarantees the correct number of labels
    */
-  def construct[F[_]: Sync, A](
-    cr: CollectorRegistry, 
+  def construct[F[_]: Sync, A, N <: Nat](
+    cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
-    labels: List[String], 
-    f: A => List[String]
+    labels: Sized[IndexedSeq[String], N], 
+    f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledGauge[F, A]] = for {
       c <- Sync[F].delay(JGauge.build().name(name).help(help).labelNames(labels:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledGauge[F, A](out, f)
+  } yield new UnlabelledGauge[F, A](out, f.andThen(_.unsized))
 
 
     /**
@@ -48,17 +46,14 @@ object Gauge {
    * can fail
    */
   final class UnlabelledGauge[F[_]: Sync, A] private[epimetheus](
-    private val c: JGauge, 
-    private val f: A => List[String]
+    private[Gauge] val underlying: JGauge, 
+    private val f: A => IndexedSeq[String]
   ) {
-    def label(a: A): F[Gauge[F]] =
-      Sync[F].delay(c.labels(f(a):_*)).map(new Gauge[F](_))
+    def label(a: A): Gauge[F] =
+      new Gauge[F](underlying.labels(f(a):_*))
   }
-
-  final class SafeUnlabelledGauge[F[_]: Sync, A] private[epimetheus](
-    private val c: JGauge, 
-    private val f: A => List[String]
-  ) {
-    def label(a: A): Gauge[F] = new Gauge[F](c.labels(f(a):_*))
+  object Unsafe {
+    def asJavaLabelled[F[_]](g: Gauge[F]): JGauge.Child = g.underlying
+    def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g.underlying
   }
 }
