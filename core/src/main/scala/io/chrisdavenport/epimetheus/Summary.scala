@@ -23,7 +23,7 @@ object Summary {
   /**
    * 
    */
-  def construct[F[_]: Sync: Clock, A, N <: Nat](
+  def constructQuantiles[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
