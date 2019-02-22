@@ -62,11 +62,16 @@ object Summary {
    * can fail
    */
   final class UnlabelledSummary[F[_]: Sync: Clock, A] private[epimetheus](
-    private val c: JSummary, 
+    private[Summary] val underlying: JSummary, 
     private val f: A => IndexedSeq[String]
   ) {
     def label(a: A): Summary[F] =
-      new LabelledSummary[F](c.labels(f(a):_*))
+      new LabelledSummary[F](underlying.labels(f(a):_*))
+  }
+
+  object Unsafe {
+    def asJavaUnlabelled[F[_], A](g: UnlabelledSummary[F, A]): JSummary = 
+      g.underlying
   }
 
 }

@@ -41,19 +41,6 @@ object Gauge {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledGauge[F, A](out, f.andThen(_.unsized))
 
-  private final class LabelledGauge[F[_]: Sync] private[Gauge] (
-    private val underlying: JGauge.Child
-  ) extends Gauge[F] {
-    def get: F[Double] = Sync[F].delay(underlying.get())
-  
-    def dec: F[Unit] = Sync[F].delay(underlying.dec())
-    def decBy(d: Double): F[Unit] = Sync[F].delay(underlying.dec(d))
-    
-    def inc: F[Unit] = Sync[F].delay(underlying.inc())
-    def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
-  
-    def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
-  }
 
   private final class NoLabelsGauge[F[_]: Sync] private[Gauge] (
     private val underlying: JGauge
@@ -68,6 +55,22 @@ object Gauge {
   
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
   }
+  
+  private final class LabelledGauge[F[_]: Sync] private[Gauge] (
+    private val underlying: JGauge.Child
+  ) extends Gauge[F] {
+    def get: F[Double] = Sync[F].delay(underlying.get())
+  
+    def dec: F[Unit] = Sync[F].delay(underlying.dec())
+    def decBy(d: Double): F[Unit] = Sync[F].delay(underlying.dec(d))
+    
+    def inc: F[Unit] = Sync[F].delay(underlying.inc())
+    def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+  
+    def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
+  }
+
+
 
   /**
    * Generic Unlabeled Gauge
