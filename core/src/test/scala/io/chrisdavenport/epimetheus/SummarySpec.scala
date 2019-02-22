@@ -33,4 +33,9 @@ class SummarySpec extends Specification {
       test.attempt.unsafeRunSync must beRight
     }
   }
+
+  object QuantileCompile {
+    val good = Summary.Quantile.quantile(0.5, 0.05)
+    // val bad = Summary.Quantile.quantile(2.0, 0.05)
+  }
 }
