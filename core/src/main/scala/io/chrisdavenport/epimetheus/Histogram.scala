@@ -20,6 +20,16 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
+  def buildLinearBuckets[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, start: Double, factor: Double, count: Int): F[Histogram[F]] = for {
+    c <- Sync[F].delay(JHistogram.build().name(name).help(help).linearBuckets(start, factor, count))
+    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
+  } yield new NoLabelsHistogram[F](out)
+
+  def buildExponentialBuckets[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, start: Double, factor: Double, count: Int): F[Histogram[F]] = for {
+    c <- Sync[F].delay(JHistogram.build().name(name).help(help).exponentialBuckets(start, factor, count))
+    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
+  } yield new NoLabelsHistogram[F](out)
+
   def construct[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
