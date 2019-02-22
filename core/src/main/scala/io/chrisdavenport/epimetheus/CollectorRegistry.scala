@@ -9,6 +9,7 @@ object CollectorRegistry {
     Sync[F].delay(new CollectorRegistry(new JCollectorRegistry))
 
   object Unsafe {
+    def fromJava(j: JCollectorRegistry): CollectorRegistry = new CollectorRegistry(j)
     def asJava(c: CollectorRegistry): JCollectorRegistry = c.cr
   }
 }
