@@ -6,27 +6,22 @@ import io.prometheus.client.{Summary => JSummary}
 import scala.concurrent.duration._
 import shapeless._
 
-final class Summary[F[_]: Sync: Clock] private (private val underlying: JSummary.Child){
-  def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
-  def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
-    Sync[F].bracket(Clock[F].monotonic(unit))
-      {_ => fa}
-      {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
+sealed abstract class Summary[F[_]]{
+  def observe(d: Double): F[Unit]
+  def timed[A](fa: F[A], unit: TimeUnit): F[A]
 }
 
 object Summary {
-  
+
   def buildQuantiles[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, quantiles: (Double, Double)*): F[Summary[F]] = for {
     c1 <- Sync[F].delay(JSummary.build().name(name).help(help))
     c <- Sync[F].delay(quantiles.foldLeft(c1){ case (c, q) => c.quantile(q._1, q._2)})
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledSummary[F, Unit](out, _ => IndexedSeq()).label(())
+  } yield new NoLabelsSummary[F](out)
 
 
   /**
-   * Labels and the string returned by f MUST have the same size
-   *  or else `label` will fail
-   * FUTURE IMPROVEMENT: Size these lists to make this safe.
+   * 
    */
   def construct[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry[F], 
@@ -41,6 +36,24 @@ object Summary {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledSummary[F, A](out, f.andThen(_.unsized))
 
+  final private class NoLabelsSummary[F[_]: Sync: Clock] private[Summary] (
+    private val underlying: JSummary
+  ) extends Summary[F] {
+    def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
+    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
+      Sync[F].bracket(Clock[F].monotonic(unit))
+        {_ => fa}
+        {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
+  }
+  final private class LabelledSummary[F[_]: Sync: Clock] private[Summary] (
+    private val underlying: JSummary.Child
+  ) extends Summary[F] {
+    def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
+    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
+      Sync[F].bracket(Clock[F].monotonic(unit))
+        {_ => fa}
+        {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
+  }
 
   /**
    * Generic Unlabeled Summary
@@ -49,11 +62,16 @@ object Summary {
    * can fail
    */
   final class UnlabelledSummary[F[_]: Sync: Clock, A] private[epimetheus](
-    private val c: JSummary, 
+    private[Summary] val underlying: JSummary, 
     private val f: A => IndexedSeq[String]
   ) {
     def label(a: A): Summary[F] =
-      new Summary[F](c.labels(f(a):_*))
+      new LabelledSummary[F](underlying.labels(f(a):_*))
+  }
+
+  object Unsafe {
+    def asJavaUnlabelled[F[_], A](g: UnlabelledSummary[F, A]): JSummary = 
+      g.underlying
   }
 
 }
