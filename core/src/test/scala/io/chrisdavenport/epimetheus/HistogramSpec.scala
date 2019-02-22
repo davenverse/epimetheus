@@ -27,7 +27,7 @@ class HistogramSpec extends Specification {
 
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        h <- Histogram.construct(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, 0.1, 0.2, 0.3, 0.4)
+        h <- Histogram.constructBuckets(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, 0.1, 0.2, 0.3, 0.4)
       } yield h
 
       test.attempt.unsafeRunSync must beRight

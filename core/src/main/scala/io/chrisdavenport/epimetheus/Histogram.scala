@@ -15,22 +15,55 @@ sealed abstract class Histogram[F[_]]{
 object Histogram {
   // Future Improvements Make Buckets Logic Cleaner
 
-  def buildBuckets[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, buckets: Double*): F[Histogram[F]] = for {
-    c <- Sync[F].delay(JHistogram.build().name(name).help(help).buckets(buckets:_*))
+  def buildBuckets[F[_]: Sync: Clock](
+    cr: CollectorRegistry[F],
+    name: String,
+    help: String,
+    buckets: Double*
+  ): F[Histogram[F]] = for {
+    c <- Sync[F].delay(
+      JHistogram.build()
+      .name(name)
+      .help(help)
+      .buckets(buckets:_*)
+    )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
-  def buildLinearBuckets[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, start: Double, factor: Double, count: Int): F[Histogram[F]] = for {
-    c <- Sync[F].delay(JHistogram.build().name(name).help(help).linearBuckets(start, factor, count))
+  def buildLinearBuckets[F[_]: Sync: Clock](
+    cr: CollectorRegistry[F],
+    name: String,
+    help: String,
+    start: Double,
+    factor: Double,
+    count: Int
+  ): F[Histogram[F]] = for {
+    c <- Sync[F].delay(
+      JHistogram.build()
+      .name(name)
+      .help(help)
+      .linearBuckets(start, factor, count)
+    )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
-  def buildExponentialBuckets[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, start: Double, factor: Double, count: Int): F[Histogram[F]] = for {
-    c <- Sync[F].delay(JHistogram.build().name(name).help(help).exponentialBuckets(start, factor, count))
+  def buildExponentialBuckets[F[_]: Sync: Clock](
+    cr: CollectorRegistry[F],
+    name: String, help: String,
+    start: Double,
+    factor: Double,
+    count: Int
+  ): F[Histogram[F]] = for {
+    c <- Sync[F].delay(
+      JHistogram.build()
+      .name(name)
+      .help(help)
+      .exponentialBuckets(start, factor, count)
+    )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
-  def construct[F[_]: Sync: Clock, A, N <: Nat](
+  def constructBuckets[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -38,7 +71,53 @@ object Histogram {
     f: A => Sized[IndexedSeq[String], N],
     buckets: Double*
   ): F[UnlabelledHistogram[F, A]] = for {
-    c <- Sync[F].delay(JHistogram.build().name(name).help(help).labelNames(labels:_*).buckets(buckets:_*))
+    c <- Sync[F].delay(
+      JHistogram.build()
+      .name(name)
+      .help(help)
+      .labelNames(labels:_*)
+      .buckets(buckets:_*)
+    )
+    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
+  } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
+
+  def constructLinearBuckets[F[_]: Sync: Clock, A, N <: Nat](
+    cr: CollectorRegistry[F], 
+    name: String, 
+    help: String, 
+    labels: Sized[IndexedSeq[String], N], 
+    f: A => Sized[IndexedSeq[String], N],
+    start: Double,
+    factor: Double,
+    count: Int
+  ): F[UnlabelledHistogram[F, A]] = for {
+    c <- Sync[F].delay(
+      JHistogram.build()
+      .name(name)
+      .help(help)
+      .labelNames(labels:_*)
+      .linearBuckets(start, factor, count)
+    )
+    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
+  } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
+
+  def constructExponentialBuckets[F[_]: Sync: Clock, A, N <: Nat](
+    cr: CollectorRegistry[F], 
+    name: String, 
+    help: String, 
+    labels: Sized[IndexedSeq[String], N], 
+    f: A => Sized[IndexedSeq[String], N],
+    start: Double,
+    factor: Double,
+    count: Int
+  ): F[UnlabelledHistogram[F, A]] = for {
+    c <- Sync[F].delay(
+      JHistogram.build()
+      .name(name)
+      .help(help)
+      .labelNames(labels:_*)
+      .exponentialBuckets(start, factor, count)
+    )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
 
