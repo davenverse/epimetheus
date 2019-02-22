@@ -12,22 +12,23 @@ import shapeless._
   *
   * By convention, the names of Counters are suffixed by <code>_total</code>.
   */
-final class Counter[F[_]: Sync] private (private val underlying: JCounter.Child) {
-  def get: F[Double] = Sync[F].delay(underlying.get)
-
-  def inc: F[Unit] = Sync[F].delay(underlying.inc)
-  def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+sealed abstract class Counter[F[_]]{
+  def get: F[Double]
+  def inc: F[Unit]
+  def incBy(d: Double): F[Unit]
 }
-
 object Counter {
 
+  /**
+   * Only Valid Constructor for NoLabelsCounter
+   */
   def build[F[_]: Sync](cr: CollectorRegistry[F], name: String, help: String): F[Counter[F]] = for {
     c <- Sync[F].delay(JCounter.build().name(name).help(help))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledCounter[F, Unit](out, _ => IndexedSeq()).label(())
+  } yield new NoLabelsCounter[F](out)
 
   /**
-   * 
+   * Only Valid Constructor for UnlabelledCounter
    */
   def construct[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
@@ -40,6 +41,20 @@ object Counter {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledCounter[F, A](out, f.andThen(_.unsized))
 
+
+  private[epimetheus] final class LabelledCounter[F[_]: Sync] private[Counter] (private val underlying: JCounter.Child) extends Counter[F] {
+    override def get: F[Double] = Sync[F].delay(underlying.get)
+  
+    def inc: F[Unit] = Sync[F].delay(underlying.inc)
+    def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+  }
+  private[epimetheus] final class NoLabelsCounter[F[_]: Sync] private[Counter] (private[Counter] val underlying: JCounter) extends Counter[F] {
+    override def get: F[Double] = Sync[F].delay(underlying.get)
+  
+    override def inc: F[Unit] = Sync[F].delay(underlying.inc)
+    override def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+  }
+
   /**
    * Generic Unlabeled Counter
    * 
@@ -47,14 +62,15 @@ object Counter {
    * can fail
    */
   final class UnlabelledCounter[F[_]: Sync, A] private[Counter](
-    private[Counter] val c: JCounter, 
+    private[Counter] val underlying: JCounter, 
     private val f: A => IndexedSeq[String]
   ) {
     def label(a: A): Counter[F] =
-      new Counter(c.labels(f(a):_*))
+      new LabelledCounter(underlying.labels(f(a):_*))
   }
 
   object Unsafe {
-    def asJava[F[_]](c: Counter[F]): JCounter.Child = c.underlying
+    def asJavaNoLabels[F[_]](c: NoLabelsCounter[F]): JCounter = c.underlying
+    def asJavaUnlabelled[F[_], A](c: UnlabelledCounter[F, A]): JCounter = c.underlying
   }
 }
