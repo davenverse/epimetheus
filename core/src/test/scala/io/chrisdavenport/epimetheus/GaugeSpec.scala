@@ -6,7 +6,7 @@ import shapeless._
 
 class GuageSpec extends Specification {
 
-  "Gauge NoLabels" should {
+  "Gauge No Labels" should {
     "Register cleanly in the collector" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
