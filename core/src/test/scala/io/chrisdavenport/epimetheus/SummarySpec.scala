@@ -4,6 +4,7 @@ import cats.effect._
 import org.specs2.mutable.Specification
 import cats.effect.laws.util.TestContext
 import shapeless._
+import io.chrisdavenport.epimetheus.Summary._
 
 class SummarySpec extends Specification {
   "Summary No Labels" should {
@@ -13,7 +14,7 @@ class SummarySpec extends Specification {
       
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        s <- Summary.buildQuantiles[IO](cr, "boo", "Boo ", (0.5, 0.05))
+        s <- Summary.buildQuantiles[IO](cr, "boo", "Boo ", Quantile.quantile(0.5, 0.05))
       } yield s
 
       test.attempt.unsafeRunSync must beRight
@@ -27,7 +28,7 @@ class SummarySpec extends Specification {
       
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        s <- Summary.constructQuantiles(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, (0.5, 0.05))
+        s <- Summary.constructQuantiles(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, Quantile.quantile(0.5, 0.05))
       } yield s
 
       test.attempt.unsafeRunSync must beRight
