@@ -53,6 +53,7 @@ object CollectorRegistry {
 
   def defaultRegistry[F[_]: Sync]: CollectorRegistry[F] =
     Unsafe.fromJava(JCollectorRegistry.defaultRegistry)
+
   object Unsafe {
     def fromJava[F[_]: Sync](j: JCollectorRegistry): CollectorRegistry[F] = new CollectorRegistry[F](j)
     def asJava[F[_]](c: CollectorRegistry[F]): JCollectorRegistry = c.cr
