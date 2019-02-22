@@ -1,5 +1,6 @@
 package io.chrisdavenport.epimetheus
 
+import cats._
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Summary => JSummary}
@@ -96,6 +97,9 @@ object Summary {
       else if (error < 0.0 || error > 1.0) Either.left(new IllegalArgumentException("Error " + error + " invalid: Expected number between 0.0 and 1.0."))
       else Either.right(new Quantile(quantile, error))
     }
+
+    def implF[F[_]: ApplicativeError[?[_], Throwable]](quantile: Double, error: Double): F[Quantile] = 
+      impl(quantile, error).liftTo[F]
 
     def quantile(quantile: Double, error: Double): Quantile = macro Macros.quantileLiteral
   }
