@@ -13,7 +13,7 @@ class HistogramSpec extends Specification {
 
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        h <- Histogram.buildBuckets[IO](cr, "boo", "Boo ", 0.1, 0.2, 0.3, 0.4)
+        h <- Histogram.noLabelsBuckets[IO](cr, "boo", "Boo ", 0.1, 0.2, 0.3, 0.4)
       } yield h
 
       test.attempt.unsafeRunSync must beRight
@@ -27,7 +27,7 @@ class HistogramSpec extends Specification {
 
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        h <- Histogram.constructBuckets(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, 0.1, 0.2, 0.3, 0.4)
+        h <- Histogram.labelledBuckets(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, 0.1, 0.2, 0.3, 0.4)
       } yield h
 
       test.attempt.unsafeRunSync must beRight

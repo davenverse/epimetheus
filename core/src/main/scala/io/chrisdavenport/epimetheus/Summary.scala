@@ -10,13 +10,16 @@ import shapeless._
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox
 
+/**
+ * Summary metric, to track the size of events.
+ */
 sealed abstract class Summary[F[_]]{
   def observe(d: Double): F[Unit]
   def timed[A](fa: F[A], unit: TimeUnit): F[A]
 }
 
 object Summary {
-  def buildQuantiles[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, quantiles: Quantile*): F[Summary[F]] = for {
+  def noLabelsQuantiles[F[_]: Sync: Clock](cr: CollectorRegistry[F], name: String, help: String, quantiles: Quantile*): F[Summary[F]] = for {
     c1 <- Sync[F].delay(JSummary.build().name(name).help(help))
     c <- Sync[F].delay(quantiles.foldLeft(c1){ case (c, q) => c.quantile(q.quantile, q.error)})
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
@@ -25,7 +28,7 @@ object Summary {
   /**
    * 
    */
-  def constructQuantiles[F[_]: Sync: Clock, A, N <: Nat](
+  def labelledQuantiles[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 

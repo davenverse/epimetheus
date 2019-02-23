@@ -10,7 +10,7 @@ class CounterSpec extends Specification {
     "Register cleanly in the collector" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        counter <- Counter.build[IO](cr, "boo", "Boo Counter")
+        counter <- Counter.noLabels[IO](cr, "boo", "Boo Counter")
       } yield counter
 
       test.attempt.unsafeRunSync must beRight
@@ -19,7 +19,7 @@ class CounterSpec extends Specification {
     "Increase correctly" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        counter <- Counter.build[IO](cr, "boo", "Boo Counter")
+        counter <- Counter.noLabels[IO](cr, "boo", "Boo Counter")
         _ <- counter.inc
         out <- counter.get
       } yield out
@@ -32,7 +32,7 @@ class CounterSpec extends Specification {
     "Register cleanly in the collector" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        counter <- Counter.construct(cr, "boo", "Boo Counter", Sized("foo"), {s: String => Sized(s)})
+        counter <- Counter.labelled(cr, "boo", "Boo Counter", Sized("foo"), {s: String => Sized(s)})
       } yield counter
 
       test.attempt.unsafeRunSync must beRight
@@ -41,7 +41,7 @@ class CounterSpec extends Specification {
     "Increase correctly" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        counter <- Counter.construct(cr, "boo", "Boo Counter", Sized("foo"), {s: String => Sized(s)})
+        counter <- Counter.labelled(cr, "boo", "Boo Counter", Sized("foo"), {s: String => Sized(s)})
         _ <- counter.label("foo").inc
         out <- counter.label("foo").get
       } yield out

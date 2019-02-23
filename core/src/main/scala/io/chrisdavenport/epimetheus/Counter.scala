@@ -10,8 +10,31 @@ import shapeless._
   * Counter - Track counts, running totals, or events.
   *
   * If your use case can go up or down consider using a [[Gauge]] instead.
+  * Use the `rate()` function in Prometheus to calculate the rate of increase of a Counter.
+  * By convention, the names of Counters are suffixed by `_total`.
   *
-  * By convention, the names of Counters are suffixed by <code>_total</code>.
+  * An Example Counter without Labels:
+  * {{{
+  *   for {
+  *     cr <- CollectorRegistry.build[IO]
+  *     successCounter <- Counter.noLabels(cr, "example_success_total", "Example Counter of Success")
+  *     failureCounter <- Counter.noLabels(Cr, "example_failure_total", "Example Counter of Failure")
+  *     _ <- IO(println("Action Here")).guaranteeCase{
+  *       case ExitCase.Completed => successCounter.inc
+  *       case _ => failureCounter.inc
+  *     }
+  *   } yield ()
+  * }}}
+  *
+  * An Example of a Counter with Labels:
+  * {{{
+  *   for {
+  *     cr <- CollectorRegistry.build[IO]
+  *     counter <- Counter.labelled(cr, "example_total", "Example Counter", Sized("foo"), {s: String => Sized(s)})
+  *     _ <- counter.label("bar").inc
+  *     _ <- counter.label("baz").inc
+  *   } yield ()
+  * }}}
   */
 sealed abstract class Counter[F[_]]{
   def get: F[Double]
@@ -21,17 +44,34 @@ sealed abstract class Counter[F[_]]{
 object Counter {
 
   /**
-   * Only Valid Constructor for NoLabelsCounter
+   * Constructor for a Counter with no labels.
+   * 
+   * @param cr CollectorRegistry this [[Counter]] will be registered with
+   * @param name The name of the Counter -  By convention, the names of Counters are suffixed by `_total`.
+   * @param help The help string of the metric
    */
-  def build[F[_]: Sync](cr: CollectorRegistry[F], name: String, help: String): F[Counter[F]] = for {
+  def noLabels[F[_]: Sync](cr: CollectorRegistry[F], name: String, help: String): F[Counter[F]] = for {
     c <- Sync[F].delay(JCounter.build().name(name).help(help))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsCounter[F](out)
 
   /**
-   * Only Valid Constructor for UnlabelledCounter
+   * Constructor for a labelled [[Counter]].
+   * 
+   * This generates a specific number of labels via `Sized`, in combination with a function
+   * to generate an equally `Sized` set of labels from some type. Values are applied by position.
+   * 
+   * This counter needs to have a label applied to the [[UnlabelledCounter]] in order to 
+   * be measureable or recorded.
+   * 
+   * @param cr CollectorRegistry this [[Counter]] will be registred with
+   * @param name The name of the Counter -  By convention, the names of Counters are suffixed by `_total`.
+   * @param help The help string of the metric
+   * @param labels The name of the labels to be applied to this metric
+   * @param f Function to take some value provided in the future to generate an equally sized list
+   *  of strings as the list of labels. These are assigned to labels by position.
    */
-  def construct[F[_]: Sync, A, N <: Nat](
+  def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -57,10 +97,10 @@ object Counter {
   }
 
   /**
-   * Generic Unlabeled Counter
+   * Generic Unlabeled Counter 
    * 
-   * Unsafe Conversion as labels may not align so `label` operation
-   * can fail
+   * It is necessary to apply a value of type `A` to this
+   * counter to be able to take any measurements.
    */
   final class UnlabelledCounter[F[_]: Sync, A] private[Counter](
     private[Counter] val underlying: JCounter, 
