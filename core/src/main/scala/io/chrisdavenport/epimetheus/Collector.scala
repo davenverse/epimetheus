@@ -5,8 +5,21 @@ import cats.effect._
 import io.prometheus.client.{Collector => JCollector}
 import io.prometheus.client.hotspot._
 
+/**
+ * A [[Collector]] Represents a Metric or Group of Metrics that
+ * can be registered with a [[CollectorRegistry]].
+ * 
+ * This is generally used for wrapping and bringing in Collectors
+ * as defined for Java Components
+ * 
+ */
 final class Collector private (private val underlying: JCollector)
 object Collector {
+  /**
+   * These are the set of HotSpot Metrics which can be
+   * considered as expected defaults that would like
+   * to be included generally.
+   */
   object Defaults {
     def BufferPoolsExports[F[_]: Sync]: F[Collector] =
       Sync[F].delay(new BufferPoolsExports())

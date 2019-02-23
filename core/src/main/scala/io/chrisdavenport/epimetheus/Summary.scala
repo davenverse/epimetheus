@@ -10,6 +10,9 @@ import shapeless._
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox
 
+/**
+ * Summary metric, to track the size of events.
+ */
 sealed abstract class Summary[F[_]]{
   def observe(d: Double): F[Unit]
   def timed[A](fa: F[A], unit: TimeUnit): F[A]
