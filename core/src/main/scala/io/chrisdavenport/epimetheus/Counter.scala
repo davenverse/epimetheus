@@ -1,5 +1,6 @@
 package io.chrisdavenport.epimetheus
 
+import cats._
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Counter => JCounter}
@@ -48,7 +49,7 @@ object Counter {
     override def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
   }
 
-  private final class LabelledCounter[F[_]: Sync] private[Counter] (private val underlying: JCounter.Child) extends Counter[F] {
+  private final class LabelledCounter[F[_]: Sync] private[Counter] (private[Counter] val underlying: JCounter.Child) extends Counter[F] {
     override def get: F[Double] = Sync[F].delay(underlying.get)
   
     def inc: F[Unit] = Sync[F].delay(underlying.inc)
@@ -71,5 +72,9 @@ object Counter {
 
   object Unsafe {
     def asJavaUnlabelled[F[_], A](c: UnlabelledCounter[F, A]): JCounter = c.underlying
+    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Counter[F]): F[JCounter] = c match {
+      case _: LabelledCounter[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
+      case n: NoLabelsCounter[F] => n.underlying.pure[F]
+    }
   }
 }

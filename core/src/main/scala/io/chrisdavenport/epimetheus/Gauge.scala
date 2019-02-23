@@ -1,5 +1,6 @@
 package io.chrisdavenport.epimetheus
 
+import cats._
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Gauge => JGauge}
@@ -43,7 +44,7 @@ object Gauge {
 
 
   private final class NoLabelsGauge[F[_]: Sync] private[Gauge] (
-    private val underlying: JGauge
+    private[Gauge] val underlying: JGauge
   ) extends Gauge[F] {
     def get: F[Double] = Sync[F].delay(underlying.get())
   
@@ -87,5 +88,9 @@ object Gauge {
   }
   object Unsafe {
     def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g.underlying
+    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Gauge[F]): F[JGauge] = c match {
+      case _: LabelledGauge[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
+      case n: NoLabelsGauge[F] => n.underlying.pure[F]
+    }
   }
 }

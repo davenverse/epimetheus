@@ -39,7 +39,7 @@ object Summary {
   } yield new UnlabelledSummary[F, A](out, f.andThen(_.unsized))
 
   final private class NoLabelsSummary[F[_]: Sync: Clock] private[Summary] (
-    private val underlying: JSummary
+    private[Summary] val underlying: JSummary
   ) extends Summary[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
     def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
@@ -107,5 +107,9 @@ object Summary {
   object Unsafe {
     def asJavaUnlabelled[F[_], A](g: UnlabelledSummary[F, A]): JSummary = 
       g.underlying
+    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Summary[F]): F[JSummary] = c match {
+      case _: LabelledSummary[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
+      case n: NoLabelsSummary[F] => n.underlying.pure[F]
+    }
   }
 }

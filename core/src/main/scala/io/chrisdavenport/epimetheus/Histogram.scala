@@ -1,5 +1,6 @@
 package io.chrisdavenport.epimetheus
 
+import cats._
 import cats.implicits._
 import cats.effect._
 import cats.implicits._
@@ -122,7 +123,7 @@ object Histogram {
   } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
 
   private final class NoLabelsHistogram[F[_]: Sync: Clock] private[Histogram] (
-    private val underlying: JHistogram
+    private[Histogram] val underlying: JHistogram
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
     def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
@@ -152,6 +153,10 @@ object Histogram {
   object Unsafe {
     def asJavaUnlabelled[F[_], A](h: UnlabelledHistogram[F, A]): JHistogram = 
       h.underlying
+    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Histogram[F]): F[JHistogram] = c match {
+      case _: LabelledHistogram[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
+      case n: NoLabelsHistogram[F] => n.underlying.pure[F]
+    }
   }
 
 }
