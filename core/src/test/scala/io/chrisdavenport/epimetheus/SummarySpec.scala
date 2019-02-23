@@ -14,7 +14,7 @@ class SummarySpec extends Specification {
       
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        s <- Summary.noLabelsQuantiles[IO](cr, "boo", "Boo ", Quantile.quantile(0.5, 0.05))
+        s <- Summary.noLabels[IO](cr, "boo", "Boo ", Quantile.quantile(0.5, 0.05))
       } yield s
 
       test.attempt.unsafeRunSync must beRight
@@ -28,7 +28,7 @@ class SummarySpec extends Specification {
       
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        s <- Summary.labelledQuantiles(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, Quantile.quantile(0.5, 0.05))
+        s <- Summary.labelled(cr, "boo", "Boo ", Sized("boo"), {s: String => Sized(s)}, Quantile.quantile(0.5, 0.05))
       } yield s
 
       test.attempt.unsafeRunSync must beRight
