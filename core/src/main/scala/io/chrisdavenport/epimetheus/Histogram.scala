@@ -22,6 +22,9 @@ sealed abstract class Histogram[F[_]]{
   def timed[A](fa: F[A], unit: TimeUnit): F[A]
 }
 
+/**
+ * Histogram Constructors, and Unsafe
+ */
 object Histogram {
 
   /**
@@ -36,7 +39,7 @@ object Histogram {
    * and are intended to cover a typical web/rpc request from milliseconds to seconds.
    * 
    * @param cr CollectorRegistry this [[Histogram]] will be registered with
-   * @param name The name of the Gauge
+   * @param name The name of the Histogram
    * @param help The help string of the metric
    */
   def noLabels[F[_]: Sync: Clock](
@@ -129,6 +132,24 @@ object Histogram {
   ): F[UnlabelledHistogram[F, A]] = 
     labelledBuckets(cr, name, help, labels, f, defaults:_*)
 
+  /**
+   * Constructor for a labelled [[Histogram]]. Default buckets are [[defaults]]
+   * and are intended to cover a typical web/rpc request from milliseconds to seconds.
+   * 
+   * This generates a specific number of labels via `Sized`, in combination with a function
+   * to generate an equally `Sized` set of labels from some type. Values are applied by position.
+   * 
+   * This counter needs to have a label applied to the [[UnlabelledHistogram]] in order to 
+   * be measureable or recorded.
+   * 
+   * @param cr CollectorRegistry this [[Histogram]] will be registred with
+   * @param name The name of the [[Histogram]].
+   * @param help The help string of the metric
+   * @param labels The name of the labels to be applied to this metric
+   * @param f Function to take some value provided in the future to generate an equally sized list
+   *  of strings as the list of labels. These are assigned to labels by position.
+   * @param buckets The buckets to measure observations by. 
+   */
   def labelledBuckets[F[_]: Sync: Clock, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
