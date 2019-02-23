@@ -41,7 +41,7 @@ object Histogram {
   def noLabels[F[_]: Sync: Clock](
     cr: CollectorRegistry[F],
     name: String,
-    help: String,
+    help: String
   ): F[Histogram[F]] = 
     noLabelsBuckets(cr, name, help, defaults:_*)
 
