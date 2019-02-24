@@ -1,0 +1,11 @@
+This is the API documentation for the
+[[https://github.com/ChristopherDavenport/epimetheus epimetheus]] library.
+
+See the [[io.chrisdavenport.epimetheus]] package for a quick overview.
+
+==Links==
+
+Canonical documentation links:
+
+1. [[https://christopherdavenport.github.io/epimetheus Website]]
+1. [[https://www.javadoc.io/doc/io.chrisdavenport/epimetheus_2.12 ScalaDoc]]
