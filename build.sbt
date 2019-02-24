@@ -58,6 +58,10 @@ lazy val commonSettings = Seq(
       "-doc-source-url", "https://github.com/ChristopherDavenport/epimetheus/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
 
+  scalacOptions in (Compile, doc) ++=
+    Seq("-doc-root-content", (baseDirectory.value.getParentFile / "rootdoc.txt").getAbsolutePath),
+  scalacOptions in (Compile, doc) ++= Opts.doc.title("epimetheus"),
+
   addCompilerPlugin("org.spire-math" % "kind-projector" % kindProjectorV cross CrossVersion.binary),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % betterMonadicForV),
   libraryDependencies ++= Seq(
@@ -68,7 +72,7 @@ lazy val commonSettings = Seq(
     "org.typelevel"               %% "cats-core"                  % catsV,
 
     "org.typelevel"               %% "cats-effect"                % catsEffectV,
-    "org.typelevel"               %% "cats-effect-laws"           % catsEffectV,
+    "org.typelevel"               %% "cats-effect-laws"           % catsEffectV   % Test,
     "com.chuusai"                 %% "shapeless"                  % shapelessV,
 
     // "co.fs2"                      %% "fs2-core"                   % fs2V,
