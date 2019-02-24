@@ -23,7 +23,6 @@ First Imports.
 ```tut:silent
 import io.chrisdavenport.epimetheus._
 import cats.effect._
-import shapeless._
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.duration._
@@ -32,7 +31,7 @@ implicit val CS = IO.contextShift(global)
 implicit val T = IO.timer(global)
 ```
 
-### Counter Examples
+### Counter Example
 
 ```tut:book
 val noLabelsCounterExample = {
@@ -45,21 +44,9 @@ val noLabelsCounterExample = {
 }
 
 noLabelsCounterExample.unsafeRunSync
-
-val labelsCounterExample = {
-  for {
-    cr <- CollectorRegistry.build[IO]
-    counter <- Counter.labelled(cr, "counter_total", "Example Counter", Sized("foo"), {s: String => Sized(s)})
-    _ <- counter.label("bar").inc
-    _ <- counter.label("baz").inc
-    currentMetrics <- cr.write004
-  } yield currentMetrics
-}
-
-labelsCounterExample.unsafeRunSync
 ```
 
-### Gauge Examples
+### Gauge Example
 
 ```tut:book
 val noLabelsGaugeExample = {
@@ -74,24 +61,9 @@ val noLabelsGaugeExample = {
 }
 
 noLabelsGaugeExample.unsafeRunSync
-
-val labelledGaugeExample = {
-  for {
-    cr <- CollectorRegistry.build[IO]
-    gauge <- Gauge.labelled(cr, "gauge_total", "Example Gauge", Sized("foo"), {s: String => Sized(s)})
-    _ <- gauge.label("bar").inc
-    _ <- gauge.label("baz").inc
-    _ <- gauge.label("bar").inc
-    _ <- gauge.label("baz").inc
-    _ <- gauge.label("bar").dec
-    currentMetrics <- cr.write004
-  } yield currentMetrics
-}
-
-labelledGaugeExample.unsafeRunSync
 ```
 
-### Histogram Examples
+### Histogram Example
 
 ```tut:book
 val noLabelsHistogramExample = {
@@ -105,21 +77,9 @@ val noLabelsHistogramExample = {
 }
 
 noLabelsHistogramExample.unsafeRunSync
-
-val labelledHistogramExample = {
-  for {
-    cr <- CollectorRegistry.build[IO]
-    h <- Histogram.labelled(cr, "example_histogram", "Example Histogram", Sized("foo"), {s: String => Sized(s)})
-    _ <- h.label("bar").observe(0.2)
-    _ <- h.label("baz").timed(T.sleep(1.second), SECONDS)
-    currentMetrics <- cr.write004
-  } yield currentMetrics
-}
-
-labelledHistogramExample.unsafeRunSync
 ```
 
-### Summary Examples
+### Summary Example
 
 ```tut:book
 val noLabelsSummaryExample = {
