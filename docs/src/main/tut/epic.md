@@ -1,6 +1,6 @@
 ---
 #layout: docs
-title:  "Epic of Epimetheus"
+title:  "epic of epimetheus"
 section: "epic"
 position: 1
 ---
