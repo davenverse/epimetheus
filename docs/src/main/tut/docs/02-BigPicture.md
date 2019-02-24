@@ -22,7 +22,7 @@ This underlying library has little to no type-safety and safe interactions, the 
 
 Across all metrics we solve these problems with a few solutions.
 
-1. Registration is always done in an effect. If two collectors with the same name are registerred, it will
+1. Registration is always done in an effect. If two collectors with the same name are registered, it will
 fail at registration. If you are building custom groups of Collectors, exposing a prefix that can be altered
 is suggested in case users wish to register more than one.
 
