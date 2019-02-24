@@ -90,3 +90,11 @@ val fooAgebraExample = {
 
 fooAgebraExample.unsafeRunSync
 ```
+
+We force labels to always match the same size. This will fail to compile.
+
+```tut:nofail
+def incorrectlySized[F[_]: Sync](cr: CollectorRegistry[F]) = {
+  Counter.labelled(cr, "fail", "Example Failure", Sized("color", "method"), {s: String => Sized(s)})
+}
+```
