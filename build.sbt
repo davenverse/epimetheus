@@ -72,7 +72,7 @@ lazy val commonSettings = Seq(
     "org.typelevel"               %% "cats-core"                  % catsV,
 
     "org.typelevel"               %% "cats-effect"                % catsEffectV,
-    "org.typelevel"               %% "cats-effect-laws"           % catsEffectV,
+    "org.typelevel"               %% "cats-effect-laws"           % catsEffectV   % Test,
     "com.chuusai"                 %% "shapeless"                  % shapelessV,
 
     // "co.fs2"                      %% "fs2-core"                   % fs2V,
