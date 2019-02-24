@@ -7,7 +7,7 @@ import io.prometheus.client.{Counter => JCounter}
 import shapeless._
 
 /**
-  * Counter - Track counts, running totals, or events.
+  * Counter metric, to track counts, running totals, or events.
   *
   * If your use case can go up or down consider using a [[Gauge]] instead.
   * Use the `rate()` function in Prometheus to calculate the rate of increase of a Counter.
@@ -37,10 +37,29 @@ import shapeless._
   * }}}
   */
 sealed abstract class Counter[F[_]]{
+
+  /**
+   * Access to the current value of this [[Counter]].
+   */
   def get: F[Double]
+  
+  /**
+   * Increment the value of this [[Counter]] by 1.
+   */
   def inc: F[Unit]
+
+  /**
+   * Increment the value of this counter by the provided value.
+   * 
+   * @param d The value to increase the [[Counter]] by.
+   * 
+   */
   def incBy(d: Double): F[Unit]
 }
+
+/**
+ * Counter Constructors, and Unsafe Counter Access
+ */
 object Counter {
 
   /**

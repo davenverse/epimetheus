@@ -25,11 +25,28 @@ import scala.reflect.macros.whitebox
  * See https://prometheus.io/docs/practices/histograms/ for more info on quantiles.
  */
 sealed abstract class Summary[F[_]]{
+
+  /**
+   * Persist an observation into this [[Summary]]
+   * 
+   * @param d The observation to persist
+   */
   def observe(d: Double): F[Unit]
+
+
+  /**
+   * Persist a time value into this [[Summary]]
+   * 
+   * @param fa The action to time
+   * @param unit The unit of time to observe the timing in.
+   */
   def timed[A](fa: F[A], unit: TimeUnit): F[A]
 }
 
 
+/**
+ * Summary Constructors, and Unsafe Summary Access
+ */
 object Summary {
 
   val defaultMaxAgeSeconds = 600L

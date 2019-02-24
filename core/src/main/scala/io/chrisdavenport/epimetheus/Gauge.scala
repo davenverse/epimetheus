@@ -36,17 +36,44 @@ import shapeless._
  * server than individual metrics for each labelset.
  */
 sealed abstract class Gauge[F[_]]{
+
+  /**
+   * Access to the current value of this [[Gauge]].
+   */
   def get: F[Double]
 
+  /**
+   * Decrement the value of this [[Gauge]] by 1.
+   */
   def dec: F[Unit]
+
+  /**
+   * Decrement the value of this gauge by the provided value.
+   * 
+   * @param d The value to decrease the [[Gauge]] by.
+   * 
+   */
   def decBy(d: Double): F[Unit]
   
+  /**
+   * Increment the value of this [[Gauge]] by 1.
+   */
   def inc: F[Unit]
+
+  /**
+   * Increment the value of this gauge by the provided value.
+   * 
+   * @param d The value to increase the [[Gauge]] by.
+   * 
+   */
   def incBy(d: Double): F[Unit]
 
   def set(d: Double): F[Unit]
 }
 
+/**
+ * Gauge Constructors, and Unsafe Gauge Access
+ */
 object Gauge {
 
   /**

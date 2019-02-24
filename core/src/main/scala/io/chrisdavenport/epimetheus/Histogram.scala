@@ -18,12 +18,26 @@ import shapeless._
  * 
  */
 sealed abstract class Histogram[F[_]]{
+  
+  /**
+   * Persist an observation into this [[Histogram]]
+   * 
+   * @param d The observation to persist
+   */
   def observe(d: Double): F[Unit]
+
+  /**
+   * Persist a time value into this [[Histogram]]
+   * 
+   * @param fa The action to time
+   * @param unit The unit of time to observe the timing in. Default Histogram buckets
+   *  are optimized for `SECONDS`.
+   */
   def timed[A](fa: F[A], unit: TimeUnit): F[A]
 }
 
 /**
- * Histogram Constructors, and Unsafe
+ * Histogram Constructors, and Unsafe Histogram Access
  */
 object Histogram {
 
