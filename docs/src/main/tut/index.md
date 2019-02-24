@@ -125,7 +125,7 @@ labelledHistogramExample.unsafeRunSync
 val noLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    s <- Summary.noLabels(cr, "example_summary", "Example Summary", Summary.Quantile.quantile(0.5,0.05))
+    s <- Summary.noLabels(cr, "example_summary", "Example Summary", Summary.quantile(0.5,0.05))
     _ <- s.observe(0.1)
     _ <- s.observe(0.2)
     _ <- s.observe(1.0)

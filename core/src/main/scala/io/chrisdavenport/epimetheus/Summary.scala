@@ -53,6 +53,13 @@ object Summary {
   val defaultAgeBuckets = 5
 
   /**
+   * Safe Constructor for Literal Quantiles
+   * 
+   * If you want to construct a dynamic quantile use the [[Quantile.impl safe constructor]]
+   */
+  def quantile(quantile: Double, error: Double): Quantile = macro Quantile.Macros.quantileLiteral
+
+  /**
    * Default Constructor for a [[Summary]] with no labels.
    * 
    * maxAgeSeconds is set to [[defaultMaxAgeSeconds]] which is 10 minutes.
@@ -240,7 +247,7 @@ object Summary {
    */
   final class Quantile private(val quantile: Double, val error: Double)
   object Quantile {
-    private class Macros(val c: whitebox.Context) {
+    private[Summary] class Macros(val c: whitebox.Context) {
       import c.universe._
       def quantileLiteral(quantile: c.Expr[Double], error: c.Expr[Double]): Tree =
         (quantile.tree, error.tree) match {
