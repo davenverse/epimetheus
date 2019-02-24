@@ -32,7 +32,8 @@ val noLabelsExample = {
       case ExitCase.Completed => successCounter.inc
       case _ => failureCounter.inc
     }
-  } yield ()
+    out <- cr.write004
+  } yield yield out
 }
 
 noLabelsExample.unsafeRunSync
