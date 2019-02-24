@@ -13,6 +13,14 @@ Gauges can go both up and down.
 Labelled versions can be aggregated and processed together much more easily in the Prometheus
 server than individual metrics for each labelset.
 
+Imports
+
+```tut:silent
+import io.chrisdavenport.epimetheus._
+import cats.effect._
+import shapeless._
+```
+
 An Example of a Gauge with no labels:
 
 ```tut:book
