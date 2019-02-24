@@ -17,7 +17,6 @@
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.chrisdavenport.epimetheus._</span>
 <span class="k">import</span> <span class="nn">cats.effect._</span>
-<span class="k">import</span> <span class="nn">shapeless._</span>
 
 <span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.global</span>
 <span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
@@ -27,7 +26,7 @@
 </code></pre>
 </div>
 
-<h3 id="counter-examples">Counter Examples</h3>
+<h3 id="counter-example">Counter Example</h3>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsCounterExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
@@ -37,7 +36,7 @@
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsCounterExample: cats.effect.IO[String] = IO$1330806963
+<span class="c1">// noLabelsCounterExample: cats.effect.IO[String] = IO$600721063
 </span>
 <span class="n">noLabelsCounterExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
 <span class="c1">// res0: String =
@@ -45,29 +44,10 @@
 // # TYPE counter_total counter
 // counter_total 1.0
 // "
-</span>
-<span class="k">val</span> <span class="n">labelsCounterExample</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="k">for</span> <span class="o">{</span>
-    <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">counter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"counter_total"</span><span class="o">,</span> <span class="s">"Example Counter"</span><span class="o">,</span> <span class="nc">Sized</span><span class="o">(</span><span class="s">"foo"</span><span class="o">),</span> <span class="o">{</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="n">s</span><span class="o">)})</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">counter</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">counter</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
-  <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
-<span class="o">}</span>
-<span class="c1">// labelsCounterExample: cats.effect.IO[String] = IO$818928046
-</span>
-<span class="n">labelsCounterExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res1: String =
-// "# HELP counter_total Example Counter
-// # TYPE counter_total counter
-// counter_total{foo="bar",} 1.0
-// counter_total{foo="baz",} 1.0
-// "
 </span></code></pre>
 </div>
 
-<h3 id="gauge-examples">Gauge Examples</h3>
+<h3 id="gauge-example">Gauge Example</h3>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsGaugeExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
@@ -79,40 +59,18 @@
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsGaugeExample: cats.effect.IO[String] = IO$655288558
+<span class="c1">// noLabelsGaugeExample: cats.effect.IO[String] = IO$1445631149
 </span>
 <span class="n">noLabelsGaugeExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res2: String =
+<span class="c1">// res1: String =
 // "# HELP gauge_total Example Gauge
 // # TYPE gauge_total gauge
 // gauge_total 1.0
 // "
-</span>
-<span class="k">val</span> <span class="n">labelledGaugeExample</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="k">for</span> <span class="o">{</span>
-    <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">gauge</span> <span class="k">&lt;-</span> <span class="nc">Gauge</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"gauge_total"</span><span class="o">,</span> <span class="s">"Example Gauge"</span><span class="o">,</span> <span class="nc">Sized</span><span class="o">(</span><span class="s">"foo"</span><span class="o">),</span> <span class="o">{</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="n">s</span><span class="o">)})</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="n">dec</span>
-    <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
-  <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
-<span class="o">}</span>
-<span class="c1">// labelledGaugeExample: cats.effect.IO[String] = IO$97195930
-</span>
-<span class="n">labelledGaugeExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res3: String =
-// "# HELP gauge_total Example Gauge
-// # TYPE gauge_total gauge
-// gauge_total{foo="bar",} 1.0
-// gauge_total{foo="baz",} 2.0
-// "
 </span></code></pre>
 </div>
 
-<h3 id="histogram-examples">Histogram Examples</h3>
+<h3 id="histogram-example">Histogram Example</h3>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsHistogramExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
@@ -123,10 +81,10 @@
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsHistogramExample: cats.effect.IO[String] = IO$433319666
+<span class="c1">// noLabelsHistogramExample: cats.effect.IO[String] = IO$164114357
 </span>
 <span class="n">noLabelsHistogramExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res4: String =
+<span class="c1">// res2: String =
 // "# HELP example_histogram Example Histogram
 // # TYPE example_histogram histogram
 // example_histogram_bucket{le="0.005",} 0.0
@@ -147,40 +105,10 @@
 // example_histogram_count 2.0
 // example_histogram_sum 1.2
 // "
-</span>
-<span class="k">val</span> <span class="n">labelledHistogramExample</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="k">for</span> <span class="o">{</span>
-    <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">h</span> <span class="k">&lt;-</span> <span class="nc">Histogram</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"example_histogram"</span><span class="o">,</span> <span class="s">"Example Histogram"</span><span class="o">,</span> <span class="nc">Sized</span><span class="o">(</span><span class="s">"foo"</span><span class="o">),</span> <span class="o">{</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="n">s</span><span class="o">)})</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">h</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="n">observe</span><span class="o">(</span><span class="mf">0.2</span><span class="o">)</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">h</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">timed</span><span class="o">(</span><span class="n">T</span><span class="o">.</span><span class="n">sleep</span><span class="o">(</span><span class="mf">1.</span><span class="n">second</span><span class="o">),</span> <span class="nc">SECONDS</span><span class="o">)</span>
-    <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
-  <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
-<span class="o">}</span>
-<span class="c1">// labelledHistogramExample: cats.effect.IO[String] = IO$1137030050
-</span>
-<span class="n">labelledHistogramExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res5: String =
-// "# HELP example_histogram Example Histogram
-// # TYPE example_histogram histogram
-// example_histogram_bucket{foo="bar",le="0.005",} 0.0
-// example_histogram_bucket{foo="bar",le="0.01",} 0.0
-// example_histogram_bucket{foo="bar",le="0.025",} 0.0
-// example_histogram_bucket{foo="bar",le="0.05",} 0.0
-// example_histogram_bucket{foo="bar",le="0.075",} 0.0
-// example_histogram_bucket{foo="bar",le="0.1",} 0.0
-// example_histogram_bucket{foo="bar",le="0.25",} 1.0
-// example_histogram_bucket{foo="bar",le="0.5",} 1.0
-// example_histogram_bucket{foo="bar",le="0.75",} 1.0
-// example_histogram_bucket{foo="bar",le="1.0",} 1.0
-// example_histogram_bucket{foo="bar",le="2.5",} 1.0
-// example_histogram_bucket{foo="bar",le="5.0",} 1.0
-// example_histogram_bucket{foo="bar",le="7.5",} 1.0
-// example_histogram_bucket{foo="bar",le="10.0...
 </span></code></pre>
 </div>
 
-<h3 id="summary-examples">Summary Examples</h3>
+<h3 id="summary-example">Summary Example</h3>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsSummaryExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
@@ -192,10 +120,10 @@
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsSummaryExample: cats.effect.IO[String] = IO$2040372793
+<span class="c1">// noLabelsSummaryExample: cats.effect.IO[String] = IO$1252892830
 </span>
 <span class="n">noLabelsSummaryExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res6: String =
+<span class="c1">// res3: String =
 // "# HELP example_summary Example Summary
 // # TYPE example_summary summary
 // example_summary{quantile="0.5",} 0.1
