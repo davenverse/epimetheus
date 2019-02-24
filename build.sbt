@@ -233,6 +233,16 @@ lazy val micrositeSettings = {
     libraryDependencies += "com.47deg" %% "github4s" % "0.20.0",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
+    micrositeConfigYaml := ConfigYml(
+      yamlCustomProperties = Map(
+        "epimetheusVersion" -> version.value,
+        "catsVersion"       -> catsV,
+        "catsEffectVersion" -> catsEffectV,
+        "shapelessVersion"  -> shapelessV,
+        "scalaVersion"      -> scalaVersion.value,
+        "scalaVersions"     -> crossScalaVersions.value.map(CrossVersion.partialVersion).flatten.map(_._2).mkString("2.", "/", "") // 2.11/12
+      )
+    ),
     micrositeExtraMdFiles := Map(
         file("CHANGELOG.md")        -> ExtraMdFileConfig("changelog.md", "page", Map("title" -> "changelog", "section" -> "changelog", "position" -> "100")),
         file("CODE_OF_CONDUCT.md")  -> ExtraMdFileConfig("code-of-conduct.md",   "page", Map("title" -> "code of conduct",   "section" -> "code of conduct",   "position" -> "101")),
