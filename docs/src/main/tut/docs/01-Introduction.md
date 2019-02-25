@@ -18,6 +18,8 @@ Having said this, if you find yourself confused or frustrated by this documentat
 
 On the Scala side you just need a project with the proper dependencies. A minimal `build.sbt` would look something like this.
 
+The most recent stable version - [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12)
+
 ```scala
 scalaVersion := "{{site.scalaVersion}}" // Scala {{site.scalaVersions}}
 
