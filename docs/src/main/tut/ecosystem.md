@@ -11,6 +11,6 @@ If you have a project you'd like to include in this list, either open a PR or le
 
 ## Libraries and Open Source Projects
 
-- [epimetheus-http4s](https://github.com/ChristopherDavenport/epimetheus-http4s) - Http4s MetricOps and Scraper endpoints
+- [epimetheus-http4s](https://github.com/ChristopherDavenport/epimetheus-http4s) - Http4s MetricsOps and Scraper endpoints
 
 ## Industrial
