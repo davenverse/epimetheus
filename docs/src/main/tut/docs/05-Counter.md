@@ -1,6 +1,6 @@
 ---
 layout: docs
-number: 3
+number: 5
 title: Counter
 ---
 
@@ -11,6 +11,10 @@ Counter metric, to track counts, running totals, or events.
 If your use case can go up or down consider using a [[Gauge]] instead.
 Use the `rate()` function in Prometheus to calculate the rate of increase of a Counter.
 By convention, the names of Counters are suffixed by `_total`.
+
+A `Counter` is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart. For example, you can use a counter to represent the number of requests served, tasks completed, or errors.
+
+Do not use a counter to expose a value that can decrease. For example, do not use a counter for the number of currently running processes; instead use a gauge.
 
 Imports
 

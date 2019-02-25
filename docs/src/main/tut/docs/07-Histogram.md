@@ -1,6 +1,6 @@
 ---
 layout: docs
-number: 5
+number: 7
 title: Histogram
 ---
 
@@ -12,6 +12,18 @@ Note: Each bucket is one timeseries. Many buckets and/or many dimensions with la
 can produce large amount of time series, that may cause performance problems.
 
 The default buckets are intended to cover a typical web/rpc request from milliseconds to seconds.
+
+A `Histogram` samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values.
+
+A histogram with a base metric name of `<basename>` exposes multiple time series during a scrape:
+
+- Cumulative counters for the observation buckets, exposed as `<basename>_bucket{le="<upper inclusive bound>"}`
+- The total sum of all observed values, exposed as `<basename>_sum`
+- The count of events that have been observed, exposed as `<basename>_count` (identical to `<basename>_bucket{le="+Inf"}` above)
+
+Use the histogram_quantile() function to calculate quantiles from histograms or even aggregations of histograms.
+
+See https://prometheus.io/docs/practices/histograms/ for more information on Histogram and Summary similarities and differences.
 
 Imports
 
