@@ -8,6 +8,7 @@ import scala.reflect.macros.whitebox
 
 final class Name private(val getName: String){
   def ++(that: Name): Name = new Name(getName |+| that.getName)
+  def suffix(s: Name.Suffix): Name = new Name(getName |+| s.getSuffix)
 }
 
 object Name {
@@ -53,5 +54,56 @@ object Name {
   }
 
   def apply(s: String): Name = macro Macros.nameLiteral
+
+  final class Suffix private(val getSuffix: String){
+    def ++(that: Suffix): Suffix = new Suffix(getSuffix |+| that.getSuffix)
+  }
+  object Suffix {
+
+    implicit val nameInstances: Show[Suffix] with Semigroup[Suffix] = 
+      new Show[Suffix] with Semigroup[Suffix]{
+        // Members declared in cats.Show.ContravariantShow
+        def show(t: Suffix): String = t.getSuffix
+        // Members declared in cats.kernel.Semigroup
+        def combine(x: Suffix, y: Suffix): Suffix = x ++ y
+      }
+
+    private[Suffix] class Macros(val c: whitebox.Context) {
+      import c.universe._
+      def suffixLiteral(s: c.Expr[String]): Tree =
+        s.tree match {
+          case Literal(Constant(s: String))=>
+              impl(s)
+              .fold(
+                e => c.abort(c.enclosingPosition, e.getMessage),
+                _ =>
+                  q"_root_.io.chrisdavenport.epimetheus.Name.Suffix.impl($s).fold(throw _, _root_.scala.Predef.identity)"
+              )
+          case _ =>
+            c.abort(
+              c.enclosingPosition,
+              s"This method uses a macro to verify that a Name.Suffix literal is valid. Use Name.Suffix.impl if you have a dynamic value you want to parse as a suffix."
+            )
+        }
+    }
+
+    private val sufreg = "([a-zA-Z0-9_:]*)".r
+
+    def impl(s: String): Either[IllegalArgumentException, Suffix] = s match {
+      case sufreg(string) => Either.right(new Suffix(string))
+      case _ => Either.left(
+        new IllegalArgumentException(
+          s"Input String - $s does not match regex - ([a-zA-Z0-9_:]*)"
+        )
+      )
+    }
+
+    def implF[F[_]: ApplicativeError[?[_], Throwable]](s: String): F[Suffix] = {
+      impl(s).liftTo[F]
+    }
+
+    def apply(s: String): Suffix = macro Macros.suffixLiteral
+
+  }
 
 }
