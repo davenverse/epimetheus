@@ -5,3 +5,5 @@ trait all
   with gauge
   with histogram
   with summary
+
+object all extends all
