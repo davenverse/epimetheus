@@ -29,7 +29,7 @@ An Example of a Gauge with no labels:
 val noLabelsGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    gauge <- Gauge.noLabels(cr, "gauge_total", "Example Gauge")
+    gauge <- Gauge.noLabels(cr, Name("gauge_total"), "Example Gauge")
     _ <- gauge.inc
     _ <- gauge.inc
     _ <- gauge.dec
@@ -46,7 +46,13 @@ An Example of a Gauge with labels:
 val labelledGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    gauge <- Gauge.labelled(cr, "gauge_total", "Example Gauge", Sized("foo"), {s: String => Sized(s)})
+    gauge <- Gauge.labelled(
+      cr,
+      Name("gauge_total"),
+      "Example Gauge",
+      Sized(Name("foo")),
+      {s: String => Sized(s)}
+    )
     _ <- gauge.label("bar").inc
     _ <- gauge.label("baz").inc
     _ <- gauge.label("bar").inc

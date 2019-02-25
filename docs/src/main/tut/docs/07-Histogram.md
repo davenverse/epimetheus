@@ -46,7 +46,7 @@ And Example of a Histogram with no labels:
 val noLabelsHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    h <- Histogram.noLabels(cr, "example_histogram", "Example Histogram")
+    h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
     _ <- h.timed(T.sleep(1.second), SECONDS)
     currentMetrics <- cr.write004
@@ -63,7 +63,13 @@ An Example of a Histogram with labels:
 val labelledHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    h <- Histogram.labelled(cr, "example_histogram", "Example Histogram", Sized("foo"), {s: String => Sized(s)})
+    h <- Histogram.labelled(
+      cr,
+      Name("example_histogram"),
+      "Example Histogram",
+      Sized(Name("foo")),
+      {s: String => Sized(s)}
+    )
     _ <- h.label("bar").observe(0.2)
     _ <- h.label("baz").timed(T.sleep(1.second), SECONDS)
     currentMetrics <- cr.write004

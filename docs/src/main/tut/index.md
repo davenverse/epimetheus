@@ -38,7 +38,7 @@ implicit val T = IO.timer(global)
 val noLabelsCounterExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    counter <- Counter.noLabels(cr, "counter_total", "Example Counter")
+    counter <- Counter.noLabels(cr, Name("counter_total"), "Example Counter")
     _ <- counter.inc
     currentMetrics <- cr.write004
   } yield currentMetrics
@@ -53,7 +53,7 @@ noLabelsCounterExample.unsafeRunSync
 val noLabelsGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    gauge <- Gauge.noLabels(cr, "gauge_total", "Example Gauge")
+    gauge <- Gauge.noLabels(cr, Name("gauge_total"), "Example Gauge")
     _ <- gauge.inc
     _ <- gauge.inc
     _ <- gauge.dec
@@ -70,7 +70,7 @@ noLabelsGaugeExample.unsafeRunSync
 val noLabelsHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    h <- Histogram.noLabels(cr, "example_histogram", "Example Histogram")
+    h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
     _ <- h.timed(T.sleep(1.second), SECONDS)
     currentMetrics <- cr.write004
@@ -86,7 +86,7 @@ noLabelsHistogramExample.unsafeRunSync
 val noLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    s <- Summary.noLabels(cr, "example_summary", "Example Summary", Summary.quantile(0.5,0.05))
+    s <- Summary.noLabels(cr, Name("example_summary"), "Example Summary", Summary.quantile(0.5,0.05))
     _ <- s.observe(0.1)
     _ <- s.observe(0.2)
     _ <- s.observe(1.0)
