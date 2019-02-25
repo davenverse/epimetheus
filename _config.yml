@@ -9,9 +9,9 @@ docs: true
 collections:
   tut:
     output: true
-epimetheusVersion: 0.0.9-SNAPSHOT
+epimetheusVersion: 0.0.10-SNAPSHOT
 scalaVersion: 2.12.8
-version: 0.0.9-SNAPSHOT
+version: 0.0.10-SNAPSHOT
 scalaVersions: 2.12/11
 org: io.chrisdavenport
 markdown: kramdown
