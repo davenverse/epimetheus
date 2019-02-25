@@ -6,7 +6,6 @@ import io.prometheus.client.{CollectorRegistry => JCollectorRegistry}
 
 import java.io.StringWriter
 import io.prometheus.client.exporter.common.TextFormat
-import io.prometheus.client.hotspot.DefaultExports
 
 /**
  * A [[CollectorRegistry]] is a registry of Collectors.

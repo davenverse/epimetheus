@@ -85,7 +85,7 @@ CollectorRegistry.defaultRegistry[IO]
 You can also ensure the baseline has been initiated.
 
 ```tut:book
-Collector.Defaults.defaultCollectorRegisterDefaults
+Collector.Defaults.defaultCollectorRegisterDefaults[IO]
 ```
 
 ## Exporting Your Metrics
