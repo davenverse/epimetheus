@@ -21,6 +21,33 @@ object Collector {
    * to be included generally.
    */
   object Defaults {
+    /**
+     * Register all defaults with the supplied registry.
+     */
+    def registerDefaults[F[_]: Sync](cr: CollectorRegistry[F]): F[Unit] = 
+      for {
+        bpe <- BufferPoolsExports[F]
+        _   <- cr.register(bpe) 
+        cle <- ClassLoadingExports
+        _   <- cr.register(cle)
+        gce <- GarbageCollectorExports
+        _   <- cr.register(gce)
+        mae <- MemoryAllocationExports
+        _   <- cr.register(mae)
+        mpe <- MemoryPoolsExports
+        _   <- cr.register(mpe)
+        se  <- StandardExports
+        _   <- cr.register(se)
+        te  <- ThreadExports
+        _   <- cr.register(te)
+        vie <- VersionInfoExports
+        _   <- cr.register(vie)
+      } yield ()
+
+    def defaultCollectorRegisterDefaults[F[_]: Sync]: F[Unit] = Sync[F].delay{
+      DefaultExports.initialize
+    }
+
     def BufferPoolsExports[F[_]: Sync]: F[Collector] =
       Sync[F].delay(new BufferPoolsExports())
         .map(Unsafe.fromJava(_))

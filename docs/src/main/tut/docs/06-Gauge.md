@@ -1,6 +1,6 @@
 ---
 layout: docs
-number: 4
+number: 6
 title: Gauge
 ---
 
@@ -9,6 +9,10 @@ title: Gauge
 Gauge metric, to report instantaneous values.
 
 Gauges can go both up and down.
+
+A `Gauge` is a metric that represents a single numerical value that can arbitrarily go up and down.
+
+Gauges are typically used for measured values like temperatures or current memory usage, but also "counts" that can go up and down, like the number of concurrent requests.
 
 Labelled versions can be aggregated and processed together much more easily in the Prometheus
 server than individual metrics for each labelset.
