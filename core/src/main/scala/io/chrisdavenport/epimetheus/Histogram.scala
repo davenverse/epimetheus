@@ -26,21 +26,33 @@ sealed abstract class Histogram[F[_]]{
    */
   def observe(d: Double): F[Unit]
 
+}
+
+/**
+ * Histogram Constructors, Convenience Methods and Unsafe Histogram Access
+ * 
+ * Convenience function exposed here will also be exposed as implicit syntax
+ * enhancements on the Histogram
+ */
+object Histogram {
+
+  // Convenience ----------------------------------------------------
+  // Since these methods are not ex
+
   /**
-   * Persist a time value into this [[Histogram]]
+   * Persist a timed value into this [[Histogram]]
    * 
+   * @param h Histogram
    * @param fa The action to time
    * @param unit The unit of time to observe the timing in. Default Histogram buckets
    *  are optimized for `SECONDS`.
    */
-  def timed[A](fa: F[A], unit: TimeUnit): F[A]
-}
+  def timed[E, F[_]: Bracket[?[_], E]: Timer, A](h: Histogram[F], fa: F[A], unit: TimeUnit): F[A] = 
+    Bracket[F, E].bracket(Clock[F].monotonic(unit))
+    {_: Long => fa}
+    {start: Long => Clock[F].monotonic(unit).flatMap(now => h.observe((now - start).toDouble))}
 
-/**
- * Histogram Constructors, and Unsafe Histogram Access
- */
-object Histogram {
-
+  // Constructors ---------------------------------------------------
   /**
    * Default Buckets
    * 
@@ -56,7 +68,7 @@ object Histogram {
    * @param name The name of the Histogram
    * @param help The help string of the metric
    */
-  def noLabels[F[_]: Sync: Clock](
+  def noLabels[F[_]: Sync](
     cr: CollectorRegistry[F],
     name: String,
     help: String
@@ -72,7 +84,7 @@ object Histogram {
    * @param help The help string of the metric
    * @param buckets The buckets to measure observations by.
    */
-  def noLabelsBuckets[F[_]: Sync: Clock](
+  def noLabelsBuckets[F[_]: Sync](
     cr: CollectorRegistry[F],
     name: String,
     help: String,
@@ -87,7 +99,7 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
-  def noLabelsLinearBuckets[F[_]: Sync: Clock](
+  def noLabelsLinearBuckets[F[_]: Sync](
     cr: CollectorRegistry[F],
     name: String,
     help: String,
@@ -104,7 +116,7 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
-  def noLabelsExponentialBuckets[F[_]: Sync: Clock](
+  def noLabelsExponentialBuckets[F[_]: Sync](
     cr: CollectorRegistry[F],
     name: String, help: String,
     start: Double,
@@ -137,7 +149,7 @@ object Histogram {
    * @param f Function to take some value provided in the future to generate an equally sized list
    *  of strings as the list of labels. These are assigned to labels by position.
    */
-  def labelled[F[_]: Sync: Clock, A, N <: Nat](
+  def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -164,7 +176,7 @@ object Histogram {
    *  of strings as the list of labels. These are assigned to labels by position.
    * @param buckets The buckets to measure observations by. 
    */
-  def labelledBuckets[F[_]: Sync: Clock, A, N <: Nat](
+  def labelledBuckets[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -182,7 +194,7 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
 
-  def labelledLinearBuckets[F[_]: Sync: Clock, A, N <: Nat](
+  def labelledLinearBuckets[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -202,7 +214,7 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
 
-  def labelledExponentialBuckets[F[_]: Sync: Clock, A, N <: Nat](
+  def labelledExponentialBuckets[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -222,24 +234,17 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledHistogram[F, A](out, f.andThen(_.unsized))
 
-  private final class NoLabelsHistogram[F[_]: Sync: Clock] private[Histogram] (
+  private final class NoLabelsHistogram[F[_]: Sync] private[Histogram] (
     private[Histogram] val underlying: JHistogram
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
-    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
-      Sync[F].bracket(Clock[F].monotonic(unit))
-        {_: Long => fa}
-        {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
+  
   }
 
-  private final class LabelledHistogram[F[_]: Sync: Clock] private[Histogram] (
+  private final class LabelledHistogram[F[_]: Sync] private[Histogram] (
     private val underlying: JHistogram.Child
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
-    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
-      Sync[F].bracket(Clock[F].monotonic(unit))
-        {_: Long => fa}
-        {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
   }
 
   /**
@@ -248,7 +253,7 @@ object Histogram {
    * It is necessary to apply a value of type `A` to this
    * histogram to be able to take any measurements.
    */
-  final class UnlabelledHistogram[F[_]: Sync: Clock, A] private[Histogram] (
+  final class UnlabelledHistogram[F[_]: Sync, A] private[Histogram] (
     private[Histogram] val underlying: JHistogram, 
     private val f: A => IndexedSeq[String]
   ) {

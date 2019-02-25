@@ -32,15 +32,6 @@ sealed abstract class Summary[F[_]]{
    * @param d The observation to persist
    */
   def observe(d: Double): F[Unit]
-
-
-  /**
-   * Persist a time value into this [[Summary]]
-   * 
-   * @param fa The action to time
-   * @param unit The unit of time to observe the timing in.
-   */
-  def timed[A](fa: F[A], unit: TimeUnit): F[A]
 }
 
 
@@ -49,6 +40,21 @@ sealed abstract class Summary[F[_]]{
  */
 object Summary {
 
+  // Convenience ----------------------------------------------------
+
+  /**
+   * Persist a timed value into this [[Summary]]
+   * 
+   * @param s The summary to persist into.
+   * @param fa The action to time
+   * @param unit The unit of time to observe the timing in.
+   */
+  def timed[E, F[_]: Bracket[?[_], E]: Timer, A](s: Summary[F], fa: F[A], unit: TimeUnit): F[A] = 
+    Bracket[F, E].bracket(Clock[F].monotonic(unit))
+    {_: Long => fa}
+    {start: Long => Clock[F].monotonic(unit).flatMap(now => s.observe((now - start).toDouble))}
+
+  // Constructors ---------------------------------------------------
   val defaultMaxAgeSeconds = 600L
   val defaultAgeBuckets = 5
 
@@ -73,7 +79,7 @@ object Summary {
    * @param help The help string of the metric
    * @param quantiles The measurements to track for specifically over the sliding time window.
    */
-  def noLabels[F[_]: Sync: Clock](
+  def noLabels[F[_]: Sync](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String,
@@ -100,7 +106,7 @@ object Summary {
    *  and how smooth the time window is moved.
    * @param quantiles The measurements to track for specifically over the sliding time window.
    */
-  def noLabelsQuantiles[F[_]: Sync: Clock](
+  def noLabelsQuantiles[F[_]: Sync](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String, 
@@ -140,7 +146,7 @@ object Summary {
    *  of strings as the list of labels. These are assigned to labels by position.
    * @param quantiles The measurements to track for specifically over the sliding time window.
    */
-  def labelled[F[_]: Sync: Clock, A, N <: Nat](
+  def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String,
@@ -178,7 +184,7 @@ object Summary {
    *  of strings as the list of labels. These are assigned to labels by position.
    * @param quantiles The measurements to track for specifically over the sliding time window.
    */
-  def labelledQuantiles[F[_]: Sync: Clock, A, N <: Nat](
+  def labelledQuantiles[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
     name: String, 
     help: String,
@@ -200,23 +206,15 @@ object Summary {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledSummary[F, A](out, f.andThen(_.unsized))
 
-  final private class NoLabelsSummary[F[_]: Sync: Clock] private[Summary] (
+  final private class NoLabelsSummary[F[_]: Sync] private[Summary] (
     private[Summary] val underlying: JSummary
   ) extends Summary[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
-    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
-      Sync[F].bracket(Clock[F].monotonic(unit))
-        {_ => fa}
-        {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
   }
-  final private class LabelledSummary[F[_]: Sync: Clock] private[Summary] (
+  final private class LabelledSummary[F[_]: Sync] private[Summary] (
     private val underlying: JSummary.Child
   ) extends Summary[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
-    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
-      Sync[F].bracket(Clock[F].monotonic(unit))
-        {_ => fa}
-        {start: Long => Clock[F].monotonic(unit).flatMap(now => observe((now - start).toDouble))}
   }
 
   /**
@@ -224,7 +222,7 @@ object Summary {
    * 
    * Apply a label to be able to measure events.
    */
-  final class UnlabelledSummary[F[_]: Sync: Clock, A] private[epimetheus](
+  final class UnlabelledSummary[F[_]: Sync, A] private[epimetheus](
     private[Summary] val underlying: JSummary, 
     private val f: A => IndexedSeq[String]
   ) {
