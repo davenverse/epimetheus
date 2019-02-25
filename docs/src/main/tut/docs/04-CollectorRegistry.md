@@ -38,7 +38,7 @@ You can build your own registry. We generally recommend this approach as it keep
 full control of the metrics in your own hands, as well as testability and repeatability.
 
 With this approach you will generally create a registry for your application, and pass it down
-to indivual components. Which can initialize and register their individual metrics into this
+to individual components. Which can initialize and register their individual metrics into this
 shared space.
 
 ```tut:book
@@ -73,8 +73,7 @@ or you can do it yourself.
 ### Dealing with the global
 
 Most of the rest of the java community however has used a singleton collector registry. We expose this collector,
-as well as a method which initializes. This leaves access to the Registry outside of your control, and not
-controlled by the call graph of your application
+as well as a method which initializes the default metrics into the default. This leaves access to the Registry outside of your control, and not necessarily within the call graph of your application.
 
 You have access to the global pool automatically.
 
@@ -107,4 +106,4 @@ exportExample.unsafeRunSync
 
 ## Conclusion
 
-Regardless which strategy you choose to use to get access to your `CollectorRegistry`, you will need to have one to work and build your metrics using forward. It is the fundamental shared space on which metrics, and groups of metrics are based upon.
+Regardless which strategy you choose to use to get access to your `CollectorRegistry`, you will need to have one to work and build your metrics moving forward. It is the fundamental shared space on which metrics, and groups of metrics are based upon.

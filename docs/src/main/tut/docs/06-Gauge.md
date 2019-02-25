@@ -8,8 +8,6 @@ title: Gauge
 
 Gauge metric, to report instantaneous values.
 
-Gauges can go both up and down.
-
 A `Gauge` is a metric that represents a single numerical value that can arbitrarily go up and down.
 
 Gauges are typically used for measured values like temperatures or current memory usage, but also "counts" that can go up and down, like the number of concurrent requests.

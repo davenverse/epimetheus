@@ -10,9 +10,9 @@ Summary metric, to track the size of events.
 
 The quantiles are calculated over a sliding window of time. There are two options to configure this time window:
 
-- maxAgeSeconds: Long -  Set the duration of the time window is, i.e. how long observations are kept before they are discarded. Default is 10 minutes.
+- maxAgeSeconds: Long -  The duration of the time window, i.e. how long observations are kept before they are discarded. Default is 10 minutes.
 
-- ageBuckets: Int - Set the number of buckets used to implement the sliding time window. If your time window is 10 minutes, and you have ageBuckets=5, buckets will be switched every 2 minutes. The value is a trade-off between resources (memory and cpu for maintaining the bucket) and how smooth the time window is moved. Default value is 5.
+- ageBuckets: Int - The number of buckets used to implement the sliding time window. If your time window is 10 minutes, and you have ageBuckets=5, buckets will be switched every 2 minutes. The value is a trade-off between resources (memory and cpu for maintaining the bucket) and how smooth the time window is moved. Default value is 5.
 
 Similar to a histogram, a `Summary` samples observations (usually things like request durations and response sizes). While it also provides a total count of observations and a sum of all observed values, it calculates configurable quantiles over a sliding time window.
 

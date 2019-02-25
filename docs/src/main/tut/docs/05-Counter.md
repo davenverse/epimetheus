@@ -8,7 +8,7 @@ title: Counter
 
 Counter metric, to track counts, running totals, or events.
 
-If your use case can go up or down consider using a [[Gauge]] instead.
+If your use case can go up or down consider using a `Gauge` instead.
 Use the `rate()` function in Prometheus to calculate the rate of increase of a Counter.
 By convention, the names of Counters are suffixed by `_total`.
 
