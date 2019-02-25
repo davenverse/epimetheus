@@ -28,6 +28,7 @@ Imports
 
 ```tut:silent
 import io.chrisdavenport.epimetheus._
+import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
 import shapeless._
 
