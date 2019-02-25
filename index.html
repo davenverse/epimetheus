@@ -32,12 +32,12 @@
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsCounterExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
     <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">counter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"counter_total"</span><span class="o">,</span> <span class="s">"Example Counter"</span><span class="o">)</span>
+    <span class="n">counter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"counter_total"</span><span class="o">),</span> <span class="s">"Example Counter"</span><span class="o">)</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">counter</span><span class="o">.</span><span class="n">inc</span>
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsCounterExample: cats.effect.IO[String] = IO$1315141503
+<span class="c1">// noLabelsCounterExample: cats.effect.IO[String] = IO$996537798
 </span>
 <span class="n">noLabelsCounterExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
 <span class="c1">// res0: String =
@@ -53,14 +53,14 @@
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsGaugeExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
     <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">gauge</span> <span class="k">&lt;-</span> <span class="nc">Gauge</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"gauge_total"</span><span class="o">,</span> <span class="s">"Example Gauge"</span><span class="o">)</span>
+    <span class="n">gauge</span> <span class="k">&lt;-</span> <span class="nc">Gauge</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"gauge_total"</span><span class="o">),</span> <span class="s">"Example Gauge"</span><span class="o">)</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">inc</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">inc</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">gauge</span><span class="o">.</span><span class="n">dec</span>
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsGaugeExample: cats.effect.IO[String] = IO$252594870
+<span class="c1">// noLabelsGaugeExample: cats.effect.IO[String] = IO$1977194971
 </span>
 <span class="n">noLabelsGaugeExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
 <span class="c1">// res1: String =
@@ -76,13 +76,13 @@
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsHistogramExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
     <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">h</span> <span class="k">&lt;-</span> <span class="nc">Histogram</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"example_histogram"</span><span class="o">,</span> <span class="s">"Example Histogram"</span><span class="o">)</span>
+    <span class="n">h</span> <span class="k">&lt;-</span> <span class="nc">Histogram</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"example_histogram"</span><span class="o">),</span> <span class="s">"Example Histogram"</span><span class="o">)</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">h</span><span class="o">.</span><span class="n">observe</span><span class="o">(</span><span class="mf">0.2</span><span class="o">)</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">h</span><span class="o">.</span><span class="n">timed</span><span class="o">(</span><span class="n">T</span><span class="o">.</span><span class="n">sleep</span><span class="o">(</span><span class="mf">1.</span><span class="n">second</span><span class="o">),</span> <span class="nc">SECONDS</span><span class="o">)</span>
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsHistogramExample: cats.effect.IO[String] = IO$1888754985
+<span class="c1">// noLabelsHistogramExample: cats.effect.IO[String] = IO$451440575
 </span>
 <span class="n">noLabelsHistogramExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
 <span class="c1">// res2: String =
@@ -114,14 +114,14 @@
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsSummaryExample</span> <span class="k">=</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">{</span>
     <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">s</span> <span class="k">&lt;-</span> <span class="nc">Summary</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="s">"example_summary"</span><span class="o">,</span> <span class="s">"Example Summary"</span><span class="o">,</span> <span class="nc">Summary</span><span class="o">.</span><span class="n">quantile</span><span class="o">(</span><span class="mf">0.5</span><span class="o">,</span><span class="mf">0.05</span><span class="o">))</span>
+    <span class="n">s</span> <span class="k">&lt;-</span> <span class="nc">Summary</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"example_summary"</span><span class="o">),</span> <span class="s">"Example Summary"</span><span class="o">,</span> <span class="nc">Summary</span><span class="o">.</span><span class="n">quantile</span><span class="o">(</span><span class="mf">0.5</span><span class="o">,</span><span class="mf">0.05</span><span class="o">))</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">s</span><span class="o">.</span><span class="n">observe</span><span class="o">(</span><span class="mf">0.1</span><span class="o">)</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">s</span><span class="o">.</span><span class="n">observe</span><span class="o">(</span><span class="mf">0.2</span><span class="o">)</span>
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">s</span><span class="o">.</span><span class="n">observe</span><span class="o">(</span><span class="mf">1.0</span><span class="o">)</span>
     <span class="n">currentMetrics</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">currentMetrics</span>
 <span class="o">}</span>
-<span class="c1">// noLabelsSummaryExample: cats.effect.IO[String] = IO$880449959
+<span class="c1">// noLabelsSummaryExample: cats.effect.IO[String] = IO$746461130
 </span>
 <span class="n">noLabelsSummaryExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
 <span class="c1">// res3: String =
