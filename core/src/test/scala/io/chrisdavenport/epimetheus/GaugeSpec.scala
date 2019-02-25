@@ -10,7 +10,7 @@ class GuageSpec extends Specification {
     "Register cleanly in the collector" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.noLabels[IO](cr, "boo", "Boo Gauge")
+        gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
       } yield gauge
 
       test.attempt.unsafeRunSync must beRight
@@ -19,7 +19,7 @@ class GuageSpec extends Specification {
     "Increase correctly" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.noLabels[IO](cr, "boo", "Boo Gauge")
+        gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         _ <- gauge.inc
         out <- gauge.get
       } yield out
@@ -30,7 +30,7 @@ class GuageSpec extends Specification {
     "Decrease correctly" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.noLabels[IO](cr, "boo", "Boo Gauge")
+        gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         _ <- gauge.inc
         _ <- gauge.dec
         out <- gauge.get
@@ -43,7 +43,7 @@ class GuageSpec extends Specification {
       val set = 52D
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.noLabels[IO](cr, "boo", "Boo Gauge")
+        gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         _ <- gauge.set(set)
         out <- gauge.get
       } yield out
@@ -56,7 +56,7 @@ class GuageSpec extends Specification {
     "Register cleanly in the collector" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.labelled(cr, "boo", "Boo Gauge", Sized("boo"), {s: String => Sized(s)})
+        gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Name("boo")), {s: String => Sized(s)})
       } yield gauge
 
       test.attempt.unsafeRunSync must beRight
@@ -65,7 +65,7 @@ class GuageSpec extends Specification {
     "Increase correctly" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.labelled(cr, "boo", "Boo Gauge", Sized("boo"), {s: String => Sized(s)})
+        gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Name("boo")), {s: String => Sized(s)})
         _ <- gauge.label("boo").inc
         out <- gauge.label("boo").get
       } yield out
@@ -76,7 +76,7 @@ class GuageSpec extends Specification {
     "Decrease correctly" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.labelled(cr, "boo", "Boo Gauge", Sized("boo"), {s: String => Sized(s)})
+        gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Name("boo")), {s: String => Sized(s)})
         _ <- gauge.label("boo").inc
         _ <- gauge.label("boo").dec
         out <- gauge.label("boo").get
@@ -89,7 +89,7 @@ class GuageSpec extends Specification {
       val set = 52D
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        gauge <- Gauge.labelled(cr, "boo", "Boo Gauge", Sized("boo"), {s: String => Sized(s)})
+        gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Name("boo")), {s: String => Sized(s)})
         _ <- gauge.label("boo").set(set)
         out <- gauge.label("boo").get
       } yield out

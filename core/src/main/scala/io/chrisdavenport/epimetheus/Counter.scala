@@ -69,8 +69,8 @@ object Counter {
    * @param name The name of the Counter -  By convention, the names of Counters are suffixed by `_total`.
    * @param help The help string of the metric
    */
-  def noLabels[F[_]: Sync](cr: CollectorRegistry[F], name: String, help: String): F[Counter[F]] = for {
-    c <- Sync[F].delay(JCounter.build().name(name).help(help))
+  def noLabels[F[_]: Sync](cr: CollectorRegistry[F], name: Name, help: String): F[Counter[F]] = for {
+    c <- Sync[F].delay(JCounter.build().name(name.getName).help(help))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsCounter[F](out)
 
@@ -92,12 +92,12 @@ object Counter {
    */
   def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledCounter[F, A]] = for {
-      c <- Sync[F].delay(JCounter.build().name(name).help(help).labelNames(labels:_*))
+      c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.map(_.getName):_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledCounter[F, A](out, f.andThen(_.unsized))
 
