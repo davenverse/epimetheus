@@ -81,7 +81,7 @@ object Summary {
    */
   def noLabels[F[_]: Sync](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String,
     quantiles: Quantile*
   ): F[Summary[F]] = 
@@ -108,7 +108,7 @@ object Summary {
    */
   def noLabelsQuantiles[F[_]: Sync](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
     maxAgeSeconds: Long, 
     ageBuckets: Int, 
@@ -116,7 +116,7 @@ object Summary {
   ): F[Summary[F]] = for {
     c1 <- Sync[F].delay(
       JSummary.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
       .maxAgeSeconds(maxAgeSeconds)
       .ageBuckets(ageBuckets)
@@ -148,9 +148,9 @@ object Summary {
    */
   def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String,
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N],
     quantiles: Quantile*
   ): F[UnlabelledSummary[F, A]] = 
@@ -186,21 +186,21 @@ object Summary {
    */
   def labelledQuantiles[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String,
     maxAgeSeconds: Long, 
     ageBuckets: Int,
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N],
     quantiles: Quantile*
   ): F[UnlabelledSummary[F, A]] = for {
     c1 <- Sync[F].delay(
       JSummary.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
       .maxAgeSeconds(maxAgeSeconds)
       .ageBuckets(ageBuckets)
-      .labelNames(labels:_*)
+      .labelNames(labels.map(_.getName):_*)
     )
     c <- Sync[F].delay(quantiles.foldLeft(c1){ case (c, q) => c.quantile(q.quantile, q.error)})
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
@@ -262,7 +262,7 @@ object Summary {
               s"This method uses a macro to verify that a Quantile literal is valid. Use Quantile.impl if you have a dynamic set that you want to parse as a Quantile."
             )
         }
-  }
+    }
 
     /**
      * Safe Constructor of a Quantile valid values for both values are greater than 0

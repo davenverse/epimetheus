@@ -83,8 +83,8 @@ object Gauge {
    * @param name The name of the Gauge
    * @param help The help string of the metric
    */
-  def noLabels[F[_]: Sync](cr: CollectorRegistry[F], name: String, help: String): F[Gauge[F]] = for {
-    c <- Sync[F].delay(JGauge.build().name(name).help(help))
+  def noLabels[F[_]: Sync](cr: CollectorRegistry[F], name: Name, help: String): F[Gauge[F]] = for {
+    c <- Sync[F].delay(JGauge.build().name(name.getName).help(help))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsGauge[F](out)
 
@@ -106,12 +106,12 @@ object Gauge {
    */
   def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledGauge[F, A]] = for {
-      c <- Sync[F].delay(JGauge.build().name(name).help(help).labelNames(labels:_*))
+      c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.map(_.getName):_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledGauge[F, A](out, f.andThen(_.unsized))
 

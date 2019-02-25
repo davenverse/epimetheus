@@ -70,7 +70,7 @@ object Histogram {
    */
   def noLabels[F[_]: Sync](
     cr: CollectorRegistry[F],
-    name: String,
+    name: Name,
     help: String
   ): F[Histogram[F]] = 
     noLabelsBuckets(cr, name, help, defaults:_*)
@@ -86,13 +86,13 @@ object Histogram {
    */
   def noLabelsBuckets[F[_]: Sync](
     cr: CollectorRegistry[F],
-    name: String,
+    name: Name,
     help: String,
     buckets: Double*
   ): F[Histogram[F]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
       .buckets(buckets:_*)
     )
@@ -101,7 +101,7 @@ object Histogram {
 
   def noLabelsLinearBuckets[F[_]: Sync](
     cr: CollectorRegistry[F],
-    name: String,
+    name: Name,
     help: String,
     start: Double,
     factor: Double,
@@ -109,7 +109,7 @@ object Histogram {
   ): F[Histogram[F]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
       .linearBuckets(start, factor, count)
     )
@@ -118,14 +118,14 @@ object Histogram {
 
   def noLabelsExponentialBuckets[F[_]: Sync](
     cr: CollectorRegistry[F],
-    name: String, help: String,
+    name: Name, help: String,
     start: Double,
     factor: Double,
     count: Int
   ): F[Histogram[F]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
       .exponentialBuckets(start, factor, count)
     )
@@ -151,9 +151,9 @@ object Histogram {
    */
   def labelled[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledHistogram[F, A]] = 
     labelledBuckets(cr, name, help, labels, f, defaults:_*)
@@ -178,17 +178,17 @@ object Histogram {
    */
   def labelledBuckets[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N],
     buckets: Double*
   ): F[UnlabelledHistogram[F, A]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
-      .labelNames(labels:_*)
+      .labelNames(labels.map(_.getName):_*)
       .buckets(buckets:_*)
     )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
@@ -196,9 +196,9 @@ object Histogram {
 
   def labelledLinearBuckets[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N],
     start: Double,
     factor: Double,
@@ -206,9 +206,9 @@ object Histogram {
   ): F[UnlabelledHistogram[F, A]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
-      .labelNames(labels:_*)
+      .labelNames(labels.map(_.getName):_*)
       .linearBuckets(start, factor, count)
     )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
@@ -216,9 +216,9 @@ object Histogram {
 
   def labelledExponentialBuckets[F[_]: Sync, A, N <: Nat](
     cr: CollectorRegistry[F], 
-    name: String, 
+    name: Name, 
     help: String, 
-    labels: Sized[IndexedSeq[String], N], 
+    labels: Sized[IndexedSeq[Name], N], 
     f: A => Sized[IndexedSeq[String], N],
     start: Double,
     factor: Double,
@@ -226,9 +226,9 @@ object Histogram {
   ): F[UnlabelledHistogram[F, A]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
-      .name(name)
+      .name(name.getName)
       .help(help)
-      .labelNames(labels:_*)
+      .labelNames(labels.map(_.getName):_*)
       .exponentialBuckets(start, factor, count)
     )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))

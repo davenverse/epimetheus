@@ -30,8 +30,16 @@ An Example Counter without Labels:
 val noLabelsExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    successCounter <- Counter.noLabels(cr, "example_success_total", "Example Counter of Success")
-    failureCounter <- Counter.noLabels(cr, "example_failure_total", "Example Counter of Failure")
+    successCounter <- Counter.noLabels(
+      cr,
+      Name("example_success_total"),
+      "Example Counter of Success"
+    )
+    failureCounter <- Counter.noLabels(
+      cr,
+      Name("example_failure_total"),
+      "Example Counter of Failure"
+    )
     _ <- IO(println("Action Here")).guaranteeCase{
       case ExitCase.Completed => successCounter.inc
       case _ => failureCounter.inc
@@ -49,7 +57,13 @@ An Example of a Counter with Labels:
 val labelledExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    counter <- Counter.labelled(cr, "example_total", "Example Counter", Sized("foo"), {s: String => Sized(s)})
+    counter <- Counter.labelled(
+      cr,
+      Name("example_total"),
+      "Example Counter",
+      Sized(Name("foo")),
+      {s: String => Sized(s)}
+    )
     _ <- counter.label("bar").inc
     _ <- counter.label("baz").inc
     out <- cr.write004
@@ -84,7 +98,13 @@ trait FooAlg[F[_]]{
 val fooAgebraExample = {
   for {
     cr <- CollectorRegistry.build[IO]
-    counter <- Counter.labelled(cr, "example_total", "Example Counter", Sized("foo"), fooLabel)
+    counter <- Counter.labelled(
+      cr,
+      Name("example_total"),
+      "Example Counter",
+      Sized(Name("foo")),
+      fooLabel
+    )
     foo = FooAlg.impl(counter)
     _ <- foo.bar
     _ <- foo.bar
@@ -100,6 +120,6 @@ We force labels to always match the same size. This will fail to compile.
 
 ```tut:nofail
 def incorrectlySized[F[_]: Sync](cr: CollectorRegistry[F]) = {
-  Counter.labelled(cr, "fail", "Example Failure", Sized("color", "method"), {s: String => Sized(s)})
+  Counter.labelled(cr, Name("fail"), "Example Failure", Sized(Name("color"), Name("method")), {s: String => Sized(s)})
 }
 ```

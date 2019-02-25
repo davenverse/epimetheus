@@ -31,4 +31,4 @@ is suggested in case users wish to register more than one.
 3. We utilize `Sized` from Shapeless to guarantee at compile time that the labels applied to the Metric
 are the same size as the labels in the Metric.
 
-4. We provide safe constructors for arguments, such as `Quantile`.
+4. We provide safe constructors for arguments, such as `Name` and `Quantile`.
