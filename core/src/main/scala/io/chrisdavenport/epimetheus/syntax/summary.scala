@@ -2,15 +2,18 @@ package io.chrisdavenport.epimetheus
 package syntax
 
 import cats.effect._
-import scala.concurrent.duration.TimeUnit
+import scala.concurrent.duration._
 
 trait summary {
 
-  implicit class SummaryTimedOp[E, F[_]: Bracket[?[_],E]: Timer](
+  implicit class SummaryTimedOp[E, F[_]: Bracket[?[_],E]: Clock](
     private val s: Summary[F]
   ){
-    def timed[A](f: F[A], unit: TimeUnit): F[A] = 
-      Summary.timed(s, f, unit)
+    def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
+      Summary.timed(s, fa, unit)
+
+    def timedSeconds[A](fa: F[A]): F[A] = 
+      Summary.timedSeconds(s, fa)
   }
 
 }
