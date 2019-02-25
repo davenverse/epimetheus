@@ -1,4 +1,5 @@
 ---
+layout: "page"
 title:  "ecosystem"
 section: "ecosystem"
 position: 2
