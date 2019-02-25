@@ -11,7 +11,7 @@ Histogram metric, to track distributions of events.
 Note: Each bucket is one timeseries. Many buckets and/or many dimensions with labels
 can produce large amount of time series, that may cause performance problems.
 
-The default buckets are intended to cover a typical web/rpc request from milliseconds to seconds.
+The default buckets are intended to cover a typical web/rpc request from milliseconds to seconds. Defaults are .005, .01, .025, .05, .075, .1, .25, .5, .75, 1, 2.5, 5, 7.5, 10
 
 A `Histogram` samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values.
 
