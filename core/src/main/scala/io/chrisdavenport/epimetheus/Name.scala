@@ -6,7 +6,7 @@ import cats.implicits._
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox
 
-final class Name private(val getName: String){
+final class Name private(val getName: String) extends AnyVal {
   def ++(that: Name): Name = new Name(getName |+| that.getName)
   def suffix(s: Name.Suffix): Name = new Name(getName |+| s.getSuffix)
 }
@@ -55,7 +55,7 @@ object Name {
 
   def apply(s: String): Name = macro Macros.nameLiteral
 
-  final class Suffix private(val getSuffix: String){
+  final class Suffix private(val getSuffix: String) extends AnyVal {
     def ++(that: Suffix): Suffix = new Suffix(getSuffix |+| that.getSuffix)
   }
   object Suffix {
