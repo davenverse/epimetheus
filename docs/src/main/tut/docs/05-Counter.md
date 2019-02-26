@@ -40,10 +40,8 @@ val noLabelsExample = {
       Name("example_failure_total"),
       "Example Counter of Failure"
     )
-    _ <- IO(println("Action Here")).guaranteeCase{
-      case ExitCase.Completed => successCounter.inc
-      case _ => failureCounter.inc
-    }
+    e <- IO(println("Action Here")).attempt
+    _ <- e.fold(_ => failureCounter.inc, _ => successCounter.inc)
     out <- cr.write004
   } yield out
 }

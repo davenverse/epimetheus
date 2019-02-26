@@ -29,15 +29,8 @@ Imports
 
 ```tut:silent
 import io.chrisdavenport.epimetheus._
-import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
 import shapeless._
-
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.duration._
-
-implicit val CS: ContextShift[IO] = IO.contextShift(global)
-implicit val T: Timer[IO] = IO.timer(global)
 ```
 
 And Example of a Histogram with no labels:
@@ -48,7 +41,7 @@ val noLabelsHistogramExample = {
     cr <- CollectorRegistry.build[IO]
     h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
-    _ <- h.timed(T.sleep(1.second), SECONDS)
+    // Not for 0.1 _ <- h.timed(T.sleep(1.second), SECONDS)
     currentMetrics <- cr.write004
     _ <- IO(println(currentMetrics))
   } yield ()
@@ -71,7 +64,7 @@ val labelledHistogramExample = {
       {s: String => Sized(s)}
     )
     _ <- h.label("bar").observe(0.2)
-    _ <- h.label("baz").timed(T.sleep(1.second), SECONDS)
+    // Not for 0.1 _ <- h.label("baz").timed(T.sleep(1.second), SECONDS)
     currentMetrics <- cr.write004
     _ <- IO(println(currentMetrics))
   } yield ()

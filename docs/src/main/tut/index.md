@@ -22,14 +22,7 @@ First Imports.
 
 ```tut:silent
 import io.chrisdavenport.epimetheus._
-import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
-
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.duration._
-
-implicit val CS = IO.contextShift(global)
-implicit val T = IO.timer(global)
 ```
 
 ### Counter Example
@@ -72,7 +65,7 @@ val noLabelsHistogramExample = {
     cr <- CollectorRegistry.build[IO]
     h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
-    _ <- h.timed(T.sleep(1.second), SECONDS)
+    // Not for 0.1 _ <- h.timed(T.sleep(1.second), SECONDS)
     currentMetrics <- cr.write004
   } yield currentMetrics
 }

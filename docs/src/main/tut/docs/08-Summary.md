@@ -28,15 +28,8 @@ Imports
 
 ```tut:silent
 import io.chrisdavenport.epimetheus._
-import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
 import shapeless._
-
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.duration._
-
-implicit val CS: ContextShift[IO] = IO.contextShift(global)
-implicit val T: Timer[IO] = IO.timer(global)
 ```
 
 And Example of a Summary with no labels:
