@@ -22,22 +22,8 @@ lazy val contributors = Seq(
 
 val prometheusV = "0.6.0"
 val catsV = "1.6.0"
-val kittensV = "1.2.0"
 val catsEffectV = "1.2.0"
-val mouseV = "0.20"
 val shapelessV = "2.3.3"
-val fs2V = "1.0.3"
-val http4sV = "0.20.0-M5"
-val circeV = "0.11.1"
-val doobieV = "0.6.0"
-val pureConfigV = "0.10.2"
-val refinedV = "0.9.3"
-
-val log4catsV = "0.3.0-M2"
-val catsParV = "0.2.1"
-val catsTimeV = "0.2.0"
-val fuuidV = "0.2.0-M4"
-val lineBackerV = "0.2.0"
 
 val specs2V = "4.4.1"
 
@@ -74,9 +60,6 @@ lazy val commonSettings = Seq(
     "org.typelevel"               %% "cats-effect"                % catsEffectV,
     "org.typelevel"               %% "cats-effect-laws"           % catsEffectV   % Test,
     "com.chuusai"                 %% "shapeless"                  % shapelessV,
-
-    // "co.fs2"                      %% "fs2-core"                   % fs2V,
-    // "co.fs2"                      %% "fs2-io"                     % fs2V,
 
     "org.specs2"                  %% "specs2-core"                % specs2V       % Test,
     "org.specs2"                  %% "specs2-scalacheck"          % specs2V       % Test
