@@ -60,7 +60,7 @@ val labelledHistogramExample = {
       cr,
       Name("example_histogram"),
       "Example Histogram",
-      Sized(Name("foo")),
+      Sized(Label("foo")),
       {s: String => Sized(s)}
     )
     _ <- h.label("bar").observe(0.2)

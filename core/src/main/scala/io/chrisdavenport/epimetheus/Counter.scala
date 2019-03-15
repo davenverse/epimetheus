@@ -42,7 +42,7 @@ sealed abstract class Counter[F[_]]{
    * Access to the current value of this [[Counter]].
    */
   def get: F[Double]
-  
+
   /**
    * Increment the value of this [[Counter]] by 1.
    */
@@ -50,9 +50,9 @@ sealed abstract class Counter[F[_]]{
 
   /**
    * Increment the value of this counter by the provided value.
-   * 
+   *
    * @param d The value to increase the [[Counter]] by.
-   * 
+   *
    */
   def incBy(d: Double): F[Unit]
 }
@@ -64,7 +64,7 @@ object Counter {
 
   /**
    * Constructor for a Counter with no labels.
-   * 
+   *
    * @param cr CollectorRegistry this [[Counter]] will be registered with
    * @param name The name of the Counter -  By convention, the names of Counters are suffixed by `_total`.
    * @param help The help string of the metric
@@ -76,13 +76,13 @@ object Counter {
 
   /**
    * Constructor for a labelled [[Counter]].
-   * 
+   *
    * This generates a specific number of labels via `Sized`, in combination with a function
    * to generate an equally `Sized` set of labels from some type. Values are applied by position.
-   * 
-   * This counter needs to have a label applied to the [[UnlabelledCounter]] in order to 
+   *
+   * This counter needs to have a label applied to the [[UnlabelledCounter]] in order to
    * be measureable or recorded.
-   * 
+   *
    * @param cr CollectorRegistry this [[Counter]] will be registred with
    * @param name The name of the Counter -  By convention, the names of Counters are suffixed by `_total`.
    * @param help The help string of the metric
@@ -91,38 +91,38 @@ object Counter {
    *  of strings as the list of labels. These are assigned to labels by position.
    */
   def labelled[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F], 
-    name: Name, 
-    help: String, 
-    labels: Sized[IndexedSeq[Name], N], 
+    cr: CollectorRegistry[F],
+    name: Name,
+    help: String,
+    labels: Sized[IndexedSeq[Label], N],
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledCounter[F, A]] = for {
-      c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.map(_.getName):_*))
+      c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.map(_.getLabel):_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledCounter[F, A](out, f.andThen(_.unsized))
 
   private final class NoLabelsCounter[F[_]: Sync] private[Counter] (private[Counter] val underlying: JCounter) extends Counter[F] {
     override def get: F[Double] = Sync[F].delay(underlying.get)
-  
+
     override def inc: F[Unit] = Sync[F].delay(underlying.inc)
     override def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
   }
 
   private final class LabelledCounter[F[_]: Sync] private[Counter] (private[Counter] val underlying: JCounter.Child) extends Counter[F] {
     override def get: F[Double] = Sync[F].delay(underlying.get)
-  
+
     def inc: F[Unit] = Sync[F].delay(underlying.inc)
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
   }
 
   /**
-   * Generic Unlabeled Counter 
-   * 
+   * Generic Unlabeled Counter
+   *
    * It is necessary to apply a value of type `A` to this
    * counter to be able to take any measurements.
    */
   final class UnlabelledCounter[F[_]: Sync, A] private[Counter](
-    private[Counter] val underlying: JCounter, 
+    private[Counter] val underlying: JCounter,
     private val f: A => IndexedSeq[String]
   ) {
     def label(a: A): Counter[F] =

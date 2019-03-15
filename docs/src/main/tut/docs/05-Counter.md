@@ -59,7 +59,7 @@ val labelledExample = {
       cr,
       Name("example_total"),
       "Example Counter",
-      Sized(Name("foo")),
+      Sized(Label("foo")),
       {s: String => Sized(s)}
     )
     _ <- counter.label("bar").inc
@@ -100,7 +100,7 @@ val fooAgebraExample = {
       cr,
       Name("example_total"),
       "Example Counter",
-      Sized(Name("foo")),
+      Sized(Label("foo")),
       fooLabel
     )
     foo = FooAlg.impl(counter)
@@ -118,6 +118,6 @@ We force labels to always match the same size. This will fail to compile.
 
 ```tut:nofail
 def incorrectlySized[F[_]: Sync](cr: CollectorRegistry[F]) = {
-  Counter.labelled(cr, Name("fail"), "Example Failure", Sized(Name("color"), Name("method")), {s: String => Sized(s)})
+  Counter.labelled(cr, Name("fail"), "Example Failure", Sized(Label("color"), Name("method")), {s: String => Sized(s)})
 }
 ```
