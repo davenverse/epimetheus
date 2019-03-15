@@ -8,9 +8,9 @@ import shapeless._
 
 /**
  * Gauge metric, to report instantaneous values.
- * 
+ *
  * Gauges can go both up and down.
- * 
+ *
  * An Example With No Labels:
  * {{{
  *  for {
@@ -20,7 +20,7 @@ import shapeless._
  *    _ <- gauge.dec
  *  } yield ()
  * }}}
- * 
+ *
  * An Example With Labels:
  * {{{
  *  for {
@@ -31,7 +31,7 @@ import shapeless._
  *    _ <- gauge.label("baz").inc
  *    _ <- gauge.label("baz").dec
  * }}}
- * 
+ *
  * These can be aggregated and processed together much more easily in the Prometheus
  * server than individual metrics for each labelset.
  */
@@ -49,12 +49,12 @@ sealed abstract class Gauge[F[_]]{
 
   /**
    * Decrement the value of this gauge by the provided value.
-   * 
+   *
    * @param d The value to decrease the [[Gauge]] by.
-   * 
+   *
    */
   def decBy(d: Double): F[Unit]
-  
+
   /**
    * Increment the value of this [[Gauge]] by 1.
    */
@@ -62,9 +62,9 @@ sealed abstract class Gauge[F[_]]{
 
   /**
    * Increment the value of this gauge by the provided value.
-   * 
+   *
    * @param d The value to increase the [[Gauge]] by.
-   * 
+   *
    */
   def incBy(d: Double): F[Unit]
 
@@ -78,7 +78,7 @@ object Gauge {
 
   /**
    * Constructor for a [[Gauge]] with no labels.
-   * 
+   *
    * @param cr CollectorRegistry this [[Gauge]] will be registered with
    * @param name The name of the Gauge
    * @param help The help string of the metric
@@ -90,13 +90,13 @@ object Gauge {
 
   /**
    * Constructor for a labelled [[Gauge]].
-   * 
+   *
    * This generates a specific number of labels via `Sized`, in combination with a function
    * to generate an equally `Sized` set of labels from some type. Values are applied by position.
-   * 
-   * This counter needs to have a label applied to the [[UnlabelledGauge]] in order to 
+   *
+   * This counter needs to have a label applied to the [[UnlabelledGauge]] in order to
    * be measureable or recorded.
-   * 
+   *
    * @param cr CollectorRegistry this [[Gauge]] will be registred with
    * @param name The name of the [[Gauge]].
    * @param help The help string of the metric
@@ -105,13 +105,13 @@ object Gauge {
    *  of strings as the list of labels. These are assigned to labels by position.
    */
   def labelled[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F], 
-    name: Name, 
-    help: String, 
-    labels: Sized[IndexedSeq[Name], N], 
+    cr: CollectorRegistry[F],
+    name: Name,
+    help: String,
+    labels: Sized[IndexedSeq[Label], N],
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledGauge[F, A]] = for {
-      c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.map(_.getName):_*))
+      c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.map(_.getLabel):_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledGauge[F, A](out, f.andThen(_.unsized))
 
@@ -120,27 +120,27 @@ object Gauge {
     private[Gauge] val underlying: JGauge
   ) extends Gauge[F] {
     def get: F[Double] = Sync[F].delay(underlying.get())
-  
+
     def dec: F[Unit] = Sync[F].delay(underlying.dec())
     def decBy(d: Double): F[Unit] = Sync[F].delay(underlying.dec(d))
-    
+
     def inc: F[Unit] = Sync[F].delay(underlying.inc())
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
-  
+
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
   }
-  
+
   private final class LabelledGauge[F[_]: Sync] private[Gauge] (
     private val underlying: JGauge.Child
   ) extends Gauge[F] {
     def get: F[Double] = Sync[F].delay(underlying.get())
-  
+
     def dec: F[Unit] = Sync[F].delay(underlying.dec())
     def decBy(d: Double): F[Unit] = Sync[F].delay(underlying.dec(d))
-    
+
     def inc: F[Unit] = Sync[F].delay(underlying.inc())
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
-  
+
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
   }
 
@@ -148,12 +148,12 @@ object Gauge {
 
   /**
    * Generic Unlabeled Gauge
-   * 
+   *
    * It is necessary to apply a value of type `A` to this
    * gauge to be able to take any measurements.
    */
   final class UnlabelledGauge[F[_]: Sync, A] private[epimetheus](
-    private[Gauge] val underlying: JGauge, 
+    private[Gauge] val underlying: JGauge,
     private val f: A => IndexedSeq[String]
   ) {
     def label(a: A): Gauge[F] =

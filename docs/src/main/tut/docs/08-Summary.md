@@ -72,7 +72,7 @@ val noLabelsSummaryExample = {
       cr,
       Name("example_summary"),
       "Example Summary",
-      Sized(Name("foo")),
+      Sized(Label("foo")),
       {s: String => Sized(s)},
       Summary.quantile(0.5,0.05)
     )
