@@ -50,7 +50,7 @@ val labelledGaugeExample = {
       cr,
       Name("gauge_total"),
       "Example Gauge",
-      Sized(Name("foo")),
+      Sized(Label("foo")),
       {s: String => Sized(s)}
     )
     _ <- gauge.label("bar").inc
