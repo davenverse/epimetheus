@@ -20,7 +20,7 @@ class SummarySpec extends Specification {
     "Register cleanly in the collector" in {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        s <- Summary.labelled(cr, Name("boo"), "Boo ", Sized(Name("boo")), {s: String => Sized(s)}, Summary.quantile(0.5, 0.05))
+        s <- Summary.labelled(cr, Name("boo"), "Boo ", Sized(Label("boo")), {s: String => Sized(s)}, Summary.quantile(0.5, 0.05))
       } yield s
 
       test.attempt.unsafeRunSync must beRight
