@@ -3,7 +3,9 @@ package io.chrisdavenport.epimetheus.syntax
 import io.chrisdavenport.epimetheus.Gauge
 import cats.effect._
 
-trait gauge {
+trait gauge extends GaugeSyntaxBincompat1
+
+private[syntax] trait GaugeSyntaxBincompat1 {
   implicit class BracketGaugeOps[E, F[_]: Bracket[?[_], E], A](private val gauge: Gauge[F]){
     def incIn(fa: F[A]): F[A] = Gauge.incIn(gauge, fa)
     def incByIn(fa: F[A], i: Double): F[A] = Gauge.incByIn(gauge, fa, i)
