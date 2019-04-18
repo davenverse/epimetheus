@@ -7,3 +7,4 @@ trait all
   with summary
 
 object all extends all
+  with GaugeSyntaxBincompat1

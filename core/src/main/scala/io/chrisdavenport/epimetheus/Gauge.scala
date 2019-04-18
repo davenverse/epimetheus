@@ -76,6 +76,21 @@ sealed abstract class Gauge[F[_]]{
  */
 object Gauge {
 
+  // Convenience
+  def incIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A]): F[A] = 
+    Bracket[F, E].bracket(g.inc)(_ => fa)(_ => g.dec)
+
+  def incByIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A], i: Double): F[A] = 
+    Bracket[F, E].bracket(g.incBy(i))(_ => fa)(_ => g.decBy(i))
+
+  def decIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A]): F[A] =
+    Bracket[F, E].bracket(g.dec)(_ => fa)(_ => g.inc)
+
+  def decByIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A], i: Double): F[A] = 
+    Bracket[F, E].bracket(g.decBy(i))(_ => fa)(_ => g.incBy(i))
+
+  // Constructors
+
   /**
    * Constructor for a [[Gauge]] with no labels.
    *
