@@ -1,5 +1,5 @@
 name: epimetheus
-catsEffectVersion: 1.2.0
+catsEffectVersion: 1.3.0
 shapelessVersion: 2.3.3
 baseurl: /epimetheus
 description: An Afterthought of Prometheus
