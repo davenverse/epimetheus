@@ -12,6 +12,7 @@ lazy val core = project.in(file("core"))
   )
 
 lazy val docs = project.in(file("docs"))
+  .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .dependsOn(core)
   .enablePlugins(MicrositesPlugin)
