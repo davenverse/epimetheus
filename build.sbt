@@ -24,7 +24,7 @@ lazy val contributors = Seq(
 
 val prometheusV = "0.6.0"
 val catsV = "1.6.1"
-val catsEffectV = "1.3.1"
+val catsEffectV = "1.4.0"
 val shapelessV = "2.3.3"
 
 val specs2V = "4.7.0"
