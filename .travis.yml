@@ -2,11 +2,11 @@ sudo: false
 language: scala
 
 scala:
+  - 2.13.0
   - 2.12.8
-  - 2.11.12
 
 jdk:
-  - openjdk8
+  - openjdk11
 
 before_install:
   - export PATH=${PATH}:./vendor/bundle
