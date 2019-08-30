@@ -37,7 +37,7 @@ lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
   scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.8"),
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.9"),
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
@@ -70,45 +70,8 @@ lazy val commonSettings = Seq(
 )
 
 lazy val releaseSettings = {
-  import ReleaseTransformations._
   Seq(
-    releaseCrossBuild := true,
-    releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
-      inquireVersions,
-      runClean,
-      runTest,
-      setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
-      // For non cross-build projects, use releaseStepCommand("publishSigned")
-      releaseStepCommandAndRemaining("+publishSigned"),
-      setNextVersion,
-      commitNextVersion,
-      releaseStepCommand("sonatypeReleaseAll"),
-      pushChanges
-    ),
-    publishTo := {
-      val nexus = "https://oss.sonatype.org/"
-      if (isSnapshot.value)
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
-    credentials ++= (
-      for {
-        username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-        password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-      } yield
-        Credentials(
-          "Sonatype Nexus Repository Manager",
-          "oss.sonatype.org",
-          username,
-          password
-        )
-    ).toSeq,
     publishArtifact in Test := false,
-    releasePublishArtifactsAction := PgpKeys.publishSigned.value,
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/ChristopherDavenport/epimetheus"),
@@ -136,8 +99,6 @@ lazy val releaseSettings = {
 }
 
 lazy val mimaSettings = {
-  import sbtrelease.Version
-
   def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
     val majorVersions: List[Int] =
       if (major == 0 && minor == 0) List.empty[Int] // If 0.0.x do not check MiMa
@@ -159,8 +120,8 @@ lazy val mimaSettings = {
   }
 
   def mimaVersions(version: String): Set[String] = {
-    Version(version) match {
-      case Some(Version(major, Seq(minor, patch), _)) =>
+    VersionNumber(version) match {
+      case VersionNumber(Seq(major, minor, patch, _*), _, _) if patch.toInt > 0 =>
         semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
           .map{case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString}
       case _ =>
