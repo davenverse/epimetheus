@@ -31,7 +31,11 @@ object Name {
             .fold(
               e => c.abort(c.enclosingPosition, e.getMessage),
               _ =>
-                q"_root_.io.chrisdavenport.epimetheus.Name.impl($s).fold(throw _, _root_.scala.Predef.identity)"
+                q"""
+                @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+                val name = _root_.io.chrisdavenport.epimetheus.Name.impl($s).fold(throw _, _root_.scala.Predef.identity)
+                name
+                """
             )
         case _ =>
           c.abort(
@@ -77,7 +81,11 @@ object Name {
               .fold(
                 e => c.abort(c.enclosingPosition, e.getMessage),
                 _ =>
-                  q"_root_.io.chrisdavenport.epimetheus.Name.Suffix.impl($s).fold(throw _, _root_.scala.Predef.identity)"
+                  q"""
+                  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+                  val suffix = _root_.io.chrisdavenport.epimetheus.Name.Suffix.impl($s).fold(throw _, _root_.scala.Predef.identity)
+                  suffix
+                  """
               )
           case _ =>
             c.abort(

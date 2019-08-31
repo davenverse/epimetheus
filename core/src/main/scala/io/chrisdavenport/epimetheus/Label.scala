@@ -32,7 +32,11 @@ object Label {
             .fold(
               e => c.abort(c.enclosingPosition, e.getMessage),
               _ =>
-                q"_root_.io.chrisdavenport.epimetheus.Label.impl($s).fold(throw _, _root_.scala.Predef.identity)"
+                q"""
+                @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+                val label = _root_.io.chrisdavenport.epimetheus.Label.impl($s).fold(throw _, _root_.scala.Predef.identity)
+                label
+                """
             )
         case _ =>
           c.abort(
@@ -78,7 +82,11 @@ object Label {
               .fold(
                 e => c.abort(c.enclosingPosition, e.getMessage),
                 _ =>
-                  q"_root_.io.chrisdavenport.epimetheus.Label.Suffix.impl($s).fold(throw _, _root_.scala.Predef.identity)"
+                  q"""
+                  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+                  val suffix = _root_.io.chrisdavenport.epimetheus.Label.Suffix.impl($s).fold(throw _, _root_.scala.Predef.identity)
+                  suffix
+                  """
               )
           case _ =>
             c.abort(
