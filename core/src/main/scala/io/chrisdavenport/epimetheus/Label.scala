@@ -12,12 +12,18 @@ final class Label private(val getLabel: String) extends AnyVal {
 }
 
 object Label {
-  implicit val labelInstances: Show[Label] with Semigroup[Label] =
-    new Show[Label] with Semigroup[Label]{
+  implicit val labelInstances: Show[Label] with Semigroup[Label] with Eq[Label] with Order[Label] =
+    new Show[Label] with Semigroup[Label] with Eq[Label] with Order[Label]{
       // Members declared in cats.Show.ContravariantShow
       def show(t: Label): String = t.getLabel
       // Members declared in cats.kernel.Semigroup
       def combine(x: Label, y: Label): Label = x ++ y
+      // Members declared in cats.kernel.Order
+      override def compare(x: Label, y: Label): Int =
+        Order[String].compare(x.getLabel, y.getLabel)
+      // Members declared in cats.kernel.Eq
+      override def eqv(x: Label, y: Label): Boolean =
+        Eq[String].eqv(x.getLabel, y.getLabel)
     }
 
   /** See [[https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels]] */

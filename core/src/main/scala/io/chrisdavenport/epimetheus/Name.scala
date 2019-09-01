@@ -12,12 +12,18 @@ final class Name private(val getName: String) extends AnyVal {
 }
 
 object Name {
-  implicit val nameInstances: Show[Name] with Semigroup[Name] = 
-    new Show[Name] with Semigroup[Name]{
+  implicit val nameInstances: Show[Name] with Semigroup[Name] with Eq[Name] with Order[Name] =
+    new Show[Name] with Semigroup[Name] with Eq[Name] with Order[Name]{
       // Members declared in cats.Show.ContravariantShow
       def show(t: Name): String = t.getName
       // Members declared in cats.kernel.Semigroup
       def combine(x: Name, y: Name): Name = x ++ y
+      // Members declared in cats.kernel.Order
+      override def compare(x: Name, y: Name): Int =
+        Order[String].compare(x.getName, y.getName)
+      // Members declared in cats.kernel.Eq
+      override def eqv(x: Name, y: Name): Boolean =
+        Eq[String].eqv(x.getName, y.getName)
     }
 
   private val reg = "([a-zA-Z_:][a-zA-Z0-9_:]*)".r
@@ -64,7 +70,7 @@ object Name {
   }
   object Suffix {
 
-    implicit val nameInstances: Show[Suffix] with Semigroup[Suffix] = 
+    implicit val nameInstances: Show[Suffix] with Semigroup[Suffix] =
       new Show[Suffix] with Semigroup[Suffix]{
         // Members declared in cats.Show.ContravariantShow
         def show(t: Suffix): String = t.getSuffix
