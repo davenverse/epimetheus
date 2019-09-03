@@ -1,0 +1,76 @@
+<html><head><title>epimetheus: Introduction</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Christopher Davenport" /><meta name="description" content="An Afterthought of Prometheus" /><meta name="og:image" content="/epimetheus/img/poster.png" /><meta name="image" property="og:image" content="/epimetheus/img/poster.png" /><meta name="og:title" content="epimetheus: Introduction" /><meta name="title" property="og:title" content="epimetheus: Introduction" /><meta name="og:site_name" content="epimetheus" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="An Afterthought of Prometheus" /><link rel="icon" type="image/png" href="/epimetheus/img/favicon.png" /><meta name="twitter:title" content="epimetheus: Introduction" /><meta name="twitter:image" content="/epimetheus/img/poster.png" /><meta name="twitter:description" content="An Afterthought of Prometheus" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/epimetheus/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/epimetheus/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/epimetheus/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/epimetheus/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/epimetheus/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/epimetheus/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/epimetheus/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/epimetheus/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/epimetheus/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/epimetheus/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/epimetheus/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/epimetheus/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/epimetheus/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/epimetheus/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/epimetheus/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/epimetheus/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/epimetheus/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/epimetheus/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/epimetheus/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/epimetheus/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/epimetheus/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/epimetheus/css/style.css" /><link rel="stylesheet" href="/epimetheus/css/palette.css" /><link rel="stylesheet" href="/epimetheus/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/epimetheus/" class="brand"><div class="brand-wrapper"><span>epimetheus</span></div></a></li><li><a href="/epimetheus/docs/01-Introduction.html" class=" active ">Introduction</a></li><li><a href="/epimetheus/docs/02-BigPicture.html" class="">Big Picture</a></li><li><a href="/epimetheus/docs/03-DataModel.html" class="">Data Model</a></li><li><a href="/epimetheus/docs/04-CollectorRegistry.html" class="">CollectorRegistry</a></li><li><a href="/epimetheus/docs/05-Counter.html" class="">Counter</a></li><li><a href="/epimetheus/docs/06-Gauge.html" class="">Gauge</a></li><li><a href="/epimetheus/docs/07-Histogram.html" class="">Histogram</a></li><li><a href="/epimetheus/docs/08-Summary.html" class="">Summary</a></li><li><a href="/epimetheus/" class=""></a></li><li><a href="/epimetheus/css/palette.css" class=""></a></li><li><a href="/epimetheus/css/style.css" class=""></a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/ChristopherDavenport/epimetheus"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/ChristopherDavenport/epimetheus"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('epimetheus An Afterthought of Prometheus');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('epimetheus An Afterthought of Prometheus');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="ChristopherDavenport" data-github-repo="epimetheus"><div class="content-wrapper"><section><h1 id="introduction">Introduction</h1>
+
+<p>This is a short book about <strong>epimetheus</strong> a pure functional Prometheus integration for Scala.</p>
+
+<h2 id="target-audience">Target Audience</h2>
+
+<p>This library is designed for people who are interested in typed, pure functional programming. If you are not a <a href="https://github.com/typelevel/cats">Cats</a> or <a href="https://github.com/typelevel/cats-effect">Cats-Effect</a> user or are not familiar with functional I/O and monadic effects, you may need to go slowly and may want to spend some time reading <a href="http://manning.com/bjarnason/">Functional Programming in Scala</a>, which introduces all of the ideas that you will find when exploring <strong>epimetheus</strong>.</p>
+
+<p>Having said this, if you find yourself confused or frustrated by this documentation or the <strong>epimetheus</strong> API, <em>please</em> ask a question on <a href="https://gitter.im/ChristopherDavenport/epimetheus">Gitter</a>, file an <a href="https://github.com/ChristopherDavenport/epimetheus/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc">issue</a> and ask for help. Both the library and the documentation are young and are changing quickly, and it is inevitable that some things will be unclear. Accordingly, <strong>this book is updated continuously</strong> to address problems and omissions.</p>
+
+<h2 id="scala-setup">Scala Setup</h2>
+
+<p>On the Scala side you just need a project with the proper dependencies. A minimal <code class="highlighter-rouge">build.sbt</code> would look something like this.</p>
+
+<p>The most recent stable version - <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central" /></a></p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scalaVersion</span> <span class="o">:=</span> <span class="s">"2.12.9"</span> <span class="c1">// Scala 2.13/12
+</span>
+<span class="n">scalacOptions</span> <span class="o">+=</span> <span class="s">"-Ypartial-unification"</span> <span class="c1">// 2.11.9+
+</span>
+<span class="k">lazy</span> <span class="k">val</span> <span class="n">epimetheusV</span> <span class="k">=</span> <span class="s">"0.3.0-RC3"</span>
+
+<span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
+  <span class="s">"io.chrisdavenport"</span> <span class="o">%%</span> <span class="s">"epimetheus"</span>     <span class="o">%</span> <span class="n">epimetheusV</span>
+<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">-Ypartial-unification</code> compiler flag enables a bug fix that makes working with functional code significantly easier. See the Cats <a href="https://github.com/typelevel/cats#getting-started">Getting Started</a> for more info on this if it interests you.</p>
+
+<h2 id="conventions">Conventions</h2>
+
+<p>Each page begins with some imports, like this.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats._</span><span class="o">,</span> <span class="n">cats</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">cats</span><span class="o">.</span><span class="n">implicits</span><span class="o">.</span><span class="k">_</span>
+<span class="k">import</span> <span class="nn">cats.effect._</span><span class="o">,</span> <span class="n">cats</span><span class="o">.</span><span class="n">effect</span><span class="o">.</span><span class="n">implicits</span><span class="o">.</span><span class="k">_</span>
+<span class="k">import</span> <span class="nn">shapeless._</span>
+<span class="k">import</span> <span class="nn">io.chrisdavenport.epimetheus._</span>
+</code></pre>
+</div>
+
+<p>After that there is text interspersed with code examples. Sometimes definitions will stand alone.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Person</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">age</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">nel</span> <span class="k">=</span> <span class="nc">NonEmptyList</span><span class="o">.</span><span class="n">of</span><span class="o">(</span><span class="nc">Person</span><span class="o">(</span><span class="s">"Bob"</span><span class="o">,</span> <span class="mi">12</span><span class="o">),</span> <span class="nc">Person</span><span class="o">(</span><span class="s">"Alice"</span><span class="o">,</span> <span class="mi">14</span><span class="o">))</span>
+</code></pre>
+</div>
+
+<p>And sometimes they will appear as a REPL interaction.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="n">nel</span><span class="o">.</span><span class="n">head</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">Person</span> <span class="o">=</span> <span class="nc">Person</span><span class="o">(</span><span class="nc">Bob</span><span class="o">,</span><span class="mi">12</span><span class="o">)</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">nel</span><span class="o">.</span><span class="n">tail</span>
+<span class="n">res1</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Person</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="nc">Person</span><span class="o">(</span><span class="nc">Alice</span><span class="o">,</span><span class="mi">14</span><span class="o">))</span>
+</code></pre>
+</div>
+
+<p>Sometimes we demonstrate that something doesn’t compile. In such cases it will be clear from the context that this is expected, and not a problem with the documentation.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="n">woozle</span><span class="o">(</span><span class="n">nel</span><span class="o">)</span> <span class="c1">// doesn't compile
+</span><span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">35</span><span class="k">:</span> <span class="kt">error:</span> <span class="kt">not</span> <span class="kt">found:</span> <span class="kt">value</span> <span class="kt">woozle</span>
+       <span class="n">woozle</span><span class="o">(</span><span class="n">nel</span><span class="o">)</span> <span class="c1">// doesn't compile
+</span>       <span class="o">^</span>
+</code></pre>
+</div>
+
+<p>Many thanks to to the <a href="https://github.com/tpolecat/doobie">Book of Doobie</a> for clearly outlining this.</p>
+
+<h2 id="feedback-and-contributions">Feedback and Contributions</h2>
+
+<p>Feedback on <strong>epimetheus</strong> or this book is genuinely welcome. Please feel free to file a <a href="hhttps://github.com/ChristopherDavenport/epimetheus">pull request</a> if you have a contribution, or file an <a href="https://github.com/ChristopherDavenport/epimetheus/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc">issue</a>, or chat with us on <a href="https://gitter.im/ChristopherDavenport/epimetheus">Gitter</a>.</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/epimetheus/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
+hljs.initHighlighting();
+              </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'ChristopherDavenport/epimetheus'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/epimetheus/js/main.js"></script></body></html>
