@@ -1,17 +1,17 @@
 name: epimetheus
-catsEffectVersion: 2.0.0-RC2
+catsEffectVersion: 2.0.0
 shapelessVersion: 2.3.3
 baseurl: /epimetheus
 description: An Afterthought of Prometheus
-catsVersion: 2.0.0-RC2
+catsVersion: 2.0.0
 highlighter: rouge
 docs: true
 collections:
   tut:
     output: true
-epimetheusVersion: 0.3.0-RC3+4-c733a930-SNAPSHOT
+epimetheusVersion: 0.3.0-RC3+6-21135faa-SNAPSHOT
 scalaVersion: 2.12.9
-version: 0.3.0-RC3+4-c733a930-SNAPSHOT
+version: 0.3.0-RC3+6-21135faa-SNAPSHOT
 scalaVersions: 2.13/12
 org: io.chrisdavenport
 markdown: kramdown
