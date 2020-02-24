@@ -26,6 +26,8 @@ sealed abstract class Histogram[F[_]]{
    */
   def observe(d: Double): F[Unit]
 
+  def mapK[G[_]](fk: F ~> G): Histogram[G] = new Histogram.MapKHistogram[F, G](this, fk)
+
 }
 
 /**
@@ -258,6 +260,10 @@ object Histogram {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
   }
 
+  private final class MapKHistogram[F[_], G[_]](base: Histogram[F], fk: F ~> G) extends Histogram[G]{
+    def observe(d: Double): G[Unit] = fk(base.observe(d))
+  }
+
   /**
    * Generic UnlabelledHistorgram
    *
@@ -273,8 +279,8 @@ object Histogram {
   }
 
   object Unsafe {
-    def asJavaUnlabelled[F[_], A](h: UnlabelledHistogram[F, A]): JHistogram =
-      h.underlying
+    // def asJavaUnlabelled[F[_], A](h: UnlabelledHistogram[F, A]): JHistogram =
+    //   h.underlying
     def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Histogram[F]): F[JHistogram] = c match {
       case _: LabelledHistogram[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsHistogram[F] => n.underlying.pure[F]

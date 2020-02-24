@@ -32,6 +32,8 @@ sealed abstract class Summary[F[_]]{
    * @param d The observation to persist
    */
   def observe(d: Double): F[Unit]
+
+  def mapK[G[_]](fk: F ~> G): Summary[G] = new Summary.MapKSummary[F, G](this, fk)
 }
 
 
@@ -226,6 +228,10 @@ object Summary {
     private val underlying: JSummary.Child
   ) extends Summary[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
+  }
+
+  final private class MapKSummary[F[_], G[_]](base: Summary[F], fk: F ~> G) extends Summary[G]{
+    def observe(d: Double): G[Unit] = fk(base.observe(d))
   }
 
   /**
