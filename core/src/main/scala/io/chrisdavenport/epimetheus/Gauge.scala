@@ -161,7 +161,7 @@ object Gauge {
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
   }
 
-  private final class MapKGauge[F[_], G[_]](base: Gauge[F], fk: F ~> G) extends Gauge[G]{
+  private final class MapKGauge[F[_], G[_]](private[Gauge] val base: Gauge[F], fk: F ~> G) extends Gauge[G]{
     def get: G[Double] = fk(base.get)
 
     def dec: G[Unit] = fk(base.dec)
@@ -174,7 +174,7 @@ object Gauge {
   }
 
 
-  trait UnlabelledGauge[F[_], A]{
+  sealed trait UnlabelledGauge[F[_], A]{
     def label(a: A): Gauge[F]
     def mapK[G[_]](fk: F ~> G): UnlabelledGauge[G, A] = new MapKUnlabelledGauge[F, G, A](this, fk)
   }
@@ -193,17 +193,20 @@ object Gauge {
       new LabelledGauge[F](underlying.labels(f(a):_*))
   }
 
-  final private class MapKUnlabelledGauge[F[_], G[_], A](base: UnlabelledGauge[F, A], fk: F ~> G) extends UnlabelledGauge[G, A]{
+  final private class MapKUnlabelledGauge[F[_], G[_], A](private[Gauge] val base: UnlabelledGauge[F, A], fk: F ~> G) extends UnlabelledGauge[G, A]{
     def label(a: A): Gauge[G] = base.label(a).mapK(fk)
   }
 
 
   object Unsafe {
-    // TODO: Is this method worth it/
-    // def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g.underlying
+    def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g match {
+      case x: UnlabelledGaugeImpl[_, _] => x.underlying
+      case x: MapKUnlabelledGauge[_, _, _] => asJavaUnlabelled(x.base)
+    }
     def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Gauge[F]): F[JGauge] = c match {
       case _: LabelledGauge[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsGauge[F] => n.underlying.pure[F]
+      case m: MapKGauge[_, _] => asJava(m.base)
     }
   }
 }

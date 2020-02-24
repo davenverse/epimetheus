@@ -117,15 +117,10 @@ object Counter {
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
   }
 
-  private final class MapKCounter[F[_], G[_]](base: Counter[F], fk: F ~> G) extends Counter[G]{
+  private final class MapKCounter[F[_], G[_]](private[Counter] val base: Counter[F], fk: F ~> G) extends Counter[G]{
     def get: G[Double] = fk(base.get)
     def inc: G[Unit] = fk(base.inc)
     def incBy(d: Double): G[Unit] = fk(base.incBy(d))
-  }
-
-  trait UnlabelledCounter[F[_], A]{
-    def label(a: A): Counter[F]
-    def mapK[G[_]](fk: F ~> G): UnlabelledCounter[G, A] = new MapKUnlabelledCounter[F, G, A](this, fk)
   }
 
   /**
@@ -134,7 +129,12 @@ object Counter {
    * It is necessary to apply a value of type `A` to this
    * counter to be able to take any measurements.
    */
-  private class UnlabelledCounterImpl[F[_]: Sync, A] private[Counter](
+  sealed trait UnlabelledCounter[F[_], A]{
+    def label(a: A): Counter[F]
+    def mapK[G[_]](fk: F ~> G): UnlabelledCounter[G, A] = new MapKUnlabelledCounter[F, G, A](this, fk)
+  }
+
+  private final class UnlabelledCounterImpl[F[_]: Sync, A] private[Counter](
     private[Counter] val underlying: JCounter,
     private val f: A => IndexedSeq[String]
   ) extends UnlabelledCounter[F, A]{
@@ -142,15 +142,19 @@ object Counter {
       new LabelledCounter(underlying.labels(f(a):_*))
   }
 
-  private class MapKUnlabelledCounter[F[_], G[_], A](base: UnlabelledCounter[F, A], fk: F ~> G) extends UnlabelledCounter[G, A]{
+  private final class MapKUnlabelledCounter[F[_], G[_], A](private[Counter] val base: UnlabelledCounter[F, A], fk: F ~> G) extends UnlabelledCounter[G, A]{
     def label(a: A): Counter[G] = base.label(a).mapK(fk)
   }
 
   object Unsafe {
-    // def asJavaUnlabelled[F[_], A](c: UnlabelledCounter[F, A]): JCounter = c.underlying
+    def asJavaUnlabelled[F[_], A](c: UnlabelledCounter[F, A]): JCounter = c match {
+      case m: MapKUnlabelledCounter[_, _, _] => asJavaUnlabelled(m.base)
+      case m: UnlabelledCounterImpl[_, _] => m.underlying
+    }
     def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Counter[F]): F[JCounter] = c match {
       case _: LabelledCounter[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsCounter[F] => n.underlying.pure[F]
+      case b: MapKCounter[_, _] =>  asJava(b.base)
     }
   }
 }
