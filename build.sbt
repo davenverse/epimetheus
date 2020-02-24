@@ -37,7 +37,7 @@ lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
   scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.9"),
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
