@@ -23,8 +23,8 @@ lazy val contributors = Seq(
 )
 
 val prometheusV = "0.8.1"
-val catsV = "2.1.0"
-val catsEffectV = "2.0.0"
+val catsV = "2.1.1"
+val catsEffectV = "2.1.3"
 val shapelessV = "2.3.3"
 
 val specs2V = "4.8.2"
@@ -37,7 +37,7 @@ lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
   scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.9"),
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",

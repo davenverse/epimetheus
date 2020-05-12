@@ -32,6 +32,8 @@ sealed abstract class Summary[F[_]]{
    * @param d The observation to persist
    */
   def observe(d: Double): F[Unit]
+
+  def mapK[G[_]](fk: F ~> G): Summary[G] = new Summary.MapKSummary[F, G](this, fk)
 }
 
 
@@ -215,7 +217,7 @@ object Summary {
     )
     c <- Sync[F].delay(quantiles.foldLeft(c1){ case (c, q) => c.quantile(q.quantile, q.error)})
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledSummary[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledSummaryImpl[F, A](out, f.andThen(_.unsized))
 
   final private class NoLabelsSummary[F[_]: Sync] private[Summary] (
     private[Summary] val underlying: JSummary
@@ -228,19 +230,30 @@ object Summary {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
   }
 
+  final private class MapKSummary[F[_], G[_]](private[Summary] val base: Summary[F], fk: F ~> G) extends Summary[G]{
+    def observe(d: Double): G[Unit] = fk(base.observe(d))
+  }
+
   /**
    * Generic Unlabeled Summary
    *
    * Apply a label to be able to measure events.
    */
-  final class UnlabelledSummary[F[_]: Sync, A] private[epimetheus](
+  sealed trait UnlabelledSummary[F[_], A]{
+    def label(a: A): Summary[F]
+    def mapK[G[_]](fk: F ~> G): UnlabelledSummary[G, A] = new MapKUnlabelledSummary[F,G, A](this, fk)
+  }
+  final private class UnlabelledSummaryImpl[F[_]: Sync, A] private[epimetheus](
     private[Summary] val underlying: JSummary,
     private val f: A => IndexedSeq[String]
-  ) {
+  ) extends UnlabelledSummary[F,A]{
     def label(a: A): Summary[F] =
       new LabelledSummary[F](underlying.labels(f(a):_*))
   }
 
+  final private class MapKUnlabelledSummary[F[_], G[_], A](private[Summary] val base: UnlabelledSummary[F,A], fk: F ~> G) extends UnlabelledSummary[G, A]{
+    def label(a: A): Summary[G] = base.label(a).mapK(fk)
+  }
   /**
    * The percentile and tolerated error to be observed
    *
@@ -292,11 +305,14 @@ object Summary {
   }
 
   object Unsafe {
-    def asJavaUnlabelled[F[_], A](g: UnlabelledSummary[F, A]): JSummary =
-      g.underlying
+    def asJavaUnlabelled[F[_], A](g: UnlabelledSummary[F, A]): JSummary = g match {
+      case a: UnlabelledSummaryImpl[_, _] => a.underlying
+      case a: MapKUnlabelledSummary[_, _, _] => asJavaUnlabelled(a.base)
+    }
     def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Summary[F]): F[JSummary] = c match {
       case _: LabelledSummary[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsSummary[F] => n.underlying.pure[F]
+      case b: MapKSummary[_, _] => asJava(b.base)
     }
   }
 }
