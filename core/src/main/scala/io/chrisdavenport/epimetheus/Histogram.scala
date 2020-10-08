@@ -43,29 +43,17 @@ object Histogram {
   // Convenience ----------------------------------------------------
   // Since these methods are not ex
 
+
   /**
    * Persist a timed value into this [[Histogram]]
    *
    * @param h Histogram
    * @param fa The action to time
-   * @param unit The unit of time to observe the timing in. Default Histogram buckets
-   *  are optimized for `SECONDS`.
    */
-  def timed[E, F[_]: Bracket[?[_], E]: Clock, A](h: Histogram[F], fa: F[A], unit: TimeUnit): F[A] =
-    Bracket[F, E].bracket(Clock[F].monotonic(unit))
-    {_: Long => fa}
-    {start: Long => Clock[F].monotonic(unit).flatMap(now => h.observe((now - start).toDouble))}
-
-  /**
-   * Persist a timed value into this [[Histogram]] in unit Seconds. This is exposed.
-   * since default buckets are in seconds it makes sense the general case will be to
-   * match the default buckets.
-   *
-   * @param h Histogram
-   * @param fa The action to time
-   */
-  def timedSeconds[E, F[_]: Bracket[?[_], E]: Clock, A](h: Histogram[F], fa: F[A]): F[A] =
-    timed(h, fa, SECONDS)
+  def timed[E, F[_]: Bracket[?[_], E]: Clock, A](h: Histogram[F], fa: F[A]): F[A] = 
+    Bracket[F, E].bracket(Clock[F].monotonic(NANOSECONDS)) 
+    {_: Long => fa} 
+    {start: Long => Clock[F].monotonic(NANOSECONDS).flatMap(now => h.observe((now - start) / 1E9))}
 
   // Constructors ---------------------------------------------------
   /**
