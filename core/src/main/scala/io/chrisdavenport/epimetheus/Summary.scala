@@ -49,23 +49,11 @@ object Summary {
    *
    * @param s The summary to persist into.
    * @param fa The action to time
-   * @param unit The unit of time to observe the timing in.
    */
-  def timed[E, F[_]: Bracket[?[_], E]: Clock, A](s: Summary[F], fa: F[A], unit: TimeUnit): F[A] =
-    Bracket[F, E].bracket(Clock[F].monotonic(unit))
+  def timed[E, F[_]: Bracket[?[_], E]: Clock, A](s: Summary[F], fa: F[A]): F[A] =
+    Bracket[F, E].bracket(Clock[F].monotonic(NANOSECONDS))
     {_: Long => fa}
-    {start: Long => Clock[F].monotonic(unit).flatMap(now => s.observe((now - start).toDouble))}
-
-  /**
-   * Persist a timed value into this [[Summary]] in unit Seconds. Since the default
-   * buckets for histogram are in seconds and Summary are in some ways counterparts
-   * to histograms, this exposes convenience function.
-   *
-   * @param s The summary to persist to
-   * @param fa The action to time
-   */
-  def timedSeconds[E, F[_]: Bracket[?[_], E]: Clock, A](s: Summary[F], fa: F[A]): F[A] =
-    timed(s, fa, SECONDS)
+    {start: Long => Clock[F].monotonic(NANOSECONDS).flatMap(now => s.observe((now - start) / 1E9))}
 
   // Constructors ---------------------------------------------------
   val defaultMaxAgeSeconds = 600L
