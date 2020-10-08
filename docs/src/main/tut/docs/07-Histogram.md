@@ -48,7 +48,7 @@ val noLabelsHistogramExample = {
     cr <- CollectorRegistry.build[IO]
     h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
-    _ <- h.timed(T.sleep(1.second), SECONDS)
+    _ <- h.timed(T.sleep(1.second))
     currentMetrics <- cr.write004
     _ <- IO(println(currentMetrics))
   } yield ()
@@ -71,7 +71,7 @@ val labelledHistogramExample = {
       {s: String => Sized(s)}
     )
     _ <- h.label("bar").observe(0.2)
-    _ <- h.label("baz").timed(T.sleep(1.second), SECONDS)
+    _ <- h.label("baz").timed(T.sleep(1.second))
     currentMetrics <- cr.write004
     _ <- IO(println(currentMetrics))
   } yield ()

@@ -45,8 +45,8 @@ object Histogram {
 
 
   /**
-   * Persist a timed value into this [[Histogram]]
-   *
+   * Persist a timed value into this [[Histogram]] in seconds. 
+   * Histogram buckets are measured in doubles of seconds.
    * @param h Histogram
    * @param fa The action to time
    */
