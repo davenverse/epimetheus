@@ -60,7 +60,7 @@ object Label {
       )
     )
   }
-  def implF[F[_]: ApplicativeError[?[_], Throwable]](s: String): F[Label] = {
+  def implF[F[_]: ApplicativeError[*[_], Throwable]](s: String): F[Label] = {
     impl(s).liftTo[F]
   }
 
@@ -113,7 +113,7 @@ object Label {
       )
     }
 
-    def implF[F[_]: ApplicativeError[?[_], Throwable]](s: String): F[Suffix] = {
+    def implF[F[_]: ApplicativeError[*[_], Throwable]](s: String): F[Suffix] = {
       impl(s).liftTo[F]
     }
 

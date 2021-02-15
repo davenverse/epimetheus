@@ -51,10 +51,10 @@ object Summary {
    * @param fa The action to time
    * @param unit The unit of time to observe the timing in.
    */
-  def timed[E, F[_]: Bracket[?[_], E]: Clock, A](s: Summary[F], fa: F[A], unit: TimeUnit): F[A] =
-    Bracket[F, E].bracket(Clock[F].monotonic(unit))
-    {_: Long => fa}
-    {start: Long => Clock[F].monotonic(unit).flatMap(now => s.observe((now - start).toDouble))}
+  def timed[E, F[_]: MonadCancel[*[_], E]: Clock, A](s: Summary[F], fa: F[A], unit: TimeUnit): F[A] =
+    MonadCancel[F, E].bracket(Clock[F].monotonic)
+    {_: FiniteDuration => fa}
+    {start: FiniteDuration => Clock[F].monotonic.flatMap(now => s.observe((now - start).toUnit(unit)))}
 
   /**
    * Persist a timed value into this [[Summary]] in unit Seconds. Since the default
@@ -64,7 +64,7 @@ object Summary {
    * @param s The summary to persist to
    * @param fa The action to time
    */
-  def timedSeconds[E, F[_]: Bracket[?[_], E]: Clock, A](s: Summary[F], fa: F[A]): F[A] =
+  def timedSeconds[E, F[_]: MonadCancel[*[_], E]: Clock, A](s: Summary[F], fa: F[A]): F[A] =
     timed(s, fa, SECONDS)
 
   // Constructors ---------------------------------------------------
@@ -298,7 +298,7 @@ object Summary {
       else Either.right(new Quantile(quantile, error))
     }
 
-    def implF[F[_]: ApplicativeError[?[_], Throwable]](quantile: Double, error: Double): F[Quantile] =
+    def implF[F[_]: ApplicativeError[*[_], Throwable]](quantile: Double, error: Double): F[Quantile] =
       impl(quantile, error).liftTo[F]
 
     def quantile(quantile: Double, error: Double): Quantile = macro Macros.quantileLiteral
@@ -309,7 +309,7 @@ object Summary {
       case a: UnlabelledSummaryImpl[_, _] => a.underlying
       case a: MapKUnlabelledSummary[_, _, _] => asJavaUnlabelled(a.base)
     }
-    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Summary[F]): F[JSummary] = c match {
+    def asJava[F[_]: ApplicativeError[*[_], Throwable]](c: Summary[F]): F[JSummary] = c match {
       case _: LabelledSummary[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsSummary[F] => n.underlying.pure[F]
       case b: MapKSummary[_, _] => asJava(b.base)

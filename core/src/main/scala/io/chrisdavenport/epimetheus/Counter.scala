@@ -151,7 +151,7 @@ object Counter {
       case m: MapKUnlabelledCounter[_, _, _] => asJavaUnlabelled(m.base)
       case m: UnlabelledCounterImpl[_, _] => m.underlying
     }
-    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Counter[F]): F[JCounter] = c match {
+    def asJava[F[_]: ApplicativeError[*[_], Throwable]](c: Counter[F]): F[JCounter] = c match {
       case _: LabelledCounter[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsCounter[F] => n.underlying.pure[F]
       case b: MapKCounter[_, _] =>  asJava(b.base)

@@ -1,11 +1,10 @@
 package io.chrisdavenport.epimetheus
 
 import cats.effect._
-import cats.effect.concurrent._
+import cats.effect.unsafe.implicits.global
 import org.specs2.mutable.Specification
 import shapeless._
 import io.chrisdavenport.epimetheus.implicits._
-import scala.concurrent.ExecutionContext.global
 import scala.concurrent.duration._
 
 class GuageSpec extends Specification {
@@ -17,7 +16,7 @@ class GuageSpec extends Specification {
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
       } yield gauge
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
 
     "Increase correctly" in {
@@ -28,7 +27,7 @@ class GuageSpec extends Specification {
         out <- gauge.get
       } yield out
 
-      test.unsafeRunSync must_=== 1D
+      test.unsafeRunSync() must_=== 1D
     }
 
     "Decrease correctly" in {
@@ -40,7 +39,7 @@ class GuageSpec extends Specification {
         out <- gauge.get
       } yield out
 
-      test.unsafeRunSync must_=== 0D
+      test.unsafeRunSync() must_=== 0D
     }
 
     "Set correctly" in {
@@ -52,7 +51,7 @@ class GuageSpec extends Specification {
         out <- gauge.get
       } yield out
 
-      test.unsafeRunSync must_=== set
+      test.unsafeRunSync() must_=== set
     }
   }
 
@@ -63,7 +62,7 @@ class GuageSpec extends Specification {
         gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), {s: String => Sized(s)})
       } yield gauge
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
 
     "Increase correctly" in {
@@ -74,7 +73,7 @@ class GuageSpec extends Specification {
         out <- gauge.label("boo").get
       } yield out
 
-      test.unsafeRunSync must_=== 1D
+      test.unsafeRunSync() must_=== 1D
     }
 
     "Decrease correctly" in {
@@ -86,7 +85,7 @@ class GuageSpec extends Specification {
         out <- gauge.label("boo").get
       } yield out
 
-      test.unsafeRunSync must_=== 0D
+      test.unsafeRunSync() must_=== 0D
     }
 
     "Set correctly" in {
@@ -98,83 +97,75 @@ class GuageSpec extends Specification {
         out <- gauge.label("boo").get
       } yield out
 
-      test.unsafeRunSync must_=== set
+      test.unsafeRunSync() must_=== set
     }
   }
 
   "Gauge Convenience" should {
     "incIn an operation succesfully" in {
-      implicit val CS = IO.contextShift(global)
-      implicit val T = IO.timer(global)
       val test = for {
         cr <- CollectorRegistry.build[IO]
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         defer <- Deferred[IO, Unit]
         fib <- gauge.incIn(defer.get).start
-        _ <- Timer[IO].sleep(1.second)
+        _ <- Temporal[IO].sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
         after <- gauge.get
       } yield (current, after)
 
-      test.unsafeRunSync must_=== ((1, 0))
+      test.unsafeRunSync() must_=== ((1, 0))
     }
 
     "incByIn an operation succesfully" in {
-      implicit val CS = IO.contextShift(global)
-      implicit val T = IO.timer(global)
       val test = for {
         cr <- CollectorRegistry.build[IO]
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         defer <- Deferred[IO, Unit]
         fib <- gauge.incByIn(defer.get, 10).start
-        _ <- Timer[IO].sleep(1.second)
+        _ <- Temporal[IO].sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
         after <- gauge.get
       } yield (current, after)
 
-      test.unsafeRunSync must_=== ((10, 0))
+      test.unsafeRunSync() must_=== ((10, 0))
     }
 
     "decIn an operation succesfully" in {
-      implicit val CS = IO.contextShift(global)
-      implicit val T = IO.timer(global)
       val test = for {
         cr <- CollectorRegistry.build[IO]
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         _ <- gauge.inc
         defer <- Deferred[IO, Unit]
         fib <- gauge.decIn(defer.get).start
-        _ <- Timer[IO].sleep(1.second)
+        _ <- Temporal[IO].sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
         after <- gauge.get
       } yield (current, after)
 
-      test.unsafeRunSync must_=== ((0, 1))
+      test.unsafeRunSync() must_=== ((0, 1))
     }
 
     "decByIn an operation succesfully" in {
-      implicit val CS = IO.contextShift(global)
-      implicit val T = IO.timer(global)
       val test = for {
         cr <- CollectorRegistry.build[IO]
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         _ <- gauge.incBy(10)
         defer <- Deferred[IO, Unit]
         fib <- gauge.decByIn(defer.get, 10).start
-        _ <- Timer[IO].sleep(1.second)
+        _ <- Temporal[IO].sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
         after <- gauge.get
       } yield (current, after)
 
-      test.unsafeRunSync must_=== ((0, 10))
+      test.unsafeRunSync() must_=== ((0, 10))
     }
   }
 
