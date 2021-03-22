@@ -108,7 +108,7 @@ class GuageSpec extends Specification {
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         defer <- Deferred[IO, Unit]
         fib <- gauge.incIn(defer.get).start
-        _ <- Temporal[IO].sleep(1.second)
+        _ <- IO.sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
@@ -124,7 +124,7 @@ class GuageSpec extends Specification {
         gauge <- Gauge.noLabels[IO](cr, Name("boo"), "Boo Gauge")
         defer <- Deferred[IO, Unit]
         fib <- gauge.incByIn(defer.get, 10).start
-        _ <- Temporal[IO].sleep(1.second)
+        _ <- IO.sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
@@ -141,7 +141,7 @@ class GuageSpec extends Specification {
         _ <- gauge.inc
         defer <- Deferred[IO, Unit]
         fib <- gauge.decIn(defer.get).start
-        _ <- Temporal[IO].sleep(1.second)
+        _ <- IO.sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join
@@ -158,7 +158,7 @@ class GuageSpec extends Specification {
         _ <- gauge.incBy(10)
         defer <- Deferred[IO, Unit]
         fib <- gauge.decByIn(defer.get, 10).start
-        _ <- Temporal[IO].sleep(1.second)
+        _ <- IO.sleep(1.second)
         current <- gauge.get
         _ <- defer.complete(())
         _ <- fib.join

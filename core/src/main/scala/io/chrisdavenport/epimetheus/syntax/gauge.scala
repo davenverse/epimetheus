@@ -7,7 +7,7 @@ trait gauge
 
 // Remove On Next Version
 private[epimetheus] trait GaugeSyntaxBincompat1 {
-  implicit class BracketGaugeOps[E, F[_]: MonadCancel[*[_], E], A](private val gauge: Gauge[F]){
+  implicit class BracketGaugeOps[F[_], A](private val gauge: Gauge[F])(implicit C: MonadCancel[F, _]){
     def incIn(fa: F[A]): F[A] = Gauge.incIn(gauge, fa)
     def incByIn(fa: F[A], i: Double): F[A] = Gauge.incByIn(gauge, fa, i)
     def decIn(fa: F[A]): F[A] = Gauge.decIn(gauge, fa)

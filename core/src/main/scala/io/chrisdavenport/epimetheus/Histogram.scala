@@ -4,6 +4,7 @@ import cats._
 import cats.effect._
 import cats.implicits._
 import io.prometheus.client.{Histogram => JHistogram}
+
 import scala.concurrent.duration._
 import shapeless._
 
@@ -48,10 +49,8 @@ object Histogram {
    * @param unit The unit of time to observe the timing in. Default Histogram buckets
    *  are optimized for `SECONDS`.
    */
-  def timed[E, F[_]: MonadCancel[*[_], E]: Clock, A](h: Histogram[F], fa: F[A], unit: TimeUnit): F[A] =
-    MonadCancel[F, E].bracket(Clock[F].monotonic)
-    {_: FiniteDuration => fa}
-    {start: FiniteDuration => Clock[F].monotonic.flatMap(now => h.observe((now - start).toUnit(unit)))}
+  def timed[F[_] : FlatMap : Clock, A](h: Histogram[F], fa: F[A], unit: TimeUnit): F[A] =
+    Clock[F].timed(fa).flatMap{ case (d, a) => h.observe(d.toUnit(unit)).as(a) }
 
   /**
    * Persist a timed value into this [[Histogram]] in unit Seconds. This is exposed.
@@ -61,7 +60,7 @@ object Histogram {
    * @param h Histogram
    * @param fa The action to time
    */
-  def timedSeconds[E, F[_]: MonadCancel[*[_], E]: Clock, A](h: Histogram[F], fa: F[A]): F[A] =
+  def timedSeconds[F[_] : FlatMap : Clock, A](h: Histogram[F], fa: F[A]): F[A] =
     timed(h, fa, SECONDS)
 
   // Constructors ---------------------------------------------------
@@ -291,8 +290,8 @@ object Histogram {
       case h: UnlabelledHistogramImpl[_, _] => h.underlying
       case h: MapKUnlabelledHistogram[_, _, _] => asJavaUnlabelled(h.base)
     }
-    def asJava[F[_]: ApplicativeError[*[_], Throwable]](c: Histogram[F]): F[JHistogram] = c match {
-      case _: LabelledHistogram[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
+    def asJava[F[_]: ApplicativeThrow](c: Histogram[F]): F[JHistogram] = c match {
+      case _: LabelledHistogram[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsHistogram[F] => n.underlying.pure[F]
       case h: MapKHistogram[_, _] => asJava(h.base)
     }
