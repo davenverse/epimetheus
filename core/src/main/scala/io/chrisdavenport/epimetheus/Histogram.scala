@@ -49,8 +49,10 @@ object Histogram {
    * @param unit The unit of time to observe the timing in. Default Histogram buckets
    *  are optimized for `SECONDS`.
    */
-  def timed[F[_] : FlatMap : Clock, A](h: Histogram[F], fa: F[A], unit: TimeUnit): F[A] =
-    Clock[F].timed(fa).flatMap{ case (d, a) => h.observe(d.toUnit(unit)).as(a) }
+  def timed[F[_] : Clock, A](h: Histogram[F], fa: F[A], unit: TimeUnit)(implicit C: MonadCancel[F, _]): F[A] =
+    C.bracket(Clock[F].monotonic)
+    {_: FiniteDuration => fa}
+    {start: FiniteDuration => Clock[F].monotonic.flatMap(now => h.observe((now - start).toUnit(unit)))}
 
   /**
    * Persist a timed value into this [[Histogram]] in unit Seconds. This is exposed.
@@ -60,7 +62,7 @@ object Histogram {
    * @param h Histogram
    * @param fa The action to time
    */
-  def timedSeconds[F[_] : FlatMap : Clock, A](h: Histogram[F], fa: F[A]): F[A] =
+  def timedSeconds[F[_] : Clock, A](h: Histogram[F], fa: F[A])(implicit C: MonadCancel[F, _]): F[A] =
     timed(h, fa, SECONDS)
 
   // Constructors ---------------------------------------------------

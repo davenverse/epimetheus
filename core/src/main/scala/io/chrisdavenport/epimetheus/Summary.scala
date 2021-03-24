@@ -51,8 +51,10 @@ object Summary {
    * @param fa The action to time
    * @param unit The unit of time to observe the timing in.
    */
-  def timed[F[_] : FlatMap : Clock, A](s: Summary[F], fa: F[A], unit: TimeUnit): F[A] =
-    Clock[F].timed(fa).flatMap{ case (d, a) => s.observe(d.toUnit(unit)).as(a) }
+  def timed[F[_] : Clock, A](s: Summary[F], fa: F[A], unit: TimeUnit)(implicit C: MonadCancel[F, _]): F[A] =
+    C.bracket(Clock[F].monotonic)
+    {_: FiniteDuration => fa}
+    {start: FiniteDuration => Clock[F].monotonic.flatMap(now => s.observe((now - start).toUnit(unit)))}
 
   /**
    * Persist a timed value into this [[Summary]] in unit Seconds. Since the default
@@ -62,7 +64,7 @@ object Summary {
    * @param s The summary to persist to
    * @param fa The action to time
    */
-  def timedSeconds[F[_] : FlatMap : Clock, A](s: Summary[F], fa: F[A]): F[A] =
+  def timedSeconds[F[_] : Clock, A](s: Summary[F], fa: F[A])(implicit C: MonadCancel[F, _]): F[A] =
     timed(s, fa, SECONDS)
 
   // Constructors ---------------------------------------------------
