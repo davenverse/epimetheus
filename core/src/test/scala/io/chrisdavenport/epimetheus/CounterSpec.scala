@@ -1,6 +1,7 @@
 package io.chrisdavenport.epimetheus
 
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import org.specs2.mutable.Specification
 import shapeless._
 
@@ -13,7 +14,7 @@ class CounterSpec extends Specification {
         counter <- Counter.noLabels[IO](cr, Name("boo"), "Boo Counter")
       } yield counter
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
 
     "Increase correctly" in {
@@ -24,7 +25,7 @@ class CounterSpec extends Specification {
         out <- counter.get
       } yield out
 
-      test.unsafeRunSync must_=== 1D
+      test.unsafeRunSync() must_=== 1D
     }
   }
 
@@ -35,7 +36,7 @@ class CounterSpec extends Specification {
         counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", Sized(Label("foo")), {s: String => Sized(s)})
       } yield counter
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
 
     "Increase correctly" in {
@@ -46,7 +47,7 @@ class CounterSpec extends Specification {
         out <- counter.label("foo").get
       } yield out
 
-      test.unsafeRunSync must_=== 1D
+      test.unsafeRunSync() must_=== 1D
     }
   }
 

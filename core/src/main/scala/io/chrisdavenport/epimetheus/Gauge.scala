@@ -79,17 +79,17 @@ sealed abstract class Gauge[F[_]]{
 object Gauge {
 
   // Convenience
-  def incIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A]): F[A] = 
-    Bracket[F, E].bracket(g.inc)(_ => fa)(_ => g.dec)
+  def incIn[F[_], A](g: Gauge[F], fa: F[A])(implicit C: MonadCancel[F, _]): F[A] =
+    C.bracket(g.inc)(_ => fa)(_ => g.dec)
 
-  def incByIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A], i: Double): F[A] = 
-    Bracket[F, E].bracket(g.incBy(i))(_ => fa)(_ => g.decBy(i))
+  def incByIn[F[_], A](g: Gauge[F], fa: F[A], i: Double)(implicit C: MonadCancel[F, _]): F[A] =
+    C.bracket(g.incBy(i))(_ => fa)(_ => g.decBy(i))
 
-  def decIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A]): F[A] =
-    Bracket[F, E].bracket(g.dec)(_ => fa)(_ => g.inc)
+  def decIn[F[_], A](g: Gauge[F], fa: F[A])(implicit C: MonadCancel[F, _]): F[A] =
+    C.bracket(g.dec)(_ => fa)(_ => g.inc)
 
-  def decByIn[E, F[_]: Bracket[?[_], E], A](g: Gauge[F], fa: F[A], i: Double): F[A] = 
-    Bracket[F, E].bracket(g.decBy(i))(_ => fa)(_ => g.incBy(i))
+  def decByIn[F[_], A](g: Gauge[F], fa: F[A], i: Double)(implicit C: MonadCancel[F, _]): F[A] =
+    C.bracket(g.decBy(i))(_ => fa)(_ => g.incBy(i))
 
   // Constructors
 
@@ -203,8 +203,8 @@ object Gauge {
       case x: UnlabelledGaugeImpl[_, _] => x.underlying
       case x: MapKUnlabelledGauge[_, _, _] => asJavaUnlabelled(x.base)
     }
-    def asJava[F[_]: ApplicativeError[?[_], Throwable]](c: Gauge[F]): F[JGauge] = c match {
-      case _: LabelledGauge[F] => ApplicativeError[F, Throwable].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
+    def asJava[F[_]: ApplicativeThrow](c: Gauge[F]): F[JGauge] = c match {
+      case _: LabelledGauge[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsGauge[F] => n.underlying.pure[F]
       case m: MapKGauge[_, _] => asJava(m.base)
     }

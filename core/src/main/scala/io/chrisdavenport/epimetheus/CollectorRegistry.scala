@@ -37,15 +37,28 @@ final class CollectorRegistry[F[_]: Sync] private(private val cr: JCollectorRegi
     Sync[F].delay(cr.unregister(Collector.Unsafe.asJava(c)))
 
   /**
-   * Write out the text version 0.0.4 of the given MetricFamilySamples 
+   * Write out the text version Prometheus 0.0.4 of the given MetricFamilySamples
    * contained in the CollectorRegistry.
    * 
-   * See http://prometheus.io/docs/instrumenting/exposition_formats/
+   * See https://prometheus.io/docs/instrumenting/exposition_formats/
    * for the output format specification
    */
   def write004: F[String] = Sync[F].delay {
     val writer = new StringWriter
     TextFormat.write004(writer, cr.metricFamilySamples)
+    writer.toString
+  }
+
+  /**
+   * Write out the text version OpenMetrics 1.0.0 of the given MetricFamilySamples
+   * contained in the CollectorRegistry.
+   *
+   * See https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md#overall-structure
+   * for the output format specification
+   */
+  def writeOpenMetrics100: F[String] = Sync[F].delay {
+    val writer = new StringWriter
+    TextFormat.writeOpenMetrics100(writer, cr.metricFamilySamples)
     writer.toString
   }
 
