@@ -22,22 +22,22 @@ lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
 )
 
-val prometheusV = "0.8.1"
-val catsV = "2.1.1"
-val catsEffectV = "2.1.4"
-val shapelessV = "2.3.5"
+val prometheusV = "0.10.0"
+val catsV = "2.4.2"
+val catsEffectV = "3.0.0"
+val shapelessV = "2.3.3"
 
-val specs2V = "4.8.2"
+val specs2V = "4.10.6"
 
-val kindProjectorV = "0.10.3"
+val kindProjectorV = "0.11.3"
 val betterMonadicForV = "0.3.1"
 
 // General Settings
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
+  scalaVersion := "2.13.5",
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.13"),
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
@@ -50,10 +50,10 @@ lazy val commonSettings = Seq(
     Seq("-doc-root-content", (baseDirectory.value.getParentFile / "rootdoc.txt").getAbsolutePath),
   scalacOptions in (Compile, doc) ++= Opts.doc.title("epimetheus"),
 
-  addCompilerPlugin("org.typelevel" %  "kind-projector"     % kindProjectorV cross CrossVersion.binary),
+  addCompilerPlugin("org.typelevel" %  "kind-projector"     % kindProjectorV cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % betterMonadicForV),
   libraryDependencies ++= Seq(
-    "org.scala-lang"              %  "scala-reflect"              % scalaVersion.value,
+    "org.scala-lang"              % "scala-reflect"               % scalaVersion.value,
     "io.prometheus"               % "simpleclient"                % prometheusV,
     "io.prometheus"               % "simpleclient_common"         % prometheusV,
     "io.prometheus"               % "simpleclient_hotspot"        % prometheusV,
@@ -182,7 +182,7 @@ lazy val micrositeSettings = {
       "-Ywarn-unused:imports",
       "-Xlint:-missing-interpolator,_"
     ),
-    libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
+    libraryDependencies += "com.47deg" %% "github4s" % "0.28.1",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     micrositeConfigYaml := ConfigYml(
