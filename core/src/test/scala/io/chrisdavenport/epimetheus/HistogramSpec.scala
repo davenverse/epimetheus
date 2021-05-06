@@ -1,6 +1,7 @@
 package io.chrisdavenport.epimetheus
 
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import org.specs2.mutable.Specification
 import shapeless._
 
@@ -12,7 +13,7 @@ class HistogramSpec extends Specification {
         h <- Histogram.noLabelsBuckets[IO](cr, Name("boo"), "Boo ", 0.1, 0.2, 0.3, 0.4)
       } yield h
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
   }
 
@@ -23,7 +24,7 @@ class HistogramSpec extends Specification {
         h <- Histogram.labelledBuckets(cr, Name("boo"), "Boo ", Sized(Label("boo")), {s: String => Sized(s)}, 0.1, 0.2, 0.3, 0.4)
       } yield h
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
   }
 }

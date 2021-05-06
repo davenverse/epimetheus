@@ -6,8 +6,10 @@ import scala.concurrent.duration._
 
 trait summary {
 
-  implicit class SummaryTimedOp[E, F[_]: Bracket[?[_],E]: Clock](
+  implicit class SummaryTimedOp[F[_] : Clock](
     private val s: Summary[F]
+  )(
+    implicit C: MonadCancel[F, _]
   ){
     def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
       Summary.timed(s, fa, unit)
