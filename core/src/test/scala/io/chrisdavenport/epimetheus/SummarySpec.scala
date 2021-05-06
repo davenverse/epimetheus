@@ -1,6 +1,7 @@
 package io.chrisdavenport.epimetheus
 
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import org.specs2.mutable.Specification
 import shapeless._
 
@@ -12,7 +13,7 @@ class SummarySpec extends Specification {
         s <- Summary.noLabels[IO](cr, Name("boo"), "Boo ", Summary.quantile(0.5, 0.05))
       } yield s
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
   }
 
@@ -23,7 +24,7 @@ class SummarySpec extends Specification {
         s <- Summary.labelled(cr, Name("boo"), "Boo ", Sized(Label("boo")), {s: String => Sized(s)}, Summary.quantile(0.5, 0.05))
       } yield s
 
-      test.attempt.unsafeRunSync must beRight
+      test.attempt.unsafeRunSync() must beRight
     }
   }
 

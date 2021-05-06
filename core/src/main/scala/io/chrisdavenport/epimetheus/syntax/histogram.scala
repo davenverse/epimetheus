@@ -6,8 +6,10 @@ import scala.concurrent.duration._
 
 trait histogram {
 
-  implicit class HistogramTimedOp[E, F[_]: Bracket[?[_],E]: Clock](
+  implicit class HistogramTimedOp[F[_] : Clock](
     private val h: Histogram[F]
+  )(
+    implicit C: MonadCancel[F, _]
   ){
     def timed[A](fa: F[A], unit: TimeUnit): F[A] = 
       Histogram.timed(h, fa, unit)
