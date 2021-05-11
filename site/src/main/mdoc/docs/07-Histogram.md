@@ -27,7 +27,7 @@ See https://prometheus.io/docs/practices/histograms/ for more information on His
 
 Imports
 
-```tut:silent
+```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
@@ -42,7 +42,7 @@ implicit val T: Timer[IO] = IO.timer(global)
 
 And Example of a Histogram with no labels:
 
-```tut:book
+```scala mdoc
 val noLabelsHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -59,7 +59,7 @@ noLabelsHistogramExample.unsafeRunSync
 
 An Example of a Histogram with labels:
 
-```tut:book
+```scala mdoc
 val labelledHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]

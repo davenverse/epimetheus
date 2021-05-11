@@ -11,12 +11,13 @@ lazy val core = project.in(file("core"))
     name := "epimetheus"
   )
 
-lazy val docs = project.in(file("docs"))
+lazy val docs = project.in(file("site"))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .dependsOn(core)
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
+//  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
@@ -173,15 +174,15 @@ lazy val micrositeSettings = {
       "gray-lighter" -> "#F4F3F4",
       "white-color" -> "#FFFFFF"
     ),
-    fork in tut := true,
-    scalacOptions in Tut --= Seq(
-      "-Xfatal-warnings",
-      "-Ywarn-unused-import",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-dead-code",
-      "-Ywarn-unused:imports",
-      "-Xlint:-missing-interpolator,_"
-    ),
+    fork in mdoc := true,
+//    scalacOptions in Mdoc --= Seq(
+//      "-Xfatal-warnings",
+//      "-Ywarn-unused-import",
+//      "-Ywarn-numeric-widen",
+//      "-Ywarn-dead-code",
+//      "-Ywarn-unused:imports",
+//      "-Xlint:-missing-interpolator,_"
+//    ),
     libraryDependencies += "com.47deg" %% "github4s" % "0.28.1",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
