@@ -175,14 +175,14 @@ lazy val micrositeSettings = {
       "white-color" -> "#FFFFFF"
     ),
     fork in mdoc := true,
-//    scalacOptions in Mdoc --= Seq(
-//      "-Xfatal-warnings",
-//      "-Ywarn-unused-import",
-//      "-Ywarn-numeric-widen",
-//      "-Ywarn-dead-code",
-//      "-Ywarn-unused:imports",
-//      "-Xlint:-missing-interpolator,_"
-//    ),
+    scalacOptions in doc --= Seq(
+      "-Xfatal-warnings",
+      "-Ywarn-unused-import",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-dead-code",
+      "-Ywarn-unused:imports",
+      "-Xlint:-missing-interpolator,_"
+    ),
     libraryDependencies += "com.47deg" %% "github4s" % "0.28.1",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),

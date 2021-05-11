@@ -37,6 +37,7 @@ val noLabelsGaugeExample = {
   } yield currentMetrics
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 noLabelsGaugeExample.unsafeRunSync
 ```
 
@@ -62,5 +63,6 @@ val labelledGaugeExample = {
   } yield currentMetrics
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 labelledGaugeExample.unsafeRunSync
 ```

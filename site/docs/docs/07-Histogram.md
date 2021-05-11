@@ -54,6 +54,7 @@ val noLabelsHistogramExample = {
   } yield ()
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 noLabelsHistogramExample.unsafeRunSync
 ```
 
@@ -77,5 +78,6 @@ val labelledHistogramExample = {
   } yield ()
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 labelledHistogramExample.unsafeRunSync
 ```

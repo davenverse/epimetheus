@@ -61,7 +61,7 @@ nel.tail
 
 Sometimes we demonstrate that something doesn't compile. In such cases it will be clear from the context that this is expected, and not a problem with the documentation.
 
-```scala mdoc:nofail
+```scala mdoc:fail
 woozle(nel) // doesn't compile
 ```
 

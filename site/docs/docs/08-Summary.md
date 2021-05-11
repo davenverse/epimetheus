@@ -59,6 +59,7 @@ val noLabelsSummaryExample = {
   } yield ()
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 noLabelsSummaryExample.unsafeRunSync
 ```
 
@@ -84,5 +85,6 @@ val noLabelsSummaryExample = {
   } yield ()
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 noLabelsSummaryExample.unsafeRunSync
 ```

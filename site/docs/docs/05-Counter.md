@@ -41,13 +41,14 @@ val noLabelsExample = {
       "Example Counter of Failure"
     )
     _ <- IO(println("Action Here")).guaranteeCase{
-      case ExitCase.Completed => successCounter.inc
+      case OutcomeIO.Succeeded(_) => successCounter.inc
       case _ => failureCounter.inc
     }
     out <- cr.write004
   } yield out
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 noLabelsExample.unsafeRunSync
 ```
 
@@ -70,6 +71,7 @@ val labelledExample = {
   } yield out
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 labelledExample.unsafeRunSync
 ```
 
@@ -113,12 +115,13 @@ val fooAgebraExample = {
   } yield out
 }
 
+import cats.effect.unsafe.implicits.global // Don't do this
 fooAgebraExample.unsafeRunSync
 ```
 
 We force labels to always match the same size. This will fail to compile.
 
-```scala mdoc:nofail
+```scala mdoc:fail
 def incorrectlySized[F[_]: Sync](cr: CollectorRegistry[F]) = {
   Counter.labelled(cr, Name("fail"), "Example Failure", Sized(Label("color"), Name("method")), {s: String => Sized(s)})
 }
