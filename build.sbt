@@ -1,5 +1,63 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
+val Scala213 = "2.13.5"
+
+ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213, "3.0.0")
+ThisBuild / scalaVersion := crossScalaVersions.value.last
+
+ThisBuild / githubWorkflowArtifactUpload := false
+
+val Scala213Cond = s"matrix.scala == '$Scala213'"
+
+def rubySetupSteps(cond: Option[String]) = Seq(
+  WorkflowStep.Use(
+    UseRef.Public("ruby", "setup-ruby", "v1"),
+    name = Some("Setup Ruby"),
+    params = Map("ruby-version" -> "2.6.0"),
+    cond = cond),
+
+  WorkflowStep.Run(
+    List(
+      "gem install saas",
+      "gem install jekyll -v 3.2.1"),
+    name = Some("Install microsite dependencies"),
+    cond = cond))
+
+ThisBuild / githubWorkflowBuildPreamble ++=
+  rubySetupSteps(Some(Scala213Cond))
+
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues")),
+
+  WorkflowStep.Sbt(
+    List("site/makeMicrosite"),
+    cond = Some(Scala213Cond)))
+
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+
+// currently only publishing tags
+ThisBuild / githubWorkflowPublishTargetBranches :=
+  Seq(RefPredicate.StartsWith(Ref.Tag("v")))
+
+ThisBuild / githubWorkflowPublishPreamble ++=
+  WorkflowStep.Use(UseRef.Public("olafurpg", "setup-gpg", "v3")) +: rubySetupSteps(None)
+
+ThisBuild / githubWorkflowPublish := Seq(
+  WorkflowStep.Sbt(
+    List("ci-release"),
+    name = Some("Publish artifacts to Sonatype"),
+    env = Map(
+      "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
+      "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
+      "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
+      "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}")),
+
+  WorkflowStep.Sbt(
+    List(s"++$Scala213", "docs/publishMicrosite"),
+    name = Some("Publish microsite")
+  )
+)
+
 lazy val `epimetheus` = project.in(file("."))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
@@ -35,9 +93,6 @@ val betterMonadicForV = "0.3.1"
 // General Settings
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
-
-  scalaVersion := "2.13.6",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.13"),
 
   scalacOptions in (Compile, doc) ++= Seq(
       "-groups",
@@ -106,7 +161,7 @@ lazy val mimaSettings = {
     val minorVersions : List[Int] =
       if (major >= 1) Range(0, minor).inclusive.toList
       else List(minor)
-    def patchVersions(currentMinVersion: Int): List[Int] = 
+    def patchVersions(currentMinVersion: Int): List[Int] =
       if (minor == 0 && patch == 0) List.empty[Int]
       else if (currentMinVersion != minor) List(0)
       else Range(0, patch - 1).inclusive.toList
@@ -139,7 +194,7 @@ lazy val mimaSettings = {
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
     mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
       .filterNot(excludedVersions.contains(_))
-      .map{v => 
+      .map{v =>
         val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
         organization.value % moduleN % v
       },
