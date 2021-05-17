@@ -53,7 +53,7 @@ ThisBuild / githubWorkflowPublish := Seq(
       "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}")),
 
   WorkflowStep.Sbt(
-    List(s"++$Scala213", "docs/publishMicrosite"),
+    List(s"++$Scala213", "site/publishMicrosite"),
     name = Some("Publish microsite")
   )
 )
@@ -69,12 +69,12 @@ lazy val core = project.in(file("core"))
     name := "epimetheus"
   )
 
-lazy val docs = project.in(file("docs"))
+lazy val site = project.in(file("site"))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .dependsOn(core)
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
@@ -228,8 +228,8 @@ lazy val micrositeSettings = {
       "gray-lighter" -> "#F4F3F4",
       "white-color" -> "#FFFFFF"
     ),
-    fork in tut := true,
-    scalacOptions in Tut --= Seq(
+    fork := true,
+    scalacOptions --= Seq(
       "-Xfatal-warnings",
       "-Ywarn-unused-import",
       "-Ywarn-numeric-widen",
@@ -237,7 +237,6 @@ lazy val micrositeSettings = {
       "-Ywarn-unused:imports",
       "-Xlint:-missing-interpolator,_"
     ),
-    libraryDependencies += "com.47deg" %% "github4s" % "0.28.1",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     micrositeConfigYaml := ConfigYml(

@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
 
 First Imports.
 
-```tut:silent
+```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
@@ -34,7 +34,7 @@ implicit val T = IO.timer(global)
 
 ### Counter Example
 
-```tut:book
+```scala mdoc
 val noLabelsCounterExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -49,7 +49,7 @@ noLabelsCounterExample.unsafeRunSync
 
 ### Gauge Example
 
-```tut:book
+```scala mdoc
 val noLabelsGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -66,7 +66,7 @@ noLabelsGaugeExample.unsafeRunSync
 
 ### Histogram Example
 
-```tut:book
+```scala mdoc
 val noLabelsHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -82,7 +82,7 @@ noLabelsHistogramExample.unsafeRunSync
 
 ### Summary Example
 
-```tut:book
+```scala mdoc
 val noLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]

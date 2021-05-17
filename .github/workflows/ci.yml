@@ -123,4 +123,4 @@ jobs:
         run: sbt ++${{ matrix.scala }} ci-release
 
       - name: Publish microsite
-        run: sbt ++${{ matrix.scala }} ++2.13.5 docs/publishMicrosite
+        run: sbt ++${{ matrix.scala }} ++2.13.5 site/publishMicrosite

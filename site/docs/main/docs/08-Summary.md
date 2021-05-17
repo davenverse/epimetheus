@@ -26,7 +26,7 @@ See https://prometheus.io/docs/practices/histograms/ for more info on quantiles.
 
 Imports
 
-```tut:silent
+```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
@@ -41,7 +41,7 @@ implicit val T: Timer[IO] = IO.timer(global)
 
 And Example of a Summary with no labels:
 
-```tut:book
+```scala mdoc
 val noLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -64,7 +64,7 @@ noLabelsSummaryExample.unsafeRunSync
 
 An Example of a Summary with labels:
 
-```tut:book
+```scala mdoc
 val noLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]

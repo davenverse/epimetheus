@@ -17,7 +17,7 @@ server than individual metrics for each labelset.
 
 Imports
 
-```tut:silent
+```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import cats.effect._
 import shapeless._
@@ -25,7 +25,7 @@ import shapeless._
 
 An Example of a Gauge with no labels:
 
-```tut:book
+```scala mdoc
 val noLabelsGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -42,7 +42,7 @@ noLabelsGaugeExample.unsafeRunSync
 
 An Example of a Gauge with labels:
 
-```tut:book
+```scala mdoc
 val labelledGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
