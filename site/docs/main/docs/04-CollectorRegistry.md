@@ -30,6 +30,8 @@ Imports
 ```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import cats.effect._
+
+import cats.effect.unsafe.implicits.global
 ```
 
 ### Creating Your Own Registry
@@ -101,7 +103,7 @@ val exportExample = {
   } yield ()
 }
 
-exportExample.unsafeRunSync
+exportExample.unsafeRunSync()
 ```
 
 ## Conclusion

@@ -39,9 +39,7 @@ The `-Ypartial-unification` compiler flag enables a bug fix that makes working w
 Each page begins with some imports, like this.
 
 ```scala mdoc:silent
-import cats._, cats.data._, cats.implicits._
-import cats.effect._, cats.effect.implicits._
-import shapeless._
+import cats._, cats.data._
 import io.chrisdavenport.epimetheus._
 ```
 
@@ -61,7 +59,7 @@ nel.tail
 
 Sometimes we demonstrate that something doesn't compile. In such cases it will be clear from the context that this is expected, and not a problem with the documentation.
 
-```scala mdoc:nofail
+```scala
 woozle(nel) // doesn't compile
 ```
 

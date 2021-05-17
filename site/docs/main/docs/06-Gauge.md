@@ -21,6 +21,8 @@ Imports
 import io.chrisdavenport.epimetheus._
 import cats.effect._
 import shapeless._
+
+import cats.effect.unsafe.implicits.global
 ```
 
 An Example of a Gauge with no labels:
@@ -37,7 +39,7 @@ val noLabelsGaugeExample = {
   } yield currentMetrics
 }
 
-noLabelsGaugeExample.unsafeRunSync
+noLabelsGaugeExample.unsafeRunSync()
 ```
 
 An Example of a Gauge with labels:
@@ -62,5 +64,5 @@ val labelledGaugeExample = {
   } yield currentMetrics
 }
 
-labelledGaugeExample.unsafeRunSync
+labelledGaugeExample.unsafeRunSync()
 ```

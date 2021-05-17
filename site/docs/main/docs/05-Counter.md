@@ -22,6 +22,8 @@ Imports
 import io.chrisdavenport.epimetheus._
 import cats.effect._
 import shapeless._
+
+import cats.effect.unsafe.implicits.global
 ```
 
 An Example Counter without Labels:
@@ -41,14 +43,14 @@ val noLabelsExample = {
       "Example Counter of Failure"
     )
     _ <- IO(println("Action Here")).guaranteeCase{
-      case ExitCase.Completed => successCounter.inc
+      case Outcome.Succeeded(_) => successCounter.inc
       case _ => failureCounter.inc
     }
     out <- cr.write004
   } yield out
 }
 
-noLabelsExample.unsafeRunSync
+noLabelsExample.unsafeRunSync()
 ```
 
 An Example of a Counter with Labels:
@@ -70,7 +72,7 @@ val labelledExample = {
   } yield out
 }
 
-labelledExample.unsafeRunSync
+labelledExample.unsafeRunSync()
 ```
 
 An Example of a Counter backed algebra.
@@ -89,7 +91,7 @@ trait FooAlg[F[_]]{
   def bar: F[Unit]
   def baz: F[Unit]
 }; object FooAlg {
-  def impl[F[_]: Sync](c: Counter.UnlabelledCounter[F, Foo]) = new FooAlg[F]{
+  def impl[F[_]](c: Counter.UnlabelledCounter[F, Foo]) = new FooAlg[F]{
     def bar: F[Unit] = c.label(Bar).inc
     def baz: F[Unit] = c.label(Baz).inc
   }
@@ -113,12 +115,12 @@ val fooAgebraExample = {
   } yield out
 }
 
-fooAgebraExample.unsafeRunSync
+fooAgebraExample.unsafeRunSync()
 ```
 
 We force labels to always match the same size. This will fail to compile.
 
-```scala mdoc:nofail
+```scala
 def incorrectlySized[F[_]: Sync](cr: CollectorRegistry[F]) = {
   Counter.labelled(cr, Name("fail"), "Example Failure", Sized(Label("color"), Name("method")), {s: String => Sized(s)})
 }

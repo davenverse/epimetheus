@@ -28,15 +28,10 @@ Imports
 
 ```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
-import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
 import shapeless._
 
-import scala.concurrent.ExecutionContext.global
-import scala.concurrent.duration._
-
-implicit val CS: ContextShift[IO] = IO.contextShift(global)
-implicit val T: Timer[IO] = IO.timer(global)
+import cats.effect.unsafe.implicits.global
 ```
 
 And Example of a Summary with no labels:
@@ -59,13 +54,13 @@ val noLabelsSummaryExample = {
   } yield ()
 }
 
-noLabelsSummaryExample.unsafeRunSync
+noLabelsSummaryExample.unsafeRunSync()
 ```
 
 An Example of a Summary with labels:
 
 ```scala mdoc
-val noLabelsSummaryExample = {
+val withLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]
     s <- Summary.labelled(
@@ -84,5 +79,5 @@ val noLabelsSummaryExample = {
   } yield ()
 }
 
-noLabelsSummaryExample.unsafeRunSync
+withLabelsSummaryExample.unsafeRunSync()
 ```
