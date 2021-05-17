@@ -11,3 +11,5 @@ tags
 project/metals.sbt
 
 .vscode
+
+.bsp/
