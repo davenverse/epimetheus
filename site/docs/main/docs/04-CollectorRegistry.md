@@ -27,9 +27,11 @@ Due to how prometheus scraping occurs, only one  `CollectorRegistry` is generall
 
 Imports
 
-```tut:silent
+```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import cats.effect._
+
+import cats.effect.unsafe.implicits.global
 ```
 
 ### Creating Your Own Registry
@@ -41,7 +43,7 @@ With this approach you will generally create a registry for your application, an
 to individual components. Which can initialize and register their individual metrics into this
 shared space.
 
-```tut:book
+```scala mdoc
 {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -51,7 +53,7 @@ shared space.
 
 You can build your own registry with the default Hotspot Metrics registered with it automatically
 
-```tut:book
+```scala mdoc
 {
   for {
     cr <- CollectorRegistry.buildWithDefaults[IO]
@@ -61,7 +63,7 @@ You can build your own registry with the default Hotspot Metrics registered with
 
 or you can do it yourself.
 
-```tut:book
+```scala mdoc
 {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -77,13 +79,13 @@ as well as a method which initializes the default metrics into the default. This
 
 You have access to the global pool automatically.
 
-```tut:book
+```scala mdoc
 CollectorRegistry.defaultRegistry[IO]
 ```
 
 You can also ensure the baseline has been initiated.
 
-```tut:book
+```scala mdoc
 Collector.Defaults.defaultCollectorRegisterDefaults[IO]
 ```
 
@@ -91,7 +93,7 @@ Collector.Defaults.defaultCollectorRegisterDefaults[IO]
 
 Each `CollectorRegistry` exposes a `write004` function which will write out the current value of the metrics with the appropriate encoding for the 004 encoding that Prometheus expects.
 
-```tut:book
+```scala mdoc
 val exportExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -101,7 +103,7 @@ val exportExample = {
   } yield ()
 }
 
-exportExample.unsafeRunSync
+exportExample.unsafeRunSync()
 ```
 
 ## Conclusion

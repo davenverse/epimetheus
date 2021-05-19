@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala213 = "2.13.6"
 
-ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213, "3.0.0")
+ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowArtifactUpload := false
@@ -53,7 +53,7 @@ ThisBuild / githubWorkflowPublish := Seq(
       "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}")),
 
   WorkflowStep.Sbt(
-    List(s"++$Scala213", "docs/publishMicrosite"),
+    List(s"++$Scala213", "site/publishMicrosite"),
     name = Some("Publish microsite")
   )
 )
@@ -69,25 +69,25 @@ lazy val core = project.in(file("core"))
     name := "epimetheus"
   )
 
-lazy val docs = project.in(file("docs"))
+lazy val site = project.in(file("site"))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .dependsOn(core)
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
 )
 
 val prometheusV = "0.10.0"
-val catsV = "2.4.2"
-val catsEffectV = "3.0.0"
-val shapelessV = "2.3.3"
+val catsV = "2.6.1"
+val catsEffectV = "3.1.0"
+val shapelessV = "2.3.7"
 
 val specs2V = "4.10.6"
 
-val kindProjectorV = "0.11.3"
+val kindProjectorV = "0.13.0"
 val betterMonadicForV = "0.3.1"
 
 // General Settings
@@ -228,8 +228,8 @@ lazy val micrositeSettings = {
       "gray-lighter" -> "#F4F3F4",
       "white-color" -> "#FFFFFF"
     ),
-    fork in tut := true,
-    scalacOptions in Tut --= Seq(
+    fork := true,
+    scalacOptions --= Seq(
       "-Xfatal-warnings",
       "-Ywarn-unused-import",
       "-Ywarn-numeric-widen",
@@ -237,7 +237,6 @@ lazy val micrositeSettings = {
       "-Ywarn-unused:imports",
       "-Xlint:-missing-interpolator,_"
     ),
-    libraryDependencies += "com.47deg" %% "github4s" % "0.28.1",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     micrositeConfigYaml := ConfigYml(

@@ -20,21 +20,19 @@ libraryDependencies ++= Seq(
 
 First Imports.
 
-```tut:silent
+```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
 
-import scala.concurrent.ExecutionContext.global
 import scala.concurrent.duration._
 
-implicit val CS = IO.contextShift(global)
-implicit val T = IO.timer(global)
+import cats.effect.unsafe.implicits.global
 ```
 
 ### Counter Example
 
-```tut:book
+```scala mdoc
 val noLabelsCounterExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -44,12 +42,12 @@ val noLabelsCounterExample = {
   } yield currentMetrics
 }
 
-noLabelsCounterExample.unsafeRunSync
+noLabelsCounterExample.unsafeRunSync()
 ```
 
 ### Gauge Example
 
-```tut:book
+```scala mdoc
 val noLabelsGaugeExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -61,28 +59,28 @@ val noLabelsGaugeExample = {
   } yield currentMetrics
 }
 
-noLabelsGaugeExample.unsafeRunSync
+noLabelsGaugeExample.unsafeRunSync()
 ```
 
 ### Histogram Example
 
-```tut:book
+```scala mdoc
 val noLabelsHistogramExample = {
   for {
     cr <- CollectorRegistry.build[IO]
     h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
-    _ <- h.timed(T.sleep(1.second), SECONDS)
+    _ <- h.timed(Temporal[IO].sleep(1.second), SECONDS)
     currentMetrics <- cr.write004
   } yield currentMetrics
 }
 
-noLabelsHistogramExample.unsafeRunSync
+noLabelsHistogramExample.unsafeRunSync()
 ```
 
 ### Summary Example
 
-```tut:book
+```scala mdoc
 val noLabelsSummaryExample = {
   for {
     cr <- CollectorRegistry.build[IO]
@@ -94,5 +92,5 @@ val noLabelsSummaryExample = {
   } yield currentMetrics
 }
 
-noLabelsSummaryExample.unsafeRunSync
+noLabelsSummaryExample.unsafeRunSync()
 ```

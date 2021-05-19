@@ -38,30 +38,28 @@ The `-Ypartial-unification` compiler flag enables a bug fix that makes working w
 
 Each page begins with some imports, like this.
 
-```tut:silent
-import cats._, cats.data._, cats.implicits._
-import cats.effect._, cats.effect.implicits._
-import shapeless._
+```scala mdoc:silent
+import cats._, cats.data._
 import io.chrisdavenport.epimetheus._
 ```
 
 After that there is text interspersed with code examples. Sometimes definitions will stand alone.
 
-```tut:silent
+```scala mdoc:silent
 case class Person(name: String, age: Int)
 val nel = NonEmptyList.of(Person("Bob", 12), Person("Alice", 14))
 ```
 
 And sometimes they will appear as a REPL interaction.
 
-```tut
+```scala mdoc
 nel.head
 nel.tail
 ```
 
 Sometimes we demonstrate that something doesn't compile. In such cases it will be clear from the context that this is expected, and not a problem with the documentation.
 
-```tut:nofail
+```scala
 woozle(nel) // doesn't compile
 ```
 
