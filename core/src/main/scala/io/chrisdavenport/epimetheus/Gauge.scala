@@ -4,7 +4,6 @@ import cats._
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Gauge => JGauge}
-import shapeless._
 
 /**
  * Gauge metric, to report instantaneous values.
@@ -76,7 +75,7 @@ sealed abstract class Gauge[F[_]]{
 /**
  * Gauge Constructors, and Unsafe Gauge Access
  */
-object Gauge {
+object Gauge extends LabelledGauges {
 
   // Convenience
   def incIn[F[_], A](g: Gauge[F], fa: F[A])(implicit C: MonadCancel[F, _]): F[A] =
@@ -104,34 +103,6 @@ object Gauge {
     c <- Sync[F].delay(JGauge.build().name(name.getName).help(help))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsGauge[F](out)
-
-  /**
-   * Constructor for a labelled [[Gauge]].
-   *
-   * This generates a specific number of labels via `Sized`, in combination with a function
-   * to generate an equally `Sized` set of labels from some type. Values are applied by position.
-   *
-   * This counter needs to have a label applied to the [[UnlabelledGauge]] in order to
-   * be measureable or recorded.
-   *
-   * @param cr CollectorRegistry this [[Gauge]] will be registred with
-   * @param name The name of the [[Gauge]].
-   * @param help The help string of the metric
-   * @param labels The name of the labels to be applied to this metric
-   * @param f Function to take some value provided in the future to generate an equally sized list
-   *  of strings as the list of labels. These are assigned to labels by position.
-   */
-  def labelled[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F],
-    name: Name,
-    help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N]
-  ): F[UnlabelledGauge[F, A]] = for {
-      c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.map(_.getLabel):_*))
-    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledGaugeImpl[F, A](out, f.andThen(_.unsized))
-
 
   private final class NoLabelsGauge[F[_]: Sync] private[Gauge] (
     private[Gauge] val underlying: JGauge
@@ -185,7 +156,7 @@ object Gauge {
    * It is necessary to apply a value of type `A` to this
    * gauge to be able to take any measurements.
    */
-  final private class UnlabelledGaugeImpl[F[_]: Sync, A] private[epimetheus](
+  final private[epimetheus] class UnlabelledGaugeImpl[F[_]: Sync, A] private[epimetheus](
     private[Gauge] val underlying: JGauge,
     private val f: A => IndexedSeq[String]
   ) extends UnlabelledGauge[F, A] {
@@ -200,13 +171,13 @@ object Gauge {
 
   object Unsafe {
     def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g match {
-      case x: UnlabelledGaugeImpl[_, _] => x.underlying
-      case x: MapKUnlabelledGauge[_, _, _] => asJavaUnlabelled(x.base)
+      case x: UnlabelledGaugeImpl[F, A] => x.underlying
+      case x: MapKUnlabelledGauge[F, _, A] => asJavaUnlabelled(x.base)
     }
     def asJava[F[_]: ApplicativeThrow](c: Gauge[F]): F[JGauge] = c match {
       case _: LabelledGauge[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsGauge[F] => n.underlying.pure[F]
-      case m: MapKGauge[_, _] => asJava(m.base)
+      case m: MapKGauge[F, _] => asJava(m.base)
     }
   }
 }

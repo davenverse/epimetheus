@@ -6,7 +6,6 @@ import cats.implicits._
 import io.prometheus.client.{Histogram => JHistogram}
 
 import scala.concurrent.duration._
-import shapeless._
 
 /**
  * Histogram metric, to track distributions of events.
@@ -36,7 +35,7 @@ sealed abstract class Histogram[F[_]]{
  * Convenience function exposed here will also be exposed as implicit syntax
  * enhancements on the Histogram
  */
-object Histogram {
+object Histogram extends LabelledHistograms {
 
   // Convenience ----------------------------------------------------
   // Since these methods are not ex
@@ -50,9 +49,9 @@ object Histogram {
    *  are optimized for `SECONDS`.
    */
   def timed[F[_] : Clock, A](h: Histogram[F], fa: F[A], unit: TimeUnit)(implicit C: MonadCancel[F, _]): F[A] =
-    C.bracket(Clock[F].monotonic)
-    {_: FiniteDuration => fa}
-    {start: FiniteDuration => Clock[F].monotonic.flatMap(now => h.observe((now - start).toUnit(unit)))}
+    C.bracket(Clock[F].monotonic)((_: FiniteDuration) => fa) { (start: FiniteDuration) =>
+      Clock[F].monotonic.flatMap(now => h.observe((now - start).toUnit(unit)))
+    }
 
   /**
    * Persist a timed value into this [[Histogram]] in unit Seconds. This is exposed.
@@ -145,108 +144,6 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new NoLabelsHistogram[F](out)
 
-  /**
-   * Constructor for a labelled [[Histogram]]. Default buckets are [[defaults]]
-   * and are intended to cover a typical web/rpc request from milliseconds to seconds.
-   *
-   * This generates a specific number of labels via `Sized`, in combination with a function
-   * to generate an equally `Sized` set of labels from some type. Values are applied by position.
-   *
-   * This counter needs to have a label applied to the [[UnlabelledHistogram]] in order to
-   * be measureable or recorded.
-   *
-   * @param cr CollectorRegistry this [[Histogram]] will be registred with
-   * @param name The name of the [[Histogram]].
-   * @param help The help string of the metric
-   * @param labels The name of the labels to be applied to this metric
-   * @param f Function to take some value provided in the future to generate an equally sized list
-   *  of strings as the list of labels. These are assigned to labels by position.
-   */
-  def labelled[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F],
-    name: Name,
-    help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N]
-  ): F[UnlabelledHistogram[F, A]] =
-    labelledBuckets(cr, name, help, labels, f, defaults:_*)
-
-  /**
-   * Constructor for a labelled [[Histogram]]. Default buckets are [[defaults]]
-   * and are intended to cover a typical web/rpc request from milliseconds to seconds.
-   *
-   * This generates a specific number of labels via `Sized`, in combination with a function
-   * to generate an equally `Sized` set of labels from some type. Values are applied by position.
-   *
-   * This counter needs to have a label applied to the [[UnlabelledHistogram]] in order to
-   * be measureable or recorded.
-   *
-   * @param cr CollectorRegistry this [[Histogram]] will be registred with
-   * @param name The name of the [[Histogram]].
-   * @param help The help string of the metric
-   * @param labels The name of the labels to be applied to this metric
-   * @param f Function to take some value provided in the future to generate an equally sized list
-   *  of strings as the list of labels. These are assigned to labels by position.
-   * @param buckets The buckets to measure observations by.
-   */
-  def labelledBuckets[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F],
-    name: Name,
-    help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
-    buckets: Double*
-  ): F[UnlabelledHistogram[F, A]] = for {
-    c <- Sync[F].delay(
-      JHistogram.build()
-      .name(name.getName)
-      .help(help)
-      .labelNames(labels.map(_.getLabel):_*)
-      .buckets(buckets:_*)
-    )
-    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
-
-  def labelledLinearBuckets[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F],
-    name: Name,
-    help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
-    start: Double,
-    factor: Double,
-    count: Int
-  ): F[UnlabelledHistogram[F, A]] = for {
-    c <- Sync[F].delay(
-      JHistogram.build()
-      .name(name.getName)
-      .help(help)
-      .labelNames(labels.map(_.getLabel):_*)
-      .linearBuckets(start, factor, count)
-    )
-    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
-
-  def labelledExponentialBuckets[F[_]: Sync, A, N <: Nat](
-    cr: CollectorRegistry[F],
-    name: Name,
-    help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
-    start: Double,
-    factor: Double,
-    count: Int
-  ): F[UnlabelledHistogram[F, A]] = for {
-    c <- Sync[F].delay(
-      JHistogram.build()
-      .name(name.getName)
-      .help(help)
-      .labelNames(labels.map(_.getLabel):_*)
-      .exponentialBuckets(start, factor, count)
-    )
-    out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
-
   private final class NoLabelsHistogram[F[_]: Sync] private[Histogram] (
     private[Histogram] val underlying: JHistogram
   ) extends Histogram[F] {
@@ -275,7 +172,7 @@ object Histogram {
     def mapK[G[_]](fk: F ~> G): UnlabelledHistogram[G, A] = new MapKUnlabelledHistogram[F, G, A](this, fk)
   }
 
-  final private class UnlabelledHistogramImpl[F[_]: Sync, A] private[Histogram] (
+  final private[epimetheus] class UnlabelledHistogramImpl[F[_]: Sync, A] private[epimetheus] (
     private[Histogram] val underlying: JHistogram,
     private val f: A => IndexedSeq[String]
   ) extends UnlabelledHistogram[F, A]{
@@ -289,13 +186,13 @@ object Histogram {
 
   object Unsafe {
     def asJavaUnlabelled[F[_], A](h: UnlabelledHistogram[F, A]): JHistogram = h match {
-      case h: UnlabelledHistogramImpl[_, _] => h.underlying
-      case h: MapKUnlabelledHistogram[_, _, _] => asJavaUnlabelled(h.base)
+      case h: UnlabelledHistogramImpl[F, A] => h.underlying
+      case h: MapKUnlabelledHistogram[F, _, A] => asJavaUnlabelled(h.base)
     }
     def asJava[F[_]: ApplicativeThrow](c: Histogram[F]): F[JHistogram] = c match {
       case _: LabelledHistogram[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
       case n: NoLabelsHistogram[F] => n.underlying.pure[F]
-      case h: MapKHistogram[_, _] => asJava(h.base)
+      case h: MapKHistogram[F, _] => asJava(h.base)
     }
   }
 

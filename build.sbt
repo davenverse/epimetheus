@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala213 = "2.13.6"
 
-ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.13", Scala213, "3.0.0")
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowArtifactUpload := false
@@ -99,27 +99,31 @@ lazy val commonSettings = Seq(
       "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath,
       "-doc-source-url", "https://github.com/ChristopherDavenport/epimetheus/blob/v" + version.value + "€{FILE_PATH}.scala"
   ),
-  scalacOptions -= "-Xfatal-warnings",
-
+  scalacOptions --= List("-source", "future", "-Xfatal-warnings"),
   Compile / doc / scalacOptions ++=
     Seq("-doc-root-content", (baseDirectory.value.getParentFile / "rootdoc.txt").getAbsolutePath),
   Compile / doc / scalacOptions ++= Opts.doc.title("epimetheus"),
 
-  addCompilerPlugin("org.typelevel" %  "kind-projector"     % kindProjectorV cross CrossVersion.full),
-  addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % betterMonadicForV),
   libraryDependencies ++= Seq(
-    "org.scala-lang"              % "scala-reflect"               % scalaVersion.value,
     "io.prometheus"               % "simpleclient"                % prometheusV,
     "io.prometheus"               % "simpleclient_common"         % prometheusV,
     "io.prometheus"               % "simpleclient_hotspot"        % prometheusV,
 
     "org.typelevel"               %% "cats-core"                  % catsV,
-
     "org.typelevel"               %% "cats-effect"                % catsEffectV,
-    "com.chuusai"                 %% "shapeless"                  % shapelessV,
 
     "org.typelevel"               %%% "munit-cats-effect-3"       % munitCatsEffectV  % Test
-  )
+  ),
+  libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
+      Seq(
+        compilerPlugin("org.typelevel" %  "kind-projector"     % kindProjectorV cross CrossVersion.full),
+        compilerPlugin("com.olegpy"    %% "better-monadic-for" % betterMonadicForV),
+        "org.scala-lang"              % "scala-reflect"               % scalaVersion.value,
+        "com.chuusai"                 %% "shapeless"                  % shapelessV
+      )
+    }
+    .toList
+    .flatten
 )
 
 lazy val releaseSettings = {
