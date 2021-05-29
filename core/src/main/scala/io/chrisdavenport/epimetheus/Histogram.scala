@@ -35,7 +35,7 @@ sealed abstract class Histogram[F[_]]{
  * Convenience function exposed here will also be exposed as implicit syntax
  * enhancements on the Histogram
  */
-object Histogram extends ShapelessPolyfill {
+object Histogram {
 
   // Convenience ----------------------------------------------------
   // Since these methods are not ex

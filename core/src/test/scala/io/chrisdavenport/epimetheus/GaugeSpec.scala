@@ -1,7 +1,6 @@
 package io.chrisdavenport.epimetheus
 
 import cats.effect._
-import shapeless._
 import io.chrisdavenport.epimetheus.implicits._
 import scala.concurrent.duration._
 
@@ -54,7 +53,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
   test("Gauge Labelled: Register cleanly in the collector") {
     val test = for {
       cr <- CollectorRegistry.build[IO]
-      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { s: String => Sized(s) })
+      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
     } yield gauge
 
     test.attempt.map(_.isRight).assert
@@ -63,7 +62,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
   test("Gauge Labelled: Increase correctly") {
     val test = for {
       cr <- CollectorRegistry.build[IO]
-      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { s: String => Sized(s) })
+      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
       _ <- gauge.label("boo").inc
       out <- gauge.label("boo").get
     } yield out
@@ -74,7 +73,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
   test("Gauge Labelled: Decrease correctly") {
     val test = for {
       cr <- CollectorRegistry.build[IO]
-      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { s: String => Sized(s) })
+      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
       _ <- gauge.label("boo").inc
       _ <- gauge.label("boo").dec
       out <- gauge.label("boo").get
@@ -87,7 +86,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
     val set = 52D
     val test = for {
       cr <- CollectorRegistry.build[IO]
-      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { s: String => Sized(s) })
+      gauge <- Gauge.labelled(cr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
       _ <- gauge.label("boo").set(set)
       out <- gauge.label("boo").get
     } yield out

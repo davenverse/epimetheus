@@ -75,7 +75,7 @@ sealed abstract class Gauge[F[_]]{
 /**
  * Gauge Constructors, and Unsafe Gauge Access
  */
-object Gauge extends ShapelessPolyfill {
+object Gauge {
 
   // Convenience
   def incIn[F[_], A](g: Gauge[F], fa: F[A])(implicit C: MonadCancel[F, _]): F[A] =

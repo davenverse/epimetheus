@@ -6,4 +6,6 @@ trait ShapelessPolyfill {
 
   type Sized[+Repr,L <: Nat] = shapeless.Sized[Repr, L]
 
+  val Sized = shapeless.Sized
+
 }

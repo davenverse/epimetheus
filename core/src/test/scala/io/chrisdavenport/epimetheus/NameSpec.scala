@@ -1,21 +1,22 @@
 package io.chrisdavenport.epimetheus
 
 class NameSpec extends munit.CatsEffectSuite {
-    test("Name: Return the input string if valid") {
-      assertEquals(Name("L").getName, "L")
-    }
 
-    test("Suffix: Return the input string if valid") {
-      assertEquals(Name.Suffix("0").getSuffix, "0")
-    }
+  test("Name: Return the input string if valid") {
+    assertEquals(Name("L").getName, "L")
+  }
 
-  object Compile {
+  test("Name.Suffix: Return the input string if valid") {
+    assertEquals(Name.Suffix("0").getSuffix, "0")
+  }
+
+  test("Name: compile-time check fails for invalid values") {
     val good = Name("asdf_basrr")
-    // val badNumberFirst = Name("0asdfa")
+    assert(compileErrors("""Name("0asdfa")""").nonEmpty)
     val goodIfNumberSecond = Name("a0asdfa")
-    // val badAscii = Name("^")
+    assert(compileErrors("""Name("^")""").nonEmpty)
 
     val goodSuffix = Name.Suffix("0asdfa")
-    // val failAscci = Name.Suffix("^")
+    assert(compileErrors("""Name.Suffix("^")""").nonEmpty)
   }
 }

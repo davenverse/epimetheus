@@ -61,7 +61,7 @@ sealed abstract class Counter[F[_]]{
 /**
  * Counter Constructors, and Unsafe Counter Access
  */
-object Counter extends ShapelessPolyfill {
+object Counter {
 
   /**
    * Constructor for a Counter with no labels.
