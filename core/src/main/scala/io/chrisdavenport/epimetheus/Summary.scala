@@ -181,18 +181,18 @@ trait SummaryCommons {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledSummaryImpl[F, A](out, f.andThen(_.unsized))
 
-  final private[epimetheus] class NoLabelsSummary[F[_]: Sync] private[epimetheus] (
+  final private[epimetheus] case class NoLabelsSummary[F[_]: Sync] private[epimetheus] (
     private[epimetheus] val underlying: JSummary
   ) extends Summary[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
   }
-  final private[epimetheus] class LabelledSummary[F[_]: Sync] private[epimetheus] (
+  final private[epimetheus] case class LabelledSummary[F[_]: Sync] private[epimetheus] (
     private[epimetheus] val underlying: JSummary.Child
   ) extends Summary[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
   }
 
-  final private[epimetheus] class MapKSummary[F[_], G[_]](private[epimetheus] val base: Summary[F], fk: F ~> G) extends Summary[G]{
+  final private[epimetheus] case class MapKSummary[F[_], G[_]](private[epimetheus] val base: Summary[F], fk: F ~> G) extends Summary[G]{
     def observe(d: Double): G[Unit] = fk(base.observe(d))
   }
 
@@ -235,12 +235,12 @@ trait SummaryCommons {
   object Unsafe {
     def asJavaUnlabelled[F[_], A](g: UnlabelledSummary[F, A]): JSummary = g match {
       case a: UnlabelledSummaryImpl[F, A] => a.underlying
-      case a: MapKUnlabelledSummary[F, _, A] => asJavaUnlabelled(a.base)
+      case a: MapKUnlabelledSummary[f, _, a] => asJavaUnlabelled(a.base)
     }
     def asJava[F[_]: ApplicativeThrow](c: Summary[F]): F[JSummary] = c match {
       case _: LabelledSummary[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
-      case n: NoLabelsSummary[F] => n.underlying.pure[F]
-      case b: MapKSummary[F, _] => asJava(b.base)
+      case NoLabelsSummary(underlying) => underlying.pure[F]
+      case MapKSummary(base, _) => asJava(base.asInstanceOf[Summary[F]])
     }
   }
 }
