@@ -12,11 +12,15 @@ class NameSpec extends munit.CatsEffectSuite {
 
   test("Name: compile-time check fails for invalid values") {
     val good = Name("asdf_basrr")
-    assert(compileErrors("""Name("0asdfa")""").nonEmpty)
+    val errors1 = compileErrors("""Name("0asdfa")""")
+    assert(errors1.nonEmpty)
+
     val goodIfNumberSecond = Name("a0asdfa")
-    assert(compileErrors("""Name("^")""").nonEmpty)
+    val errors2 = compileErrors("""Name("^")""")
+    assert(errors2.nonEmpty)
 
     val goodSuffix = Name.Suffix("0asdfa")
-    assert(compileErrors("""Name.Suffix("^")""").nonEmpty)
+    val errors3 = compileErrors("""Name.Suffix("^")""")
+    assert(errors3.nonEmpty)
   }
 }
