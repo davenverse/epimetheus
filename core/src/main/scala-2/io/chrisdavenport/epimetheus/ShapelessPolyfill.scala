@@ -6,6 +6,7 @@ trait ShapelessPolyfill {
 
   type Sized[+Repr, L <: Nat] = shapeless.Sized[Repr, L]
 
-  val Sized = shapeless.Sized
+  // For tests, user code on Scala 2 should just import shapeless.Sized
+  private[epimetheus] val Sized = shapeless.Sized
 
 }
