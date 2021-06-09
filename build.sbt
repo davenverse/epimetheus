@@ -6,6 +6,7 @@ ThisBuild / crossScalaVersions := Seq("2.12.13", "3.0.0", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowArtifactUpload := false
+ThisBuild / githubWorkflowBuildMatrixFailFast := Some(false)
 
 val Scala213Cond = s"matrix.scala == '$Scala213'"
 
