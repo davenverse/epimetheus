@@ -5,6 +5,8 @@ import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Gauge => JGauge}
 
+import scala.annotation.tailrec
+
 /**
  * Gauge metric, to report instantaneous values.
  *
@@ -70,6 +72,8 @@ sealed abstract class Gauge[F[_]]{
   def set(d: Double): F[Unit]
 
   def mapK[G[_]](fk: F ~> G): Gauge[G] = new Gauge.MapKGauge[F, G](this, fk)
+
+  private[epimetheus] def asJava: F[JGauge]
 }
 
 /**
@@ -132,7 +136,7 @@ object Gauge {
   } yield new UnlabelledGaugeImpl[F, A](out, f.andThen(_.unsized))
 
 
-  private final case class NoLabelsGauge[F[_]: Sync] private[Gauge] (
+  private final class NoLabelsGauge[F[_]: Sync] private[Gauge] (
     private[Gauge] val underlying: JGauge
   ) extends Gauge[F] {
     def get: F[Double] = Sync[F].delay(underlying.get())
@@ -144,9 +148,11 @@ object Gauge {
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
 
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
+
+    override private[epimetheus] def asJava: F[JGauge] = underlying.pure[F]
   }
 
-  private final case class LabelledGauge[F[_]: Sync] private[Gauge] (
+  private final class LabelledGauge[F[_]: Sync] private[Gauge] (
     private val underlying: JGauge.Child
   ) extends Gauge[F] {
     def get: F[Double] = Sync[F].delay(underlying.get())
@@ -158,9 +164,12 @@ object Gauge {
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
 
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
+
+    override private[epimetheus] def asJava: F[JGauge] =
+      ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
   }
 
-  private final case class MapKGauge[F[_], G[_]](private[Gauge] val base: Gauge[F], fk: F ~> G) extends Gauge[G]{
+  private final class MapKGauge[F[_], G[_]](private[Gauge] val base: Gauge[F], fk: F ~> G) extends Gauge[G]{
     def get: G[Double] = fk(base.get)
 
     def dec: G[Unit] = fk(base.dec)
@@ -170,6 +179,8 @@ object Gauge {
     def incBy(d: Double): G[Unit] = fk(base.incBy(d))
 
     def set(d: Double): G[Unit] = fk(base.set(d))
+
+    override private[epimetheus] def asJava: G[JGauge] = fk(base.asJava)
   }
 
 
@@ -198,14 +209,11 @@ object Gauge {
 
 
   object Unsafe {
+    @tailrec
     def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g match {
       case x: UnlabelledGaugeImpl[_, _] => x.underlying
       case x: MapKUnlabelledGauge[f, _, a] => asJavaUnlabelled(x.base)
     }
-    def asJava[F[_]: ApplicativeThrow](c: Gauge[F]): F[JGauge] = c match {
-      case LabelledGauge(_) => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
-      case NoLabelsGauge(underlying) => underlying.pure[F]
-      case MapKGauge(base, _) => asJava[F](base.asInstanceOf[Gauge[F]])
-    }
+    def asJava[F[_]](c: Gauge[F]): F[JGauge] = c.asJava
   }
 }

@@ -1,6 +1,7 @@
 package io.chrisdavenport.epimetheus
 
 import cats.*
+import io.prometheus.client.{Summary => JSummary}
 
 import scala.quoted.*
 
@@ -28,6 +29,8 @@ abstract class Summary[F[_]]{
   def observe(d: Double): F[Unit]
 
   def mapK[G[_]](fk: F ~> G): Summary[G] = new Summary.MapKSummary[F, G](this, fk)
+
+  private[epimetheus] def asJava: F[JSummary]
 }
 
 object Summary extends SummaryCommons {

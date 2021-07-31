@@ -5,6 +5,7 @@ import cats.effect._
 import cats.implicits._
 import io.prometheus.client.{Histogram => JHistogram}
 
+import scala.annotation.tailrec
 import scala.concurrent.duration._
 
 /**
@@ -27,6 +28,7 @@ sealed abstract class Histogram[F[_]]{
 
   def mapK[G[_]](fk: F ~> G): Histogram[G] = new Histogram.MapKHistogram[F, G](this, fk)
 
+  private[epimetheus] def asJava: F[JHistogram]
 }
 
 /**
@@ -246,21 +248,27 @@ object Histogram {
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
 
-  private final case class NoLabelsHistogram[F[_]: Sync] private[Histogram] (
+  private final class NoLabelsHistogram[F[_]: Sync] private[Histogram] (
     private[Histogram] val underlying: JHistogram
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
 
+    override private[epimetheus] def asJava: F[JHistogram] = underlying.pure[F]
   }
 
-  private final case class LabelledHistogram[F[_]: Sync] private[Histogram] (
+  private final class LabelledHistogram[F[_]: Sync] private[Histogram] (
     private val underlying: JHistogram.Child
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
+
+    override private[epimetheus] def asJava: F[JHistogram] =
+      ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
   }
 
-  private final case class MapKHistogram[F[_], G[_]](private[Histogram] val base: Histogram[F], fk: F ~> G) extends Histogram[G]{
+  private final class MapKHistogram[F[_], G[_]](private[Histogram] val base: Histogram[F], fk: F ~> G) extends Histogram[G]{
     def observe(d: Double): G[Unit] = fk(base.observe(d))
+
+    override private[epimetheus] def asJava: G[JHistogram] = fk(base.asJava)
   }
 
   /**
@@ -274,7 +282,7 @@ object Histogram {
     def mapK[G[_]](fk: F ~> G): UnlabelledHistogram[G, A] = new MapKUnlabelledHistogram[F, G, A](this, fk)
   }
 
-  final private[epimetheus] case class UnlabelledHistogramImpl[F[_]: Sync, A] private[epimetheus] (
+  final private[epimetheus] class UnlabelledHistogramImpl[F[_]: Sync, A] private[epimetheus] (
     private[Histogram] val underlying: JHistogram,
     private val f: A => IndexedSeq[String]
   ) extends UnlabelledHistogram[F, A]{
@@ -282,20 +290,17 @@ object Histogram {
       new LabelledHistogram[F](underlying.labels(f(a):_*))
   }
 
-  final private case class MapKUnlabelledHistogram[F[_], G[_], A](private[Histogram] val base: UnlabelledHistogram[F, A], fk: F ~> G) extends UnlabelledHistogram[G, A]{
+  final private class MapKUnlabelledHistogram[F[_], G[_], A](private[Histogram] val base: UnlabelledHistogram[F, A], fk: F ~> G) extends UnlabelledHistogram[G, A]{
     def label(a: A): Histogram[G] = base.label(a).mapK(fk)
   }
 
   object Unsafe {
+    @tailrec
     def asJavaUnlabelled[F[_], A](h: UnlabelledHistogram[F, A]): JHistogram = h match {
       case h: UnlabelledHistogramImpl[F, A] => h.underlying
       case h: MapKUnlabelledHistogram[f, _, a] => asJavaUnlabelled(h.base)
     }
-    def asJava[F[_]: ApplicativeThrow](c: Histogram[F]): F[JHistogram] = c match {
-      case _: LabelledHistogram[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
-      case NoLabelsHistogram(underlying) => underlying.pure[F]
-      case MapKHistogram(base, _) => asJava(base.asInstanceOf[Histogram[F]])
-    }
+    def asJava[F[_]](c: Histogram[F]): F[JHistogram] = c.asJava
   }
 
 }
