@@ -4,7 +4,8 @@ import cats._
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Counter => JCounter}
-import shapeless._
+
+import scala.annotation.tailrec
 
 /**
   * Counter metric, to track counts, running totals, or events.
@@ -57,6 +58,8 @@ sealed abstract class Counter[F[_]]{
   def incBy(d: Double): F[Unit]
 
   def mapK[G[_]](fk: F ~> G): Counter[G] = new Counter.MapKCounter[F, G](this, fk)
+
+  private[epimetheus] def asJava: F[JCounter]
 }
 
 /**
@@ -99,7 +102,7 @@ object Counter {
     labels: Sized[IndexedSeq[Label], N],
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledCounter[F, A]] = for {
-      c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.map(_.getLabel):_*))
+    c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.unsized.map(_.getLabel):_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledCounterImpl[F, A](out, f.andThen(_.unsized))
 
@@ -108,6 +111,8 @@ object Counter {
 
     override def inc: F[Unit] = Sync[F].delay(underlying.inc)
     override def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+
+    override private[epimetheus] def asJava: F[JCounter] = underlying.pure[F]
   }
 
   private final class LabelledCounter[F[_]: Sync] private[Counter] (private[Counter] val underlying: JCounter.Child) extends Counter[F] {
@@ -115,12 +120,17 @@ object Counter {
 
     def inc: F[Unit] = Sync[F].delay(underlying.inc)
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+
+    override private[epimetheus] def asJava: F[JCounter] =
+      ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
   }
 
   private final class MapKCounter[F[_], G[_]](private[Counter] val base: Counter[F], fk: F ~> G) extends Counter[G]{
     def get: G[Double] = fk(base.get)
     def inc: G[Unit] = fk(base.inc)
     def incBy(d: Double): G[Unit] = fk(base.incBy(d))
+
+    override private[epimetheus] def asJava: G[JCounter] = fk(base.asJava)
   }
 
   /**
@@ -147,14 +157,11 @@ object Counter {
   }
 
   object Unsafe {
+    @tailrec
     def asJavaUnlabelled[F[_], A](c: UnlabelledCounter[F, A]): JCounter = c match {
-      case m: MapKUnlabelledCounter[_, _, _] => asJavaUnlabelled(m.base)
+      case m: MapKUnlabelledCounter[f, _, a] => asJavaUnlabelled(m.base)
       case m: UnlabelledCounterImpl[_, _] => m.underlying
     }
-    def asJava[F[_]: ApplicativeThrow](c: Counter[F]): F[JCounter] = c match {
-      case _: LabelledCounter[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
-      case n: NoLabelsCounter[F] => n.underlying.pure[F]
-      case b: MapKCounter[_, _] =>  asJava(b.base)
-    }
+    def asJava[F[_]](c: Counter[F]): F[JCounter] = c.asJava
   }
 }
