@@ -4,7 +4,8 @@ import cats._
 import cats.implicits._
 import cats.effect._
 import io.prometheus.client.{Gauge => JGauge}
-import shapeless._
+
+import scala.annotation.tailrec
 
 /**
  * Gauge metric, to report instantaneous values.
@@ -71,6 +72,8 @@ sealed abstract class Gauge[F[_]]{
   def set(d: Double): F[Unit]
 
   def mapK[G[_]](fk: F ~> G): Gauge[G] = new Gauge.MapKGauge[F, G](this, fk)
+
+  private[epimetheus] def asJava: F[JGauge]
 }
 
 /**
@@ -128,7 +131,7 @@ object Gauge {
     labels: Sized[IndexedSeq[Label], N],
     f: A => Sized[IndexedSeq[String], N]
   ): F[UnlabelledGauge[F, A]] = for {
-      c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.map(_.getLabel):_*))
+    c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.unsized.map(_.getLabel):_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
   } yield new UnlabelledGaugeImpl[F, A](out, f.andThen(_.unsized))
 
@@ -145,6 +148,8 @@ object Gauge {
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
 
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
+
+    override private[epimetheus] def asJava: F[JGauge] = underlying.pure[F]
   }
 
   private final class LabelledGauge[F[_]: Sync] private[Gauge] (
@@ -159,6 +164,9 @@ object Gauge {
     def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
 
     def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
+
+    override private[epimetheus] def asJava: F[JGauge] =
+      ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
   }
 
   private final class MapKGauge[F[_], G[_]](private[Gauge] val base: Gauge[F], fk: F ~> G) extends Gauge[G]{
@@ -171,6 +179,8 @@ object Gauge {
     def incBy(d: Double): G[Unit] = fk(base.incBy(d))
 
     def set(d: Double): G[Unit] = fk(base.set(d))
+
+    override private[epimetheus] def asJava: G[JGauge] = fk(base.asJava)
   }
 
 
@@ -185,7 +195,7 @@ object Gauge {
    * It is necessary to apply a value of type `A` to this
    * gauge to be able to take any measurements.
    */
-  final private class UnlabelledGaugeImpl[F[_]: Sync, A] private[epimetheus](
+  final private[epimetheus] class UnlabelledGaugeImpl[F[_]: Sync, A] private[epimetheus](
     private[Gauge] val underlying: JGauge,
     private val f: A => IndexedSeq[String]
   ) extends UnlabelledGauge[F, A] {
@@ -199,14 +209,11 @@ object Gauge {
 
 
   object Unsafe {
+    @tailrec
     def asJavaUnlabelled[F[_], A](g: UnlabelledGauge[F, A]): JGauge = g match {
       case x: UnlabelledGaugeImpl[_, _] => x.underlying
-      case x: MapKUnlabelledGauge[_, _, _] => asJavaUnlabelled(x.base)
+      case x: MapKUnlabelledGauge[f, _, a] => asJavaUnlabelled(x.base)
     }
-    def asJava[F[_]: ApplicativeThrow](c: Gauge[F]): F[JGauge] = c match {
-      case _: LabelledGauge[F] => ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
-      case n: NoLabelsGauge[F] => n.underlying.pure[F]
-      case m: MapKGauge[_, _] => asJava(m.base)
-    }
+    def asJava[F[_]](c: Gauge[F]): F[JGauge] = c.asJava
   }
 }
