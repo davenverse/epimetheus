@@ -89,7 +89,7 @@ val shapelessV = "2.3.7"
 
 val munitCatsEffectV = "1.0.5"
 
-val kindProjectorV = "0.13.0"
+val kindProjectorV = "0.13.1"
 val betterMonadicForV = "0.3.1"
 
 // General Settings
