@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala213 = "2.13.6"
 
-ThisBuild / crossScalaVersions := Seq("2.12.14", "3.0.1", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.15", "3.0.1", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 ThisBuild / githubWorkflowArtifactUpload := false
