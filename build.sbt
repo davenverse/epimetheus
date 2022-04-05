@@ -27,8 +27,7 @@ lazy val core = project.in(file("core"))
   )
 
 lazy val site = project.in(file("site"))
-  .disablePlugins(MimaPlugin)
-  .settings(commonSettings)
+  .enablePlugins(TypelevelSitePlugin)
   .dependsOn(core)
 
 
