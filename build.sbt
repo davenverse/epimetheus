@@ -1,13 +1,22 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+ThisBuild / tlBaseVersion := "0.5" // your current series x.y
+
+ThisBuild / organization := "io.chrisdavenport"
+ThisBuild / organizationName := "Christopher Davenport"
+ThisBuild / licenses := Seq(License.MIT)
+ThisBuild / developers := List(
+  // your GitHub handle and name
+  tlGitHubDev("christopherdavenport", "Christopher Davenport")
+)
+
+// true by default, set to false to publish to s01.oss.sonatype.org
+ThisBuild / tlSonatypeUseLegacyHost := true
 
 val Scala213 = "2.13.8"
 
 ThisBuild / crossScalaVersions := Seq("2.12.15", "3.0.1", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
-lazy val `epimetheus` = project.in(file("."))
-  .disablePlugins(MimaPlugin)
-  .enablePlugins(NoPublishPlugin)
+lazy val `epimetheus` = tlCrossRootProject
   .settings(commonSettings)
   .aggregate(core)
 
@@ -19,7 +28,6 @@ lazy val core = project.in(file("core"))
 
 lazy val site = project.in(file("site"))
   .disablePlugins(MimaPlugin)
-  .enablePlugins(DavenverseMicrositePlugin)
   .settings(commonSettings)
   .dependsOn(core)
 
