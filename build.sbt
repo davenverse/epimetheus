@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 val Scala213 = "2.13.8"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "3.1.2", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.15", "3.0.1", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 lazy val `epimetheus` = project.in(file("."))
@@ -24,9 +24,9 @@ lazy val site = project.in(file("site"))
   .dependsOn(core)
 
 
-val prometheusV = "0.11.0"
+val prometheusV = "0.15.0"
 val catsV = "2.7.0"
-val catsEffectV = "3.3.3"
+val catsEffectV = "3.3.11"
 val shapelessV = "2.3.7"
 
 val munitCatsEffectV = "1.0.7"
