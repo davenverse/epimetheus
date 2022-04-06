@@ -67,4 +67,4 @@ Many thanks to to the [Book of Doobie](https://github.com/tpolecat/doobie) for c
 
 ## Feedback and Contributions
 
-Feedback on **epimetheus** or this book is genuinely welcome. Please feel free to file a [pull request](hhttps://github.com/ChristopherDavenport/epimetheus) if you have a contribution, or file an [issue](https://github.com/ChristopherDavenport/epimetheus/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), or chat with us on [Gitter](https://gitter.im/ChristopherDavenport/epimetheus).
+Feedback on **epimetheus** or this book is genuinely welcome. Please feel free to file a [pull request](https://github.com/ChristopherDavenport/epimetheus) if you have a contribution, or file an [issue](https://github.com/ChristopherDavenport/epimetheus/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc), or chat with us on [Gitter](https://gitter.im/ChristopherDavenport/epimetheus).
