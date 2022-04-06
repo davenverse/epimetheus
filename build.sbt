@@ -42,6 +42,8 @@ val munitCatsEffectV = "1.0.7"
 // General Settings
 lazy val commonSettings = Seq(
 
+  javacOptions ++= Seq("--release", "8"),
+
   scalacOptions --= List("-source", "future", "-Xfatal-warnings"),
   Compile / doc / scalacOptions ++=
     Seq("-doc-root-content", (baseDirectory.value.getParentFile / "rootdoc.txt").getAbsolutePath),
