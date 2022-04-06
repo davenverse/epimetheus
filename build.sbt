@@ -10,6 +10,7 @@ ThisBuild / developers := List(
 
 // true by default, set to false to publish to s01.oss.sonatype.org
 ThisBuild / tlSonatypeUseLegacyHost := true
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 
 val Scala213 = "2.13.8"
 
