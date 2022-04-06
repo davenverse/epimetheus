@@ -1,158 +1,269 @@
-<html><head><title>epimetheus: Counter</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Christopher Davenport" /><meta name="description" content="An Afterthought of Prometheus" /><meta name="og:image" content="/epimetheus/img/poster.png" /><meta name="image" property="og:image" content="/epimetheus/img/poster.png" /><meta name="og:title" content="epimetheus: Counter" /><meta name="title" property="og:title" content="epimetheus: Counter" /><meta name="og:site_name" content="epimetheus" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="An Afterthought of Prometheus" /><link rel="icon" type="image/png" href="/epimetheus/img/favicon.png" /><meta name="twitter:title" content="epimetheus: Counter" /><meta name="twitter:image" content="/epimetheus/img/poster.png" /><meta name="twitter:description" content="An Afterthought of Prometheus" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/epimetheus/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/epimetheus/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/epimetheus/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/epimetheus/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/epimetheus/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/epimetheus/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/epimetheus/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/epimetheus/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/epimetheus/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/epimetheus/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/epimetheus/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/epimetheus/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/epimetheus/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/epimetheus/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/epimetheus/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/epimetheus/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/epimetheus/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/epimetheus/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/epimetheus/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/epimetheus/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/epimetheus/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/epimetheus/css/style.css" /><link rel="stylesheet" href="/epimetheus/css/palette.css" /><link rel="stylesheet" href="/epimetheus/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/epimetheus/" class="brand"><div class="brand-wrapper"><span>epimetheus</span></div></a></li><li><a href="/epimetheus/docs/01-Introduction.html" class="">Introduction</a></li><li><a href="/epimetheus/docs/02-BigPicture.html" class="">Big Picture</a></li><li><a href="/epimetheus/docs/03-DataModel.html" class="">Data Model</a></li><li><a href="/epimetheus/docs/04-CollectorRegistry.html" class="">CollectorRegistry</a></li><li><a href="/epimetheus/docs/05-Counter.html" class=" active ">Counter</a></li><li><a href="/epimetheus/docs/06-Gauge.html" class="">Gauge</a></li><li><a href="/epimetheus/docs/07-Histogram.html" class="">Histogram</a></li><li><a href="/epimetheus/docs/08-Summary.html" class="">Summary</a></li><li><a href="/epimetheus/" class=""></a></li><li><a href="/epimetheus/css/palette.css" class=""></a></li><li><a href="/epimetheus/css/style.css" class=""></a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/ChristopherDavenport/epimetheus"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/ChristopherDavenport/epimetheus"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('epimetheus An Afterthought of Prometheus');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('epimetheus An Afterthought of Prometheus');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="ChristopherDavenport" data-github-repo="epimetheus"><div class="content-wrapper"><section><h1 id="counter">Counter</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
+    <title>{{page.title}}</title>
+    
+      <meta name="author" content="Christopher Davenport"/>
+    
+    
+      <meta name="description" content="site"/>
+    
+    
+      <link rel="icon" sizes="32x32" type="image/png" href="https://typelevel.org/img/favicon.png"/>
+    
+    
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.207/distr/fira_code.css">
+    
+    <link rel="stylesheet" type="text/css" href="../helium/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="../helium/laika-helium.css" />
+    <link rel="stylesheet" type="text/css" href="../site/styles.css" />
+    <script src="../helium/laika-helium.js"></script>
+    
+    
+    <script> /* for avoiding page load transitions */ </script>
+  </head>
 
-<p>Counter metric, to track counts, running totals, or events.</p>
+  <body>
 
-<p>If your use case can go up or down consider using a <code class="highlighter-rouge">Gauge</code> instead.
-Use the <code class="highlighter-rouge">rate()</code> function in Prometheus to calculate the rate of increase of a Counter.
-By convention, the names of Counters are suffixed by <code class="highlighter-rouge">_total</code>.</p>
+    <header id="top-bar">
 
-<p>A <code class="highlighter-rouge">Counter</code> is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart. For example, you can use a counter to represent the number of requests served, tasks completed, or errors.</p>
+      <div class="row">
+        <a id="nav-icon">
+          <i class="icofont-laika" title="Navigation">&#xefa2;</i>
+        </a>
+        
+      </div>
 
-<p>Do not use a counter to expose a value that can decrease. For example, do not use a counter for the number of currently running processes; instead use a gauge.</p>
+      <a class="image-link" href="https://typelevel.org"><img src="https://typelevel.org/img/logo.svg"></a>
 
-<p>Imports</p>
+      <span class="row links"><a class="icon-link svg-link" href="https://github.com/davenverse/epimetheus"><span title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a><a class="icon-link" href="https://discord.gg/XF3CXcMzqD"><i class="icofont-laika" title="Chat">&#xeed5;</i></a><a class="icon-link" href="https://twitter.com/typelevel"><i class="icofont-laika" title="Twitter">&#xed7a;</i></a></span>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.chrisdavenport.epimetheus._</span>
-<span class="k">import</span> <span class="nn">cats.effect._</span>
-<span class="k">import</span> <span class="nn">shapeless._</span>
-</code></pre>
-</div>
+    </header>
 
-<p>An Example Counter without Labels:</p>
+    <nav id="sidebar">
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">noLabelsExample</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="k">for</span> <span class="o">{</span>
-    <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">successCounter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span>
-      <span class="n">cr</span><span class="o">,</span>
-      <span class="nc">Name</span><span class="o">(</span><span class="s">"example_success_total"</span><span class="o">),</span>
-      <span class="s">"Example Counter of Success"</span>
-    <span class="o">)</span>
-    <span class="n">failureCounter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">noLabels</span><span class="o">(</span>
-      <span class="n">cr</span><span class="o">,</span>
-      <span class="nc">Name</span><span class="o">(</span><span class="s">"example_failure_total"</span><span class="o">),</span>
-      <span class="s">"Example Counter of Failure"</span>
-    <span class="o">)</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">IO</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="s">"Action Here"</span><span class="o">)).</span><span class="n">guaranteeCase</span><span class="o">{</span>
-      <span class="k">case</span> <span class="nc">ExitCase</span><span class="o">.</span><span class="nc">Completed</span> <span class="k">=&gt;</span> <span class="n">successCounter</span><span class="o">.</span><span class="n">inc</span>
-      <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">failureCounter</span><span class="o">.</span><span class="n">inc</span>
-    <span class="o">}</span>
-    <span class="n">out</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
-  <span class="o">}</span> <span class="k">yield</span> <span class="n">out</span>
-<span class="o">}</span>
-<span class="c1">// noLabelsExample: cats.effect.IO[String] = IO$1120052454
-</span>
-<span class="n">noLabelsExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// Action Here
-// res0: String =
-// "# HELP example_failure_total Example Counter of Failure
-// # TYPE example_failure_total counter
-// example_failure_total 0.0
-// # HELP example_success_total Example Counter of Success
+      <div class="row">
+        <a class="icon-link svg-link" href="https://github.com/davenverse/epimetheus"><span title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <g class="svg-shape">
+    <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
+  </g>
+</svg></span></a><a class="icon-link" href="https://discord.gg/XF3CXcMzqD"><i class="icofont-laika" title="Chat">&#xeed5;</i></a><a class="icon-link" href="https://twitter.com/typelevel"><i class="icofont-laika" title="Twitter">&#xed7a;</i></a>
+      </div>
+
+      <ul class="nav-list">
+        <li class="level1"><a href="../ecosystem.html">The Epimetheus Ecosystem</a></li>
+        <li class="level1"><a href="../epic.html">layout: docs</a></li>
+        <li class="level1"><a href="../index.html">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
+        <li class="level1 nav-header">docs</li>
+        <li class="level2"><a href="01-Introduction.html">{{page.title}}</a></li>
+        <li class="level2"><a href="02-BigPicture.html">{{page.title}}</a></li>
+        <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">{{page.title}}</a></li>
+        <li class="level2 active"><a href="#">{{page.title}}</a></li>
+        <li class="level2"><a href="06-Gauge.html">{{page.title}}</a></li>
+        <li class="level2"><a href="07-Histogram.html">{{page.title}}</a></li>
+        <li class="level2"><a href="08-Summary.html">{{page.title}}</a></li>
+      </ul>
+
+      <ul class="nav-list">
+        <li class="level1 nav-header">Related Projects</li>
+        
+          <li class="level2"><a href="https://typelevel.org/cats/">cats</a></li>
+        
+      </ul>
+
+    </nav>
+
+    <div id="container">
+
+      <nav id="page-nav">
+        <p class="header"><a href="#">{{page.title}}</a></p>
+
+        <ul class="nav-list">
+        </ul>
+
+        <p class="footer"></p>
+      </nav>
+
+      <main class="content">
+
+        <hr>
+        <p>layout: docs
+        number: 5
+        title: Counter
+        ---</p>
+        <h1 id="page-title" class="title">{{page.title}}</h1>
+        <p>Counter metric, to track counts, running totals, or events.</p>
+        <p>If your use case can go up or down consider using a <code>Gauge</code> instead.
+        Use the <code>rate()</code> function in Prometheus to calculate the rate of increase of a Counter.
+        By convention, the names of Counters are suffixed by <code>_total</code>.</p>
+        <p>A <code>Counter</code> is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart. For example, you can use a counter to represent the number of requests served, tasks completed, or errors.</p>
+        <p>Do not use a counter to expose a value that can decrease. For example, do not use a counter for the number of currently running processes; instead use a gauge.</p>
+        <p>Imports</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">chrisdavenport</span><span>.</span><span class="identifier">epimetheus</span><span>.</span><span class="identifier">_</span><span>
+</span><span class="keyword">import</span><span> </span><span class="identifier">cats</span><span>.</span><span class="identifier">effect</span><span>.</span><span class="identifier">_</span><span>
+</span><span class="keyword">import</span><span> </span><span class="identifier">shapeless</span><span>.</span><span class="identifier">_</span><span>
+
+</span><span class="keyword">import</span><span> </span><span class="identifier">cats</span><span>.</span><span class="identifier">effect</span><span>.</span><span class="identifier">unsafe</span><span>.</span><span class="identifier">implicits</span><span>.</span><span class="identifier">global</span></code></pre>
+        <p>An Example Counter without Labels:</p>
+        <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsExample</span><span> = {
+  </span><span class="keyword">for</span><span> {
+    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">successCounter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(
+      </span><span class="identifier">cr</span><span>,
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_success_total&quot;</span><span>),
+      </span><span class="string-literal">&quot;Example Counter of Success&quot;</span><span>
+    )
+    </span><span class="identifier">failureCounter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(
+      </span><span class="identifier">cr</span><span>,
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_failure_total&quot;</span><span>),
+      </span><span class="string-literal">&quot;Example Counter of Failure&quot;</span><span>
+    )
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">IO</span><span>(</span><span class="identifier">println</span><span>(</span><span class="string-literal">&quot;Action Here&quot;</span><span>)).</span><span class="identifier">guaranteeCase</span><span>{
+      </span><span class="keyword">case</span><span> </span><span class="type-name">Outcome</span><span>.</span><span class="type-name">Succeeded</span><span>(</span><span class="identifier">_</span><span>) =&gt; </span><span class="identifier">successCounter</span><span>.</span><span class="identifier">inc</span><span>
+      </span><span class="keyword">case</span><span> </span><span class="identifier">_</span><span> =&gt; </span><span class="identifier">failureCounter</span><span>.</span><span class="identifier">inc</span><span>
+    }
+    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+  } </span><span class="keyword">yield</span><span> </span><span class="identifier">out</span><span>
+}
+</span><span class="comment">// noLabelsExample: IO[String] = FlatMap(
+//   ioe = Delay(
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10854/0x0000000802a4c9c8@73d9f65a,
+//     event = cats.effect.tracing.TracingEvent$StackTrace
+//   ),
+//   f = &lt;function1&gt;,
+//   event = cats.effect.tracing.TracingEvent$StackTrace
+// )
+</span><span>
+</span><span class="identifier">noLabelsExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
+</span><span class="comment">// Action Here
+// res0: String = &quot;&quot;&quot;# HELP example_success_total Example Counter of Success
 // # TYPE example_success_total counter
 // example_success_total 1.0
-// "
-</span></code></pre>
-</div>
-
-<p>An Example of a Counter with Labels:</p>
-
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">labelledExample</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="k">for</span> <span class="o">{</span>
-    <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">counter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span>
-      <span class="n">cr</span><span class="o">,</span>
-      <span class="nc">Name</span><span class="o">(</span><span class="s">"example_total"</span><span class="o">),</span>
-      <span class="s">"Example Counter"</span><span class="o">,</span>
-      <span class="nc">Sized</span><span class="o">(</span><span class="nc">Label</span><span class="o">(</span><span class="s">"foo"</span><span class="o">)),</span>
-      <span class="o">{</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="n">s</span><span class="o">)}</span>
-    <span class="o">)</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">counter</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">counter</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="s">"baz"</span><span class="o">).</span><span class="n">inc</span>
-    <span class="n">out</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
-  <span class="o">}</span> <span class="k">yield</span> <span class="n">out</span>
-<span class="o">}</span>
-<span class="c1">// labelledExample: cats.effect.IO[String] = IO$719891249
-</span>
-<span class="n">labelledExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res1: String =
-// "# HELP example_total Example Counter
+// # HELP example_failure_total Example Counter of Failure
+// # TYPE example_failure_total counter
+// example_failure_total 0.0
+// # HELP example_failure_created Example Counter of Failure
+// # TYPE example_failure_created gauge
+// example_failure_created 1.649260950173E9
+// # HELP example_success_created Example Counter of Success
+// # TYPE example_success_created gauge
+// example_success_created 1.649260950166E9
+// &quot;&quot;&quot;</span></code></pre>
+        <p>An Example of a Counter with Labels:</p>
+        <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledExample</span><span> = {
+  </span><span class="keyword">for</span><span> {
+    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(
+      </span><span class="identifier">cr</span><span>,
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_total&quot;</span><span>),
+      </span><span class="string-literal">&quot;Example Counter&quot;</span><span>,
+      </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
+      {</span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="identifier">s</span><span>)}
+    )
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">counter</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;bar&quot;</span><span>).</span><span class="identifier">inc</span><span>
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">counter</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;baz&quot;</span><span>).</span><span class="identifier">inc</span><span>
+    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+  } </span><span class="keyword">yield</span><span> </span><span class="identifier">out</span><span>
+}
+</span><span class="comment">// labelledExample: IO[String] = FlatMap(
+//   ioe = Delay(
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10854/0x0000000802a4c9c8@5c32067f,
+//     event = cats.effect.tracing.TracingEvent$StackTrace
+//   ),
+//   f = &lt;function1&gt;,
+//   event = cats.effect.tracing.TracingEvent$StackTrace
+// )
+</span><span>
+</span><span class="identifier">labelledExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
+</span><span class="comment">// res1: String = &quot;&quot;&quot;# HELP example_total Example Counter
 // # TYPE example_total counter
-// example_total{foo="bar",} 1.0
-// example_total{foo="baz",} 1.0
-// "
-</span></code></pre>
-</div>
+// example_total{foo=&quot;bar&quot;,} 1.0
+// example_total{foo=&quot;baz&quot;,} 1.0
+// # HELP example_created Example Counter
+// # TYPE example_created gauge
+// example_created{foo=&quot;bar&quot;,} 1.649260950194E9
+// example_created{foo=&quot;baz&quot;,} 1.649260950195E9
+// &quot;&quot;&quot;</span></code></pre>
+        <p>An Example of a Counter backed algebra.</p>
+        <pre><code class="nohighlight"><span class="keyword">sealed</span><span> </span><span class="keyword">trait</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;;
 
-<p>An Example of a Counter backed algebra.</p>
+</span><span class="keyword">def</span><span> </span><span class="declaration-name">fooLabel</span><span>(</span><span class="identifier">f</span><span>: </span><span class="type-name">Foo</span><span>) = {
+  </span><span class="identifier">f</span><span> </span><span class="keyword">match</span><span> {
+    </span><span class="keyword">case</span><span> </span><span class="type-name">Bar</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="string-literal">&quot;bar&quot;</span><span>)
+    </span><span class="keyword">case</span><span> </span><span class="type-name">Baz</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="string-literal">&quot;baz&quot;</span><span>)
+  }
+}
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Foo</span><span class="o">;</span> <span class="k">case</span> <span class="k">object</span> <span class="nc">Bar</span> <span class="k">extends</span> <span class="nc">Foo</span><span class="o">;</span> <span class="k">case</span> <span class="k">object</span> <span class="nc">Baz</span> <span class="k">extends</span> <span class="nc">Foo</span><span class="o">;</span>
-<span class="c1">// defined trait Foo
-// defined object Bar
-// defined object Baz
-</span>
-<span class="k">def</span> <span class="n">fooLabel</span><span class="o">(</span><span class="n">f</span><span class="k">:</span> <span class="kt">Foo</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="n">f</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Bar</span> <span class="k">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="s">"bar"</span><span class="o">)</span>
-    <span class="k">case</span> <span class="nc">Baz</span> <span class="k">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="s">"baz"</span><span class="o">)</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-<span class="c1">// fooLabel: (f: Foo)shapeless.Sized[scala.collection.immutable.IndexedSeq[String],shapeless.nat._1]
-</span>
-<span class="k">trait</span> <span class="nc">FooAlg</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]{</span>
-  <span class="k">def</span> <span class="n">bar</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
-  <span class="k">def</span> <span class="n">baz</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
-<span class="o">};</span> <span class="k">object</span> <span class="nc">FooAlg</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="n">impl</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">](</span><span class="n">c</span><span class="k">:</span> <span class="kt">Counter.UnlabelledCounter</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Foo</span><span class="o">])</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">FooAlg</span><span class="o">[</span><span class="kt">F</span><span class="o">]{</span>
-    <span class="k">def</span> <span class="n">bar</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="n">c</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="nc">Bar</span><span class="o">).</span><span class="n">inc</span>
-    <span class="k">def</span> <span class="n">baz</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="n">c</span><span class="o">.</span><span class="n">label</span><span class="o">(</span><span class="nc">Baz</span><span class="o">).</span><span class="n">inc</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-<span class="c1">// defined trait FooAlg
-// defined object FooAlg
-</span>
-<span class="k">val</span> <span class="n">fooAgebraExample</span> <span class="k">=</span> <span class="o">{</span>
-  <span class="k">for</span> <span class="o">{</span>
-    <span class="n">cr</span> <span class="k">&lt;-</span> <span class="nc">CollectorRegistry</span><span class="o">.</span><span class="n">build</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="n">counter</span> <span class="k">&lt;-</span> <span class="nc">Counter</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span>
-      <span class="n">cr</span><span class="o">,</span>
-      <span class="nc">Name</span><span class="o">(</span><span class="s">"example_total"</span><span class="o">),</span>
-      <span class="s">"Example Counter"</span><span class="o">,</span>
-      <span class="nc">Sized</span><span class="o">(</span><span class="nc">Label</span><span class="o">(</span><span class="s">"foo"</span><span class="o">)),</span>
-      <span class="n">fooLabel</span>
-    <span class="o">)</span>
-    <span class="n">foo</span> <span class="k">=</span> <span class="nc">FooAlg</span><span class="o">.</span><span class="n">impl</span><span class="o">(</span><span class="n">counter</span><span class="o">)</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">foo</span><span class="o">.</span><span class="n">bar</span>
-    <span class="k">_</span> <span class="k">&lt;-</span> <span class="n">foo</span><span class="o">.</span><span class="n">baz</span>
-    <span class="n">out</span> <span class="k">&lt;-</span> <span class="n">cr</span><span class="o">.</span><span class="n">write004</span>
-  <span class="o">}</span> <span class="k">yield</span> <span class="n">out</span>
-<span class="o">}</span>
-<span class="c1">// fooAgebraExample: cats.effect.IO[String] = IO$738076147
-</span>
-<span class="n">fooAgebraExample</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res2: String =
-// "# HELP example_total Example Counter
+</span><span class="keyword">trait</span><span> </span><span class="type-name">FooAlg</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]]{
+  </span><span class="keyword">def</span><span> </span><span class="declaration-name">bar</span><span>: </span><span class="type-name">F</span><span>[</span><span class="type-name">Unit</span><span>]
+  </span><span class="keyword">def</span><span> </span><span class="declaration-name">baz</span><span>: </span><span class="type-name">F</span><span>[</span><span class="type-name">Unit</span><span>]
+}; </span><span class="keyword">object</span><span> </span><span class="type-name">FooAlg</span><span> {; </span><span class="keyword">object</span><span> </span><span class="type-name">FooAlg</span><span> {
+  </span><span class="keyword">def</span><span> </span><span class="declaration-name">impl</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]](</span><span class="identifier">c</span><span>: </span><span class="type-name">Counter</span><span>.</span><span class="type-name">UnlabelledCounter</span><span>[</span><span class="type-name">F</span><span>, </span><span class="type-name">Foo</span><span>]) = </span><span class="keyword">new</span><span> </span><span class="type-name">FooAlg</span><span>[</span><span class="type-name">F</span><span>]{
+    </span><span class="keyword">def</span><span> </span><span class="declaration-name">bar</span><span>: </span><span class="type-name">F</span><span>[</span><span class="type-name">Unit</span><span>] = </span><span class="identifier">c</span><span>.</span><span class="identifier">label</span><span>(</span><span class="type-name">Bar</span><span>).</span><span class="identifier">inc</span><span>
+    </span><span class="keyword">def</span><span> </span><span class="declaration-name">baz</span><span>: </span><span class="type-name">F</span><span>[</span><span class="type-name">Unit</span><span>] = </span><span class="identifier">c</span><span>.</span><span class="identifier">label</span><span>(</span><span class="type-name">Baz</span><span>).</span><span class="identifier">inc</span><span>
+  }
+}
+
+</span><span class="keyword">val</span><span> </span><span class="identifier">fooAgebraExample</span><span> = {
+  </span><span class="keyword">for</span><span> {
+    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(
+      </span><span class="identifier">cr</span><span>,
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_total&quot;</span><span>),
+      </span><span class="string-literal">&quot;Example Counter&quot;</span><span>,
+      </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
+      </span><span class="identifier">fooLabel</span><span>
+    )
+    </span><span class="identifier">foo</span><span> = </span><span class="type-name">FooAlg</span><span>.</span><span class="identifier">impl</span><span>(</span><span class="identifier">counter</span><span>)
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">foo</span><span>.</span><span class="identifier">bar</span><span>
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">foo</span><span>.</span><span class="identifier">bar</span><span>
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">foo</span><span>.</span><span class="identifier">baz</span><span>
+    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+  } </span><span class="keyword">yield</span><span> </span><span class="identifier">out</span><span>
+}
+</span><span class="comment">// fooAgebraExample: IO[String] = FlatMap(
+//   ioe = Delay(
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10854/0x0000000802a4c9c8@31fada85,
+//     event = cats.effect.tracing.TracingEvent$StackTrace
+//   ),
+//   f = &lt;function1&gt;,
+//   event = cats.effect.tracing.TracingEvent$StackTrace
+// )
+</span><span>
+</span><span class="identifier">fooAgebraExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
+</span><span class="comment">// res2: String = &quot;&quot;&quot;# HELP example_total Example Counter
 // # TYPE example_total counter
-// example_total{foo="bar",} 2.0
-// example_total{foo="baz",} 1.0
-// "
-</span></code></pre>
-</div>
+// example_total{foo=&quot;bar&quot;,} 2.0
+// example_total{foo=&quot;baz&quot;,} 1.0
+// # HELP example_created Example Counter
+// # TYPE example_created gauge
+// example_created{foo=&quot;bar&quot;,} 1.649260950204E9
+// example_created{foo=&quot;baz&quot;,} 1.649260950206E9
+// &quot;&quot;&quot;</span></code></pre>
+        <p>We force labels to always match the same size. This will fail to compile.</p>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">incorrectlySized</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]: </span><span class="type-name">Sync</span><span>](</span><span class="identifier">cr</span><span>: </span><span class="type-name">CollectorRegistry</span><span>[</span><span class="type-name">F</span><span>]) = {
+  </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;fail&quot;</span><span>), </span><span class="string-literal">&quot;Example Failure&quot;</span><span>, </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;color&quot;</span><span>), </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;method&quot;</span><span>)), {</span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="identifier">s</span><span>)})
+}</span></code></pre>
 
-<p>We force labels to always match the same size. This will fail to compile.</p>
+        <hr style="margin-top: 30px"/>
+        <footer style="font-size: 90%; text-align: center">
+          epimetheus is a <a href="https://typelevel.org/">Typelevel</a> project distributed under the <a href="https://opensource.org/licenses/MIT">MIT</a> license.
+        </footer>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">def</span> <span class="n">incorrectlySized</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">](</span><span class="n">cr</span><span class="k">:</span> <span class="kt">CollectorRegistry</span><span class="o">[</span><span class="kt">F</span><span class="o">])</span> <span class="k">=</span> <span class="o">{</span>
-     <span class="o">|</span>   <span class="nc">Counter</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"fail"</span><span class="o">),</span> <span class="s">"Example Failure"</span><span class="o">,</span> <span class="nc">Sized</span><span class="o">(</span><span class="nc">Label</span><span class="o">(</span><span class="s">"color"</span><span class="o">),</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"method"</span><span class="o">)),</span> <span class="o">{</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="n">s</span><span class="o">)})</span>
-     <span class="o">|</span> <span class="o">}</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">error:</span> <span class="k">type</span> <span class="kt">mismatch</span><span class="o">;</span>
- <span class="n">found</span>   <span class="k">:</span> <span class="kt">io.chrisdavenport.epimetheus.Name</span>
- <span class="n">required</span><span class="k">:</span> <span class="kt">io.chrisdavenport.epimetheus.Label</span>
-         <span class="nc">Counter</span><span class="o">.</span><span class="n">labelled</span><span class="o">(</span><span class="n">cr</span><span class="o">,</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"fail"</span><span class="o">),</span> <span class="s">"Example Failure"</span><span class="o">,</span> <span class="nc">Sized</span><span class="o">(</span><span class="nc">Label</span><span class="o">(</span><span class="s">"color"</span><span class="o">),</span> <span class="nc">Name</span><span class="o">(</span><span class="s">"method"</span><span class="o">)),</span> <span class="o">{</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=&gt;</span> <span class="nc">Sized</span><span class="o">(</span><span class="n">s</span><span class="o">)})</span>
-                                                                                         <span class="o">^</span>
-</code></pre>
-</div>
-</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/epimetheus/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
-hljs.initHighlighting();
-              </script><script>((window.gitter = {}).chat = {}).options = {
-room: 'ChristopherDavenport/epimetheus'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/epimetheus/js/main.js"></script></body></html>
+      </main>
+
+    </div>
+
+  </body>
+</html>
