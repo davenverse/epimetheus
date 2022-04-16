@@ -150,7 +150,7 @@
 }
 </span><span class="comment">// res0: IO[CollectorRegistry[IO]] = Map(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$9906/0x00000008028a1c38@60de6f11,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@7a83dcaf,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -165,10 +165,10 @@
 </span><span class="comment">// res1: IO[CollectorRegistry[IO]] = Map(
 //   ioe = FlatMap(
 //     ioe = Delay(
-//       thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$9906/0x00000008028a1c38@16e85067,
+//       thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@45a48d72,
 //       event = cats.effect.tracing.TracingEvent$StackTrace
 //     ),
-//     f = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$9908/0x0000000802906a10@1d7ad33a,
+//     f = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10875/0x0000000802ab1e30@608a472b,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -183,7 +183,7 @@
 }
 </span><span class="comment">// res2: IO[CollectorRegistry[IO]] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$9906/0x00000008028a1c38@6f37925d,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@1f294e2,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -195,11 +195,11 @@
         as well as a method which initializes the default metrics into the default. This leaves access to the Registry outside of your control, and not necessarily within the call graph of your application.</p>
         <p>You have access to the global pool automatically.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">defaultRegistry</span><span>[</span><span class="type-name">IO</span><span>]
-</span><span class="comment">// res3: CollectorRegistry[IO] = io.chrisdavenport.epimetheus.CollectorRegistry@3b089cb4</span></code></pre>
+</span><span class="comment">// res3: CollectorRegistry[IO] = io.chrisdavenport.epimetheus.CollectorRegistry@605c56b3</span></code></pre>
         <p>You can also ensure the baseline has been initiated.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">Collector</span><span>.</span><span class="type-name">Defaults</span><span>.</span><span class="identifier">defaultCollectorRegisterDefaults</span><span>[</span><span class="type-name">IO</span><span>]
 </span><span class="comment">// res4: IO[Unit] = Delay(
-//   thunk = io.chrisdavenport.epimetheus.Collector$Defaults$$$Lambda$9909/0x000000080290cb10@5539f951,
+//   thunk = io.chrisdavenport.epimetheus.Collector$Defaults$$$Lambda$10876/0x0000000802ab6000@7676a4fd,
 //   event = cats.effect.tracing.TracingEvent$StackTrace
 // )</span></code></pre>
         
@@ -215,7 +215,7 @@
 }
 </span><span class="comment">// exportExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$9906/0x00000008028a1c38@79dded90,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@61dd504e,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -223,48 +223,38 @@
 // )
 </span><span>
 </span><span class="identifier">exportExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
-</span><span class="comment">// # HELP jvm_classes_currently_loaded The number of classes that are currently loaded in the JVM
-// # TYPE jvm_classes_currently_loaded gauge
-// jvm_classes_currently_loaded 32596.0
-// # HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
-// # TYPE jvm_classes_loaded_total counter
-// jvm_classes_loaded_total 32941.0
-// # HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
-// # TYPE jvm_classes_unloaded_total counter
-// jvm_classes_unloaded_total 342.0
+</span><span class="comment">// # HELP jvm_memory_pool_allocated_bytes_total Total bytes allocated in a given JVM memory pool. Only updated after GC, not continuously.
+// # TYPE jvm_memory_pool_allocated_bytes_total counter
+// # HELP jvm_info VM version info
+// # TYPE jvm_info gauge
+// jvm_info{runtime=&quot;OpenJDK Runtime Environment&quot;,vendor=&quot;Eclipse Adoptium&quot;,version=&quot;17.0.2+8&quot;,} 1.0
 // # HELP jvm_buffer_pool_used_bytes Used bytes of a given JVM buffer pool.
 // # TYPE jvm_buffer_pool_used_bytes gauge
 // jvm_buffer_pool_used_bytes{pool=&quot;mapped&quot;,} 0.0
-// jvm_buffer_pool_used_bytes{pool=&quot;direct&quot;,} 1.8144208E7
+// jvm_buffer_pool_used_bytes{pool=&quot;direct&quot;,} 2.206976E7
 // jvm_buffer_pool_used_bytes{pool=&quot;mapped - &#39;non-volatile memory&#39;&quot;,} 0.0
 // # HELP jvm_buffer_pool_capacity_bytes Bytes capacity of a given JVM buffer pool.
 // # TYPE jvm_buffer_pool_capacity_bytes gauge
 // jvm_buffer_pool_capacity_bytes{pool=&quot;mapped&quot;,} 0.0
-// jvm_buffer_pool_capacity_bytes{pool=&quot;direct&quot;,} 1.8144208E7
+// jvm_buffer_pool_capacity_bytes{pool=&quot;direct&quot;,} 2.206976E7
 // jvm_buffer_pool_capacity_bytes{pool=&quot;mapped - &#39;non-volatile memory&#39;&quot;,} 0.0
 // # HELP jvm_buffer_pool_used_buffers Used buffers of a given JVM buffer pool.
 // # TYPE jvm_buffer_pool_used_buffers gauge
 // jvm_buffer_pool_used_buffers{pool=&quot;mapped&quot;,} 0.0
-// jvm_buffer_pool_used_buffers{pool=&quot;direct&quot;,} 12.0
+// jvm_buffer_pool_used_buffers{pool=&quot;direct&quot;,} 19.0
 // jvm_buffer_pool_used_buffers{pool=&quot;mapped - &#39;non-volatile memory&#39;&quot;,} 0.0
-// # HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
-// # TYPE jvm_gc_collection_seconds summary
-// jvm_gc_collection_seconds_count{gc=&quot;G1 Young Generation&quot;,} 17.0
-// jvm_gc_collection_seconds_sum{gc=&quot;G1 Young Generation&quot;,} 0.564
-// jvm_gc_collection_seconds_count{gc=&quot;G1 Old Generation&quot;,} 0.0
-// jvm_gc_collection_seconds_sum{gc=&quot;G1 Old Generation&quot;,} 0.0
 // # HELP jvm_threads_current Current thread count of a JVM
 // # TYPE jvm_threads_current gauge
-// jvm_threads_current 60.0
+// jvm_threads_current 67.0
 // # HELP jvm_threads_daemon Daemon thread count of a JVM
 // # TYPE jvm_threads_daemon gauge
-// jvm_threads_daemon 42.0
+// jvm_threads_daemon 49.0
 // # HELP jvm_threads_peak Peak thread count of a JVM
 // # TYPE jvm_threads_peak gauge
-// jvm_threads_peak 60.0
+// jvm_threads_peak 67.0
 // # HELP jvm_threads_started_total Started thread count of a JVM
 // # TYPE jvm_threads_started_total counter
-// jvm_threads_started_total 137.0
+// jvm_threads_started_total 206.0
 // # HELP jvm_threads_deadlocked Cycles of JVM-threads that are in deadlock waiting to acquire object monitors or ownable synchronizers
 // # TYPE jvm_threads_deadlocked gauge
 // jvm_threads_deadlocked 0.0
@@ -273,23 +263,47 @@
 // jvm_threads_deadlocked_monitor 0.0
 // # HELP jvm_threads_state Current count of threads by state
 // # TYPE jvm_threads_state gauge
-// jvm_threads_state{state=&quot;TIMED_WAITING&quot;,} 30.0
-// jvm_threads_state{state=&quot;BLOCKED&quot;,} 0.0
+// jvm_threads_state{state=&quot;WAITING&quot;,} 21.0
 // jvm_threads_state{state=&quot;NEW&quot;,} 0.0
 // jvm_threads_state{state=&quot;TERMINATED&quot;,} 0.0
-// jvm_threads_state{state=&quot;RUNNABLE&quot;,} 9.0
-// jvm_threads_state{state=&quot;WAITING&quot;,} 21.0
+// jvm_threads_state{state=&quot;TIMED_WAITING&quot;,} 36.0
+// jvm_threads_state{state=&quot;RUNNABLE&quot;,} 10.0
+// jvm_threads_state{state=&quot;BLOCKED&quot;,} 0.0
+// # HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
+// # TYPE jvm_gc_collection_seconds summary
+// jvm_gc_collection_seconds_count{gc=&quot;G1 Young Generation&quot;,} 20.0
+// jvm_gc_collection_seconds_sum{gc=&quot;G1 Young Generation&quot;,} 0.743
+// jvm_gc_collection_seconds_count{gc=&quot;G1 Old Generation&quot;,} 0.0
+// jvm_gc_collection_seconds_sum{gc=&quot;G1 Old Generation&quot;,} 0.0
+// # HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+// # TYPE process_cpu_seconds_total counter
+// process_cpu_seconds_total 99.03
+// # HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+// # TYPE process_start_time_seconds gauge
+// process_start_time_seconds 1.650074557142E9
+// # HELP process_open_fds Number of open file descriptors.
+// # TYPE process_open_fds gauge
+// process_open_fds 473.0
+// # HELP process_max_fds Maximum number of open file descriptors.
+// # TYPE process_max_fds gauge
+// process_max_fds 65536.0
+// # HELP process_virtual_memory_bytes Virtual memory size in bytes.
+// # TYPE process_virtual_memory_bytes gauge
+// process_virtual_memory_bytes 4.165255168E9
+// # HELP process_resident_memory_bytes Resident memory size in bytes.
+// # TYPE process_resident_memory_bytes gauge
+// process_resident_memory_bytes 1.74780416E9
 // # HELP jvm_memory_objects_pending_finalization The number of objects waiting in the finalizer queue.
 // # TYPE jvm_memory_objects_pending_finalization gauge
 // jvm_memory_objects_pending_finalization 0.0
 // # HELP jvm_memory_bytes_used Used bytes of a given JVM memory area.
 // # TYPE jvm_memory_bytes_used gauge
-// jvm_memory_bytes_used{area=&quot;heap&quot;,} 3.23321888E8
-// jvm_memory_bytes_used{area=&quot;nonheap&quot;,} 3.46547208E8
+// jvm_memory_bytes_used{area=&quot;heap&quot;,} 6.23332856E8
+// jvm_memory_bytes_used{area=&quot;nonheap&quot;,} 3.7643344E8
 // # HELP jvm_memory_bytes_committed Committed (bytes) of a given JVM memory area.
 // # TYPE jvm_memory_bytes_committed gauge
 // jvm_memory_bytes_committed{area=&quot;heap&quot;,} 1.073741824E9
-// jvm_memory_bytes_committed{area=&quot;nonheap&quot;,} 3.47799552E8
+// jvm_memory_bytes_committed{area=&quot;nonheap&quot;,} 3.7781504E8
 // # HELP jvm_memory_bytes_max Max (bytes) of a given JVM memory area.
 // # TYPE jvm_memory_bytes_max gauge
 // jvm_memory_bytes_max{area=&quot;heap&quot;,} 1.073741824E9
@@ -300,20 +314,20 @@
 // jvm_memory_bytes_init{area=&quot;nonheap&quot;,} 2555904.0
 // # HELP jvm_memory_pool_bytes_used Used bytes of a given JVM memory pool.
 // # TYPE jvm_memory_pool_bytes_used gauge
-// jvm_memory_pool_bytes_used{pool=&quot;Metaspace&quot;,} 2.49691224E8
-// jvm_memory_pool_bytes_used{pool=&quot;G1 Survivor Space&quot;,} 4.1812E7
-// jvm_memory_pool_bytes_used{pool=&quot;Compressed Class Space&quot;,} 3.0105688E7
-// jvm_memory_pool_bytes_used{pool=&quot;G1 Eden Space&quot;,} 1.30023424E8
-// jvm_memory_pool_bytes_used{pool=&quot;G1 Old Gen&quot;,} 1.51486464E8
-// jvm_memory_pool_bytes_used{pool=&quot;CodeCache&quot;,} 6.6750464E7
+// jvm_memory_pool_bytes_used{pool=&quot;Metaspace&quot;,} 2.66351272E8
+// jvm_memory_pool_bytes_used{pool=&quot;G1 Survivor Space&quot;,} 2.1495808E7
+// jvm_memory_pool_bytes_used{pool=&quot;Compressed Class Space&quot;,} 3.1890848E7
+// jvm_memory_pool_bytes_used{pool=&quot;G1 Eden Space&quot;,} 3.97410304E8
+// jvm_memory_pool_bytes_used{pool=&quot;G1 Old Gen&quot;,} 2.04426744E8
+// jvm_memory_pool_bytes_used{pool=&quot;CodeCache&quot;,} 7.8191488E7
 // # HELP jvm_memory_pool_bytes_committed Committed bytes of a given JVM memory pool.
 // # TYPE jvm_memory_pool_bytes_committed gauge
-// jvm_memory_pool_bytes_committed{pool=&quot;Metaspace&quot;,} 2.50544128E8
-// jvm_memory_pool_bytes_committed{pool=&quot;G1 Survivor Space&quot;,} 4.194304E7
-// jvm_memory_pool_bytes_committed{pool=&quot;Compressed Class Space&quot;,} 3.047424E7
-// jvm_memory_pool_bytes_committed{pool=&quot;G1 Eden Space&quot;,} 3.3554432E8
-// jvm_memory_pool_bytes_committed{pool=&quot;G1 Old Gen&quot;,} 6.96254464E8
-// jvm_memory_pool_bytes_committed{pool=&quot;CodeCache&quot;,} 6.6781184E7
+// jvm_memory_pool_bytes_committed{pool=&quot;Metaspace&quot;,} 2.67255808E8
+// jvm_memory_pool_bytes_committed{pool=&quot;G1 Survivor Space&quot;,} 2.2020096E7
+// jvm_memory_pool_bytes_committed{pool=&quot;Compressed Class Space&quot;,} 3.2309248E7
+// jvm_memory_pool_bytes_committed{pool=&quot;G1 Eden Space&quot;,} 6.54311424E8
+// jvm_memory_pool_bytes_committed{pool=&quot;G1 Old Gen&quot;,} 3.97410304E8
+// jvm_memory_pool_bytes_committed{pool=&quot;CodeCache&quot;,} 7.8249984E7
 // # HELP jvm_memory_pool_bytes_max Max bytes of a given JVM memory pool.
 // # TYPE jvm_memory_pool_bytes_max gauge
 // jvm_memory_pool_bytes_max{pool=&quot;Metaspace&quot;,} -1.0
@@ -332,14 +346,14 @@
 // jvm_memory_pool_bytes_init{pool=&quot;CodeCache&quot;,} 2555904.0
 // # HELP jvm_memory_pool_collection_used_bytes Used bytes after last collection of a given JVM memory pool.
 // # TYPE jvm_memory_pool_collection_used_bytes gauge
-// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Survivor Space&quot;,} 4.1812E7
+// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Survivor Space&quot;,} 2.1495808E7
 // jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Eden Space&quot;,} 0.0
-// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Old Gen&quot;,} 1.60923648E8
+// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Old Gen&quot;,} 1.10292472E8
 // # HELP jvm_memory_pool_collection_committed_bytes Committed after last collection bytes of a given JVM memory pool.
 // # TYPE jvm_memory_pool_collection_committed_bytes gauge
-// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Survivor Space&quot;,} 4.194304E7
-// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Eden Space&quot;,} 3.3554432E8
-// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Old Gen&quot;,} 4.13138944E8
+// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Survivor Space&quot;,} 2.2020096E7
+// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Eden Space&quot;,} 6.54311424E8
+// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Old Gen&quot;,} 3.97410304E8
 // # HELP jvm_memory_pool_collection_max_bytes Max bytes after last collection of a given JVM memory pool.
 // # TYPE jvm_memory_pool_collection_max_bytes gauge
 // jvm_memory_pool_collection_max_bytes{pool=&quot;G1 Survivor Space&quot;,} -1.0
@@ -350,29 +364,15 @@
 // jvm_memory_pool_collection_init_bytes{pool=&quot;G1 Survivor Space&quot;,} 0.0
 // jvm_memory_pool_collection_init_bytes{pool=&quot;G1 Eden Space&quot;,} 5.6623104E7
 // jvm_memory_pool_collection_init_bytes{pool=&quot;G1 Old Gen&quot;,} 1.01711872E9
-// # HELP jvm_info VM version info
-// # TYPE jvm_info gauge
-// jvm_info{runtime=&quot;OpenJDK Runtime Environment&quot;,vendor=&quot;Eclipse Adoptium&quot;,version=&quot;17.0.2+8&quot;,} 1.0
-// # HELP jvm_memory_pool_allocated_bytes_total Total bytes allocated in a given JVM memory pool. Only updated after GC, not continuously.
-// # TYPE jvm_memory_pool_allocated_bytes_total counter
-// # HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
-// # TYPE process_cpu_seconds_total counter
-// process_cpu_seconds_total 61.3
-// # HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
-// # TYPE process_start_time_seconds gauge
-// process_start_time_seconds 1.649262470016E9
-// # HELP process_open_fds Number of open file descriptors.
-// # TYPE process_open_fds gauge
-// process_open_fds 469.0
-// # HELP process_max_fds Maximum number of open file descriptors.
-// # TYPE process_max_fds gauge
-// process_max_fds 65536.0
-// # HELP process_virtual_memory_bytes Virtual memory size in bytes.
-// # TYPE process_virtual_memory_bytes gauge
-// process_virtual_memory_bytes 4.157321216E9
-// # HELP process_resident_memory_bytes Resident memory size in bytes.
-// # TYPE process_resident_memory_bytes gauge
-// process_resident_memory_bytes 1.447088128E9
+// # HELP jvm_classes_currently_loaded The number of classes that are currently loaded in the JVM
+// # TYPE jvm_classes_currently_loaded gauge
+// jvm_classes_currently_loaded 34965.0
+// # HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
+// # TYPE jvm_classes_loaded_total counter
+// jvm_classes_loaded_total 35307.0
+// # HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
+// # TYPE jvm_classes_unloaded_total counter
+// jvm_classes_unloaded_total 342.0
 //</span></code></pre>
         
         <h2 id="conclusion" class="section">Conclusion<a class="anchor-link right" href="#conclusion"><i class="icofont-laika">&#xef71;</i></a></h2>
