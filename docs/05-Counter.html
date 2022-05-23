@@ -138,7 +138,7 @@
 }
 </span><span class="comment">// noLabelsExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@46530561,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10173/0x0000000802946b18@6468d5a6,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -155,10 +155,10 @@
 // example_failure_total 0.0
 // # HELP example_failure_created Example Counter of Failure
 // # TYPE example_failure_created gauge
-// example_failure_created 1.650074612905E9
+// example_failure_created 1.653346985059E9
 // # HELP example_success_created Example Counter of Success
 // # TYPE example_success_created gauge
-// example_success_created 1.650074612903E9
+// example_success_created 1.653346985056E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Counter with Labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledExample</span><span> = {
@@ -178,7 +178,7 @@
 }
 </span><span class="comment">// labelledExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@26a9f939,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10173/0x0000000802946b18@35a481a2,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -192,8 +192,8 @@
 // example_total{foo=&quot;baz&quot;,} 1.0
 // # HELP example_created Example Counter
 // # TYPE example_created gauge
-// example_created{foo=&quot;bar&quot;,} 1.650074612926E9
-// example_created{foo=&quot;baz&quot;,} 1.650074612927E9
+// example_created{foo=&quot;bar&quot;,} 1.653346985075E9
+// example_created{foo=&quot;baz&quot;,} 1.653346985076E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Counter backed algebra.</p>
         <pre><code class="nohighlight"><span class="keyword">sealed</span><span> </span><span class="keyword">trait</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;;
@@ -234,7 +234,7 @@
 }
 </span><span class="comment">// fooAgebraExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@7d9548fb,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10173/0x0000000802946b18@28c5694e,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -248,8 +248,8 @@
 // example_total{foo=&quot;baz&quot;,} 1.0
 // # HELP example_created Example Counter
 // # TYPE example_created gauge
-// example_created{foo=&quot;bar&quot;,} 1.650074612938E9
-// example_created{foo=&quot;baz&quot;,} 1.65007461294E9
+// example_created{foo=&quot;bar&quot;,} 1.653346985086E9
+// example_created{foo=&quot;baz&quot;,} 1.653346985087E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>We force labels to always match the same size. This will fail to compile.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">incorrectlySized</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]: </span><span class="type-name">Sync</span><span>](</span><span class="identifier">cr</span><span>: </span><span class="type-name">CollectorRegistry</span><span>[</span><span class="type-name">F</span><span>]) = {

@@ -146,7 +146,7 @@
 }
 </span><span class="comment">// noLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@1c124ee,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10173/0x0000000802946b18@19b88344,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -161,7 +161,7 @@
 // example_summary_sum 1.3
 // # HELP example_summary_created Example Summary
 // # TYPE example_summary_created gauge
-// example_summary_created 1.650074617637E9
+// example_summary_created 1.653346989696E9
 //</span></code></pre>
         <p>An Example of a Summary with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">withLabelsSummaryExample</span><span> = {
@@ -184,7 +184,7 @@
 }
 </span><span class="comment">// withLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10873/0x0000000802a4cde8@238fa993,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10173/0x0000000802946b18@41fd11a1,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -202,8 +202,8 @@
 // example_summary_sum{foo=&quot;baz&quot;,} 1.2
 // # HELP example_summary_created Example Summary
 // # TYPE example_summary_created gauge
-// example_summary_created{foo=&quot;bar&quot;,} 1.650074617656E9
-// example_summary_created{foo=&quot;baz&quot;,} 1.650074617657E9
+// example_summary_created{foo=&quot;bar&quot;,} 1.653346989714E9
+// example_summary_created{foo=&quot;baz&quot;,} 1.653346989715E9
 //</span></code></pre>
 
         <hr style="margin-top: 30px"/>
