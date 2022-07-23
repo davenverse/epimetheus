@@ -301,6 +301,8 @@ object Histogram {
       case h: MapKUnlabelledHistogram[f, _, a] => asJavaUnlabelled(h.base)
     }
     def asJava[F[_]](c: Histogram[F]): F[JHistogram] = c.asJava
+    def fromJava[F[_]: Sync](h: JHistogram.Child): Histogram[F] = new LabelledHistogram(h)
+    def fromJavaUnlabelled[F[_]: Sync](h: JHistogram): Histogram[F] = new NoLabelsHistogram(h)
   }
 
 }

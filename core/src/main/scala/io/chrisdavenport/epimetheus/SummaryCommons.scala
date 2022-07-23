@@ -248,5 +248,7 @@ trait SummaryCommons {
       case a: MapKUnlabelledSummary[f, _, a] => asJavaUnlabelled(a.base)
     }
     def asJava[F[_]](c: Summary[F]): F[JSummary] = c.asJava
+    def fromJava[F[_]: Sync](s: JSummary.Child): Summary[F] = new LabelledSummary(s)
+    def fromJavaUnlabelled[F[_]: Sync](s: JSummary): Summary[F] = new NoLabelsSummary(s)
   }
 }

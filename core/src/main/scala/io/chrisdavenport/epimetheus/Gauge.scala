@@ -215,5 +215,7 @@ object Gauge {
       case x: MapKUnlabelledGauge[f, _, a] => asJavaUnlabelled(x.base)
     }
     def asJava[F[_]](c: Gauge[F]): F[JGauge] = c.asJava
+    def fromJava[F[_]: Sync](g: JGauge.Child): Gauge[F] = new LabelledGauge(g)
+    def fromJavaUnlabelled[F[_]: Sync](g: JGauge): Gauge[F] = new NoLabelsGauge(g)
   }
 }

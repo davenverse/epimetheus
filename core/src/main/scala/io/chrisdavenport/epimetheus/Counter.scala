@@ -163,5 +163,7 @@ object Counter {
       case m: UnlabelledCounterImpl[_, _] => m.underlying
     }
     def asJava[F[_]](c: Counter[F]): F[JCounter] = c.asJava
+    def fromJava[F[_]: Sync](c: JCounter.Child): Counter[F] = new LabelledCounter(c)
+    def fromJavaUnlabelled[F[_]: Sync](c: JCounter): Counter[F] = new NoLabelsCounter(c)
   }
 }
