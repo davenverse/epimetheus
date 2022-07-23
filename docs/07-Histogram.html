@@ -137,7 +137,7 @@
 }
 </span><span class="comment">// noLabelsHistogramExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10859/0x0000000802a3f3f8@70cc8a5,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@d7fca09,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -163,10 +163,10 @@
 // example_histogram_bucket{le=&quot;10.0&quot;,} 2.0
 // example_histogram_bucket{le=&quot;+Inf&quot;,} 2.0
 // example_histogram_count 2.0
-// example_histogram_sum 1.222482185
+// example_histogram_sum 1.2133756519999999
 // # HELP example_histogram_created Example Histogram
 // # TYPE example_histogram_created gauge
-// example_histogram_created 1.658547137953E9
+// example_histogram_created 1.658547341204E9
 //</span></code></pre>
         <p>An Example of a Histogram with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledHistogramExample</span><span> = {
@@ -187,7 +187,7 @@
 }
 </span><span class="comment">// labelledHistogramExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10859/0x0000000802a3f3f8@5977ea2e,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@4104eeb,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -230,11 +230,11 @@
 // example_histogram_bucket{foo=&quot;baz&quot;,le=&quot;10.0&quot;,} 1.0
 // example_histogram_bucket{foo=&quot;baz&quot;,le=&quot;+Inf&quot;,} 1.0
 // example_histogram_count{foo=&quot;baz&quot;,} 1.0
-// example_histogram_sum{foo=&quot;baz&quot;,} 1.000608674
+// example_histogram_sum{foo=&quot;baz&quot;,} 1.000491737
 // # HELP example_histogram_created Example Histogram
 // # TYPE example_histogram_created gauge
-// example_histogram_created{foo=&quot;bar&quot;,} 1.658547138995E9
-// example_histogram_created{foo=&quot;baz&quot;,} 1.658547138997E9
+// example_histogram_created{foo=&quot;bar&quot;,} 1.658547342244E9
+// example_histogram_created{foo=&quot;baz&quot;,} 1.658547342245E9
 //</span></code></pre>
 
         <hr style="margin-top: 30px"/>
