@@ -20,7 +20,6 @@ Imports
 ```scala mdoc:silent
 import io.chrisdavenport.epimetheus._
 import cats.effect._
-import shapeless._
 
 import cats.effect.unsafe.implicits.global
 ```

@@ -31,7 +31,6 @@ Imports
 import io.chrisdavenport.epimetheus._
 import io.chrisdavenport.epimetheus.implicits._
 import cats.effect._
-import shapeless._
 
 import scala.concurrent.duration._
 
