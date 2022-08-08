@@ -35,7 +35,6 @@ lazy val site = project.in(file("site"))
 val prometheusV = "0.15.0"
 val catsV = "2.7.0"
 val catsEffectV = "3.3.12"
-val shapelessV = "2.3.9"
 
 val munitCatsEffectV = "1.0.7"
 
@@ -62,8 +61,7 @@ lazy val commonSettings = Seq(
   ),
   libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
       Seq(
-        "org.scala-lang"              % "scala-reflect"               % scalaVersion.value,
-        "com.chuusai"                 %% "shapeless"                  % shapelessV
+        "org.scala-lang"              % "scala-reflect"               % scalaVersion.value
       )
     }
     .toList

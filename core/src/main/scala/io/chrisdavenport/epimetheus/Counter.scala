@@ -95,16 +95,15 @@ object Counter {
    * @param f Function to take some value provided in the future to generate an equally sized list
    *  of strings as the list of labels. These are assigned to labels by position.
    */
-  def labelled[F[_]: Sync, A, N <: Nat](
+  def labelled[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N]
+    labels: SeqMap[Label, A => String]
   ): F[UnlabelledCounter[F, A]] = for {
-    c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.unsized.map(_.getLabel):_*))
+    c <- Sync[F].delay(JCounter.build().name(name.getName).help(help).labelNames(labels.keys.map(_.getLabel).toSeq:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledCounterImpl[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledCounterImpl[F, A](out, labels.values)
 
   private final class NoLabelsCounter[F[_]: Sync] private[Counter] (private[Counter] val underlying: JCounter) extends Counter[F] {
     override def get: F[Double] = Sync[F].delay(underlying.get)
@@ -146,10 +145,10 @@ object Counter {
 
   private final class UnlabelledCounterImpl[F[_]: Sync, A] private[Counter](
     private[Counter] val underlying: JCounter,
-    private val f: A => IndexedSeq[String]
+    private val fs: Iterable[A => String]
   ) extends UnlabelledCounter[F, A]{
     def label(a: A): Counter[F] =
-      new LabelledCounter(underlying.labels(f(a):_*))
+      new LabelledCounter(underlying.labels(fs.map(_.apply(a)).toSeq:_*))
   }
 
   private final class MapKUnlabelledCounter[F[_], G[_], A](private[Counter] val base: UnlabelledCounter[F, A], fk: F ~> G) extends UnlabelledCounter[G, A]{
