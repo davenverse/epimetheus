@@ -4,7 +4,7 @@ number: 2
 title: Big Picture
 ---
 
-# {{page.title}}
+# Big Picture
 
 **Epimetheus** is a functional API placed over the underyling [Prometheus Java Client](https://github.com/prometheus/client_java).
 

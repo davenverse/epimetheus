@@ -4,7 +4,7 @@ number: 7
 title: Histogram
 ---
 
-# {{page.title}}
+# Histogram
 
 Histogram metric, to track distributions of events.
 
