@@ -1,9 +1,3 @@
----
-layout: docs
-number: 3
-title: Data Model
----
-
 # Data Model
 
 Prometheus fundamentally stores all data as time series: streams of timestamped values belonging to the same metric and the same set of labeled dimensions. Besides stored time series, Prometheus may generate temporary derived time series as the result of queries.

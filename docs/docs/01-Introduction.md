@@ -1,9 +1,3 @@
----
-layout: docs
-number: 1
-title: Introduction
----
-
 # Introduction
 
 This is a short book about **epimetheus** a pure functional Prometheus integration for Scala.

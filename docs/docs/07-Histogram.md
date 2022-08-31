@@ -1,9 +1,3 @@
----
-layout: docs
-number: 7
-title: Histogram
----
-
 # Histogram
 
 Histogram metric, to track distributions of events.

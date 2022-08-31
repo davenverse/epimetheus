@@ -1,9 +1,3 @@
----
-layout: docs
-number: 8
-title: Summary
----
-
 # Summary
 
 Summary metric, to track the size of events.

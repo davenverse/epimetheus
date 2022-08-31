@@ -1,9 +1,3 @@
----
-layout: docs
-number: 6
-title: Gauge
----
-
 # Gauge
 
 Gauge metric, to report instantaneous values.

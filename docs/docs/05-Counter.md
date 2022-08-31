@@ -1,9 +1,3 @@
----
-layout: docs
-number: 5
-title: Counter
----
-
 # Counter
 
 Counter metric, to track counts, running totals, or events.

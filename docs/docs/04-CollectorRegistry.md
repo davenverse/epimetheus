@@ -1,9 +1,3 @@
----
-layout: docs
-number: 4
-title: CollectorRegistry
----
-
 # Collector Registry
 
 A `CollectorRegistry` represents the concurrently shared state which holds the information
