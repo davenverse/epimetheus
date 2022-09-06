@@ -27,7 +27,7 @@ class CounterSpec extends munit.CatsEffectSuite {
     test("Counter Labelled: Register cleanly in the collector") {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
+        counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", SeqMap( Label("foo") -> { (s: String) => s }))
       } yield counter
 
       test.attempt.map(_.isRight).assert
@@ -36,7 +36,7 @@ class CounterSpec extends munit.CatsEffectSuite {
     test("Counter Labelled: Increase correctly") {
       val test = for {
         cr <- CollectorRegistry.build[IO]
-        counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
+        counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", SeqMap( Label("foo") -> { (s: String) => s }))
         _ <- counter.label("foo").inc
         out <- counter.label("foo").get
       } yield out

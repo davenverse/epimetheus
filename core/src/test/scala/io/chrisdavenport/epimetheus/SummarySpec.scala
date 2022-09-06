@@ -15,7 +15,7 @@ class SummarySpec extends munit.CatsEffectSuite {
   test("Summary Labelled: Register cleanly in the collector") {
     val test = for {
       cr <- CollectorRegistry.build[IO]
-      s <- Summary.labelled(cr, Name("boo"), "Boo ", Sized(Label("boo")), { (s: String) => Sized(s) }, Summary.quantile(0.5, 0.05))
+      s <- Summary.labelled(cr, Name("boo"), "Boo ", SeqMap(Label("boo") -> { (s: String) => s }), Summary.quantile(0.5, 0.05))
     } yield s
 
     test.attempt.map(_.isRight).assert

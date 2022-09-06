@@ -1,6 +1,6 @@
 package io.chrisdavenport
 
-package object epimetheus extends ShapelessPolyfill {
+package object epimetheus extends SeqMapPolyfill {
   type UnlabelledCounter[F[_], A] = Counter.UnlabelledCounter[F, A]
   type UnlabelledGauge[F[_], A] = Gauge.UnlabelledGauge[F, A]
   type UnlabelledHistogram[F[_], A] = Histogram.UnlabelledHistogram[F, A]

@@ -124,16 +124,15 @@ object Gauge {
    * @param f Function to take some value provided in the future to generate an equally sized list
    *  of strings as the list of labels. These are assigned to labels by position.
    */
-  def labelled[F[_]: Sync, A, N <: Nat](
+  def labelled[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N]
+    labels: SeqMap[Label, A => String]
   ): F[UnlabelledGauge[F, A]] = for {
-    c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.unsized.map(_.getLabel):_*))
+    c <- Sync[F].delay(JGauge.build().name(name.getName).help(help).labelNames(labels.keys.map(_.getLabel).toSeq:_*))
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledGaugeImpl[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledGaugeImpl[F, A](out, labels.values)
 
 
   private final class NoLabelsGauge[F[_]: Sync] private[Gauge] (
@@ -197,10 +196,10 @@ object Gauge {
    */
   final private[epimetheus] class UnlabelledGaugeImpl[F[_]: Sync, A] private[epimetheus](
     private[Gauge] val underlying: JGauge,
-    private val f: A => IndexedSeq[String]
+    private val fs: Iterable[A => String],
   ) extends UnlabelledGauge[F, A] {
     def label(a: A): Gauge[F] =
-      new LabelledGauge[F](underlying.labels(f(a):_*))
+      new LabelledGauge[F](underlying.labels(fs.map(_.apply(a)).toSeq:_*))
   }
 
   final private class MapKUnlabelledGauge[F[_], G[_], A](private[Gauge] val base: UnlabelledGauge[F, A], fk: F ~> G) extends UnlabelledGauge[G, A]{

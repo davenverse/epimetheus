@@ -163,14 +163,13 @@ object Histogram {
    * @param f Function to take some value provided in the future to generate an equally sized list
    *  of strings as the list of labels. These are assigned to labels by position.
    */
-  def labelled[F[_]: Sync, A, N <: Nat](
+  def labelled[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N]
+    labels: SeqMap[Label, A => String]
   ): F[UnlabelledHistogram[F, A]] =
-    labelledBuckets(cr, name, help, labels, f, defaults:_*)
+    labelledBuckets(cr, name, help, labels, defaults:_*)
 
   /**
    * Constructor for a labelled [[Histogram]]. Default buckets are [[defaults]]
@@ -190,30 +189,28 @@ object Histogram {
    *  of strings as the list of labels. These are assigned to labels by position.
    * @param buckets The buckets to measure observations by.
    */
-  def labelledBuckets[F[_]: Sync, A, N <: Nat](
+  def labelledBuckets[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
+    labels: SeqMap[Label, A => String],
     buckets: Double*
   ): F[UnlabelledHistogram[F, A]] = for {
     c <- Sync[F].delay(
       JHistogram.build()
       .name(name.getName)
       .help(help)
-      .labelNames(labels.unsized.map(_.getLabel):_*)
+      .labelNames(labels.keys.map(_.getLabel).toSeq:_*)
       .buckets(buckets:_*)
     )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledHistogramImpl[F, A](out, labels.values)
 
-  def labelledLinearBuckets[F[_]: Sync, A, N <: Nat](
+  def labelledLinearBuckets[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
+    labels: SeqMap[Label, A => String],
     start: Double,
     factor: Double,
     count: Int
@@ -222,18 +219,17 @@ object Histogram {
       JHistogram.build()
       .name(name.getName)
       .help(help)
-      .labelNames(labels.unsized.map(_.getLabel):_*)
+      .labelNames(labels.keys.map(_.getLabel).toSeq:_*)
       .linearBuckets(start, factor, count)
     )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledHistogramImpl[F, A](out, labels.values)
 
-  def labelledExponentialBuckets[F[_]: Sync, A, N <: Nat](
+  def labelledExponentialBuckets[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
+    labels: SeqMap[Label, A => String],
     start: Double,
     factor: Double,
     count: Int
@@ -242,11 +238,11 @@ object Histogram {
       JHistogram.build()
       .name(name.getName)
       .help(help)
-      .labelNames(labels.unsized.map(_.getLabel):_*)
+      .labelNames(labels.keys.map(_.getLabel).toSeq:_*)
       .exponentialBuckets(start, factor, count)
     )
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledHistogramImpl[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledHistogramImpl[F, A](out, labels.values)
 
   private final class NoLabelsHistogram[F[_]: Sync] private[Histogram] (
     private[Histogram] val underlying: JHistogram
@@ -284,10 +280,10 @@ object Histogram {
 
   final private[epimetheus] class UnlabelledHistogramImpl[F[_]: Sync, A] private[epimetheus] (
     private[Histogram] val underlying: JHistogram,
-    private val f: A => IndexedSeq[String]
+    private val fs: Iterable[A => String]
   ) extends UnlabelledHistogram[F, A]{
     def label(a: A): Histogram[F] =
-      new LabelledHistogram[F](underlying.labels(f(a):_*))
+      new LabelledHistogram[F](underlying.labels(fs.map(_.apply(a)).toSeq:_*))
   }
 
   final private class MapKUnlabelledHistogram[F[_], G[_], A](private[Histogram] val base: UnlabelledHistogram[F, A], fk: F ~> G) extends UnlabelledHistogram[G, A]{

@@ -123,15 +123,14 @@ trait SummaryCommons {
    *  of strings as the list of labels. These are assigned to labels by position.
    * @param quantiles The measurements to track for specifically over the sliding time window.
    */
-  def labelled[F[_]: Sync, A, N <: Nat](
+  def labelled[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
+    labels: SeqMap[Label, A => String],
     quantiles: Summary.Quantile*
   ): F[UnlabelledSummary[F, A]] =
-    labelledQuantiles(cr, name, help, defaultMaxAgeSeconds, defaultAgeBuckets, labels, f, quantiles:_*)
+    labelledQuantiles(cr, name, help, defaultMaxAgeSeconds, defaultAgeBuckets, labels, quantiles:_*)
 
   /**
    * Constructor for a labelled [[Summary]].
@@ -161,14 +160,13 @@ trait SummaryCommons {
    *  of strings as the list of labels. These are assigned to labels by position.
    * @param quantiles The measurements to track for specifically over the sliding time window.
    */
-  def labelledQuantiles[F[_]: Sync, A, N <: Nat](
+  def labelledQuantiles[F[_]: Sync, A](
     cr: CollectorRegistry[F],
     name: Name,
     help: String,
     maxAgeSeconds: Long,
     ageBuckets: Int,
-    labels: Sized[IndexedSeq[Label], N],
-    f: A => Sized[IndexedSeq[String], N],
+    labels: SeqMap[Label, A => String],
     quantiles: Summary.Quantile*
   ): F[UnlabelledSummary[F, A]] = for {
     c1 <- Sync[F].delay(
@@ -177,11 +175,11 @@ trait SummaryCommons {
       .help(help)
       .maxAgeSeconds(maxAgeSeconds)
       .ageBuckets(ageBuckets)
-      .labelNames(labels.unsized.map(_.getLabel):_*)
+      .labelNames(labels.keys.map(_.getLabel).toSeq:_*)
     )
     c <- Sync[F].delay(quantiles.foldLeft(c1){ case (c, q) => c.quantile(q.quantile, q.error)})
     out <- Sync[F].delay(c.register(CollectorRegistry.Unsafe.asJava(cr)))
-  } yield new UnlabelledSummaryImpl[F, A](out, f.andThen(_.unsized))
+  } yield new UnlabelledSummaryImpl[F, A](out, labels.values)
 
   final private[epimetheus] class NoLabelsSummary[F[_]: Sync] private[epimetheus] (
     private[epimetheus] val underlying: JSummary
@@ -216,10 +214,10 @@ trait SummaryCommons {
   }
   final private[epimetheus] class UnlabelledSummaryImpl[F[_]: Sync, A] private[epimetheus](
     private[epimetheus] val underlying: JSummary,
-    private val f: A => IndexedSeq[String]
+    private val fs: Iterable[A => String]
   ) extends UnlabelledSummary[F,A]{
     def label(a: A): Summary[F] =
-      new LabelledSummary[F](underlying.labels(f(a):_*))
+      new LabelledSummary[F](underlying.labels(fs.map(_.apply(a)).toSeq:_*))
   }
 
   final private[epimetheus] class MapKUnlabelledSummary[F[_], G[_], A](private[epimetheus] val base: UnlabelledSummary[F,A], fk: F ~> G) extends UnlabelledSummary[G, A]{
