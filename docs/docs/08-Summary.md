@@ -1,10 +1,4 @@
----
-layout: docs
-number: 8
-title: Summary
----
-
-# {{page.title}}
+# Summary
 
 Summary metric, to track the size of events.
 

@@ -1,10 +1,4 @@
----
-layout: docs
-number: 4
-title: CollectorRegistry
----
-
-# {{page.title}}
+# Collector Registry
 
 A `CollectorRegistry` represents the concurrently shared state which holds the information
 of the metrics in question.

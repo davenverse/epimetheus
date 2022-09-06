@@ -1,10 +1,4 @@
----
-layout: docs
-number: 6
-title: Gauge
----
-
-# {{page.title}}
+# Gauge
 
 Gauge metric, to report instantaneous values.
 
