@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
-    <title>{{page.title}}</title>
+    <title>Summary</title>
     
       <meta name="author" content="Christopher Davenport"/>
     
@@ -65,14 +65,14 @@
         <li class="level1"><a href="../epic.html">layout: docs</a></li>
         <li class="level1"><a href="../index.html">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
         <li class="level1 nav-header">docs</li>
-        <li class="level2"><a href="01-Introduction.html">{{page.title}}</a></li>
-        <li class="level2"><a href="02-BigPicture.html">{{page.title}}</a></li>
+        <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
+        <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">{{page.title}}</a></li>
-        <li class="level2"><a href="05-Counter.html">{{page.title}}</a></li>
-        <li class="level2"><a href="06-Gauge.html">{{page.title}}</a></li>
-        <li class="level2"><a href="07-Histogram.html">{{page.title}}</a></li>
-        <li class="level2 active"><a href="#">{{page.title}}</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="05-Counter.html">Counter</a></li>
+        <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
+        <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
+        <li class="level2 active"><a href="#">Summary</a></li>
       </ul>
 
       <ul class="nav-list">
@@ -87,7 +87,7 @@
     <div id="container">
 
       <nav id="page-nav">
-        <p class="header"><a href="#">{{page.title}}</a></p>
+        <p class="header"><a href="#">Summary</a></p>
 
         <ul class="nav-list">
         </ul>
@@ -97,12 +97,7 @@
 
       <main class="content">
 
-        <hr>
-        <p>layout: docs
-        number: 8
-        title: Summary
-        ---</p>
-        <h1 id="page-title" class="title">{{page.title}}</h1>
+        <h1 id="summary" class="title">Summary</h1>
         <p>Summary metric, to track the size of events.</p>
         <p>The quantiles are calculated over a sliding window of time. There are two options to configure this time window:</p>
         <ul>
@@ -145,7 +140,7 @@
 }
 </span><span class="comment">// noLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@535d89d5,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@a29de9a,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -160,7 +155,7 @@
 // example_summary_sum 1.3
 // # HELP example_summary_created Example Summary
 // # TYPE example_summary_created gauge
-// example_summary_created 1.658547344298E9
+// example_summary_created 1.662480583259E9
 //</span></code></pre>
         <p>An Example of a Summary with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">withLabelsSummaryExample</span><span> = {
@@ -183,7 +178,7 @@
 }
 </span><span class="comment">// withLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@34a3abd3,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@3b712fcc,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -201,8 +196,8 @@
 // example_summary_sum{foo=&quot;baz&quot;,} 1.2
 // # HELP example_summary_created Example Summary
 // # TYPE example_summary_created gauge
-// example_summary_created{foo=&quot;bar&quot;,} 1.658547344319E9
-// example_summary_created{foo=&quot;baz&quot;,} 1.65854734432E9
+// example_summary_created{foo=&quot;bar&quot;,} 1.662480583275E9
+// example_summary_created{foo=&quot;baz&quot;,} 1.662480583276E9
 //</span></code></pre>
 
         <hr style="margin-top: 30px"/>

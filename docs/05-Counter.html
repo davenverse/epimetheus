@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
-    <title>{{page.title}}</title>
+    <title>Counter</title>
     
       <meta name="author" content="Christopher Davenport"/>
     
@@ -65,14 +65,14 @@
         <li class="level1"><a href="../epic.html">layout: docs</a></li>
         <li class="level1"><a href="../index.html">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
         <li class="level1 nav-header">docs</li>
-        <li class="level2"><a href="01-Introduction.html">{{page.title}}</a></li>
-        <li class="level2"><a href="02-BigPicture.html">{{page.title}}</a></li>
+        <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
+        <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">{{page.title}}</a></li>
-        <li class="level2 active"><a href="#">{{page.title}}</a></li>
-        <li class="level2"><a href="06-Gauge.html">{{page.title}}</a></li>
-        <li class="level2"><a href="07-Histogram.html">{{page.title}}</a></li>
-        <li class="level2"><a href="08-Summary.html">{{page.title}}</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2 active"><a href="#">Counter</a></li>
+        <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
+        <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
+        <li class="level2"><a href="08-Summary.html">Summary</a></li>
       </ul>
 
       <ul class="nav-list">
@@ -87,7 +87,7 @@
     <div id="container">
 
       <nav id="page-nav">
-        <p class="header"><a href="#">{{page.title}}</a></p>
+        <p class="header"><a href="#">Counter</a></p>
 
         <ul class="nav-list">
         </ul>
@@ -97,12 +97,7 @@
 
       <main class="content">
 
-        <hr>
-        <p>layout: docs
-        number: 5
-        title: Counter
-        ---</p>
-        <h1 id="page-title" class="title">{{page.title}}</h1>
+        <h1 id="counter" class="title">Counter</h1>
         <p>Counter metric, to track counts, running totals, or events.</p>
         <p>If your use case can go up or down consider using a <code>Gauge</code> instead.
         Use the <code>rate()</code> function in Prometheus to calculate the rate of increase of a Counter.
@@ -137,7 +132,7 @@
 }
 </span><span class="comment">// noLabelsExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@36ff2e7,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@19517e5b,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -154,10 +149,10 @@
 // example_success_total 1.0
 // # HELP example_failure_created Example Counter of Failure
 // # TYPE example_failure_created gauge
-// example_failure_created 1.658547338827E9
+// example_failure_created 1.662480578665E9
 // # HELP example_success_created Example Counter of Success
 // # TYPE example_success_created gauge
-// example_success_created 1.658547338823E9
+// example_success_created 1.662480578661E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Counter with Labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledExample</span><span> = {
@@ -177,7 +172,7 @@
 }
 </span><span class="comment">// labelledExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@7571372f,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@32ccefd9,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -191,8 +186,8 @@
 // example_total{foo=&quot;baz&quot;,} 1.0
 // # HELP example_created Example Counter
 // # TYPE example_created gauge
-// example_created{foo=&quot;bar&quot;,} 1.65854733885E9
-// example_created{foo=&quot;baz&quot;,} 1.658547338852E9
+// example_created{foo=&quot;bar&quot;,} 1.662480578684E9
+// example_created{foo=&quot;baz&quot;,} 1.662480578685E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Counter backed algebra.</p>
         <pre><code class="nohighlight"><span class="keyword">sealed</span><span> </span><span class="keyword">trait</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;;
@@ -233,7 +228,7 @@
 }
 </span><span class="comment">// fooAgebraExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@3e279814,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@51ec127a,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -247,8 +242,8 @@
 // example_total{foo=&quot;baz&quot;,} 1.0
 // # HELP example_created Example Counter
 // # TYPE example_created gauge
-// example_created{foo=&quot;bar&quot;,} 1.658547338867E9
-// example_created{foo=&quot;baz&quot;,} 1.658547338869E9
+// example_created{foo=&quot;bar&quot;,} 1.662480578696E9
+// example_created{foo=&quot;baz&quot;,} 1.662480578698E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>We force labels to always match the same size. This will fail to compile.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">incorrectlySized</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]: </span><span class="type-name">Sync</span><span>](</span><span class="identifier">cr</span><span>: </span><span class="type-name">CollectorRegistry</span><span>[</span><span class="type-name">F</span><span>]) = {

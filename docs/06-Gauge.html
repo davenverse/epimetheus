@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
-    <title>{{page.title}}</title>
+    <title>Gauge</title>
     
       <meta name="author" content="Christopher Davenport"/>
     
@@ -65,14 +65,14 @@
         <li class="level1"><a href="../epic.html">layout: docs</a></li>
         <li class="level1"><a href="../index.html">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
         <li class="level1 nav-header">docs</li>
-        <li class="level2"><a href="01-Introduction.html">{{page.title}}</a></li>
-        <li class="level2"><a href="02-BigPicture.html">{{page.title}}</a></li>
+        <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
+        <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">{{page.title}}</a></li>
-        <li class="level2"><a href="05-Counter.html">{{page.title}}</a></li>
-        <li class="level2 active"><a href="#">{{page.title}}</a></li>
-        <li class="level2"><a href="07-Histogram.html">{{page.title}}</a></li>
-        <li class="level2"><a href="08-Summary.html">{{page.title}}</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="05-Counter.html">Counter</a></li>
+        <li class="level2 active"><a href="#">Gauge</a></li>
+        <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
+        <li class="level2"><a href="08-Summary.html">Summary</a></li>
       </ul>
 
       <ul class="nav-list">
@@ -87,7 +87,7 @@
     <div id="container">
 
       <nav id="page-nav">
-        <p class="header"><a href="#">{{page.title}}</a></p>
+        <p class="header"><a href="#">Gauge</a></p>
 
         <ul class="nav-list">
         </ul>
@@ -97,12 +97,7 @@
 
       <main class="content">
 
-        <hr>
-        <p>layout: docs
-        number: 6
-        title: Gauge
-        ---</p>
-        <h1 id="page-title" class="title">{{page.title}}</h1>
+        <h1 id="gauge" class="title">Gauge</h1>
         <p>Gauge metric, to report instantaneous values.</p>
         <p>A <code>Gauge</code> is a metric that represents a single numerical value that can arbitrarily go up and down.</p>
         <p>Gauges are typically used for measured values like temperatures or current memory usage, but also &quot;counts&quot; that can go up and down, like the number of concurrent requests.</p>
@@ -126,7 +121,7 @@
 }
 </span><span class="comment">// noLabelsGaugeExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@723abbd4,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@4bd39cf6,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -159,7 +154,7 @@
 }
 </span><span class="comment">// labelledGaugeExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10220/0x000000080297b0f8@1bec6ac5,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@6fc38532,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,

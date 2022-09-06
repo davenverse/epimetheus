@@ -65,14 +65,14 @@
         <li class="level1"><a href="../epic.html">layout: docs</a></li>
         <li class="level1"><a href="../index.html">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
         <li class="level1 nav-header">docs</li>
-        <li class="level2"><a href="01-Introduction.html">{{page.title}}</a></li>
-        <li class="level2"><a href="02-BigPicture.html">{{page.title}}</a></li>
+        <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
+        <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2 active"><a href="#">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">{{page.title}}</a></li>
-        <li class="level2"><a href="05-Counter.html">{{page.title}}</a></li>
-        <li class="level2"><a href="06-Gauge.html">{{page.title}}</a></li>
-        <li class="level2"><a href="07-Histogram.html">{{page.title}}</a></li>
-        <li class="level2"><a href="08-Summary.html">{{page.title}}</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="05-Counter.html">Counter</a></li>
+        <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
+        <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
+        <li class="level2"><a href="08-Summary.html">Summary</a></li>
       </ul>
 
       <ul class="nav-list">
@@ -101,11 +101,6 @@
 
       <main class="content">
 
-        <hr>
-        <p>layout: docs
-        number: 3
-        title: Data Model
-        ---</p>
         <h1 id="data-model" class="title">Data Model</h1>
         <p>Prometheus fundamentally stores all data as time series: streams of timestamped values belonging to the same metric and the same set of labeled dimensions. Besides stored time series, Prometheus may generate temporary derived time series as the result of queries.</p>
         <p><a href="https://prometheus.io/docs/concepts/data_model/">Reference Documentation</a></p>
