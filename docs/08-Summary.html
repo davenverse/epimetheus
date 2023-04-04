@@ -18,7 +18,7 @@
     
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
     
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.207/distr/fira_code.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
     
     <link rel="stylesheet" type="text/css" href="../helium/icofont.min.css" />
     <link rel="stylesheet" type="text/css" href="../helium/laika-helium.css" />
@@ -140,7 +140,7 @@
 }
 </span><span class="comment">// noLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@a29de9a,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@696237be,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -155,7 +155,7 @@
 // example_summary_sum 1.3
 // # HELP example_summary_created Example Summary
 // # TYPE example_summary_created gauge
-// example_summary_created 1.662480583259E9
+// example_summary_created 1.680618912569E9
 //</span></code></pre>
         <p>An Example of a Summary with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">withLabelsSummaryExample</span><span> = {
@@ -178,7 +178,7 @@
 }
 </span><span class="comment">// withLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@3b712fcc,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@4ccc56a,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -196,8 +196,8 @@
 // example_summary_sum{foo=&quot;baz&quot;,} 1.2
 // # HELP example_summary_created Example Summary
 // # TYPE example_summary_created gauge
-// example_summary_created{foo=&quot;bar&quot;,} 1.662480583275E9
-// example_summary_created{foo=&quot;baz&quot;,} 1.662480583276E9
+// example_summary_created{foo=&quot;bar&quot;,} 1.680618912583E9
+// example_summary_created{foo=&quot;baz&quot;,} 1.680618912584E9
 //</span></code></pre>
 
         <hr style="margin-top: 30px"/>

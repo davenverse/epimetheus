@@ -18,7 +18,7 @@
     
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
     
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.207/distr/fira_code.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
     
     <link rel="stylesheet" type="text/css" href="../helium/icofont.min.css" />
     <link rel="stylesheet" type="text/css" href="../helium/laika-helium.css" />
@@ -132,7 +132,7 @@
 }
 </span><span class="comment">// noLabelsHistogramExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@1eb2501e,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@6546f64d,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -158,10 +158,10 @@
 // example_histogram_bucket{le=&quot;10.0&quot;,} 2.0
 // example_histogram_bucket{le=&quot;+Inf&quot;,} 2.0
 // example_histogram_count 2.0
-// example_histogram_sum 1.2211951939999999
+// example_histogram_sum 1.205891369
 // # HELP example_histogram_created Example Histogram
 // # TYPE example_histogram_created gauge
-// example_histogram_created 1.662480580505E9
+// example_histogram_created 1.680618909653E9
 //</span></code></pre>
         <p>An Example of a Histogram with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledHistogramExample</span><span> = {
@@ -182,7 +182,7 @@
 }
 </span><span class="comment">// labelledHistogramExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10839/0x0000000802a630f8@202086a2,
+//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@3419a676,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -225,11 +225,11 @@
 // example_histogram_bucket{foo=&quot;baz&quot;,le=&quot;10.0&quot;,} 1.0
 // example_histogram_bucket{foo=&quot;baz&quot;,le=&quot;+Inf&quot;,} 1.0
 // example_histogram_count{foo=&quot;baz&quot;,} 1.0
-// example_histogram_sum{foo=&quot;baz&quot;,} 1.000475361
+// example_histogram_sum{foo=&quot;baz&quot;,} 1.000495429
 // # HELP example_histogram_created Example Histogram
 // # TYPE example_histogram_created gauge
-// example_histogram_created{foo=&quot;bar&quot;,} 1.662480581555E9
-// example_histogram_created{foo=&quot;baz&quot;,} 1.662480581556E9
+// example_histogram_created{foo=&quot;bar&quot;,} 1.680618910679E9
+// example_histogram_created{foo=&quot;baz&quot;,} 1.68061891068E9
 //</span></code></pre>
 
         <hr style="margin-top: 30px"/>
