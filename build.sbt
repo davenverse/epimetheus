@@ -14,7 +14,7 @@ ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 
 val Scala213 = "2.13.8"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "3.0.1", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.15", "3.2.2", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 lazy val `epimetheus` = tlCrossRootProject
@@ -32,9 +32,9 @@ lazy val site = project.in(file("site"))
   .dependsOn(core)
 
 
-val prometheusV = "0.15.0"
-val catsV = "2.7.0"
-val catsEffectV = "3.3.12"
+val prometheusV = "0.16.0"
+val catsV = "2.9.0"
+val catsEffectV = "3.4.8"
 val shapelessV = "2.3.9"
 
 val munitCatsEffectV = "1.0.7"
