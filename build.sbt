@@ -14,7 +14,7 @@ ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 
 val Scala213 = "2.13.8"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "3.2.2", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.17", "3.2.2", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 lazy val `epimetheus` = tlCrossRootProject
