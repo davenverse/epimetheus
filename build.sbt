@@ -34,7 +34,7 @@ lazy val site = project.in(file("site"))
 
 val prometheusV = "0.16.0"
 val catsV = "2.9.0"
-val catsEffectV = "3.4.8"
+val catsEffectV = "3.4.10"
 val shapelessV = "2.3.9"
 
 val munitCatsEffectV = "1.0.7"
