@@ -7,6 +7,7 @@ import io.prometheus.client.{Histogram => JHistogram}
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters.MapHasAsJava
 
 /**
  * Histogram metric, to track distributions of events.
@@ -25,6 +26,11 @@ sealed abstract class Histogram[F[_]]{
    * @param d The observation to persist
    */
   def observe(d: Double): F[Unit]
+
+  def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] 
+
+  def observeWithExemplar(d: Double, exemplarLabels: (String, String)*): F[Unit] = 
+    observeWithExemplar(d, exemplarLabels.toMap)
 
   def mapK[G[_]](fk: F ~> G): Histogram[G] = new Histogram.MapKHistogram[F, G](this, fk)
 
@@ -253,6 +259,9 @@ object Histogram {
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
 
+    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = 
+      Sync[F].delay(underlying.observeWithExemplar(d, exemplarLabels.asJava))
+
     override private[epimetheus] def asJava: F[JHistogram] = underlying.pure[F]
   }
 
@@ -261,12 +270,19 @@ object Histogram {
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
 
+    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = 
+      Sync[F].delay(underlying.observeWithExemplar(d, exemplarLabels.asJava))
+
     override private[epimetheus] def asJava: F[JHistogram] =
       ApplicativeThrow[F].raiseError(new IllegalArgumentException("Cannot Get Underlying Parent with Labels Applied"))
   }
 
   private final class MapKHistogram[F[_], G[_]](private[Histogram] val base: Histogram[F], fk: F ~> G) extends Histogram[G]{
+
     def observe(d: Double): G[Unit] = fk(base.observe(d))
+
+    override def observeWithExemplar(d: Double, exemplarLabels: Map[String,String]): G[Unit] = 
+      fk(base.observeWithExemplar(d, exemplarLabels))
 
     override private[epimetheus] def asJava: G[JHistogram] = fk(base.asJava)
   }
