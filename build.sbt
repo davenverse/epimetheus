@@ -12,7 +12,7 @@ ThisBuild / developers := List(
 ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 
-val Scala213 = "2.13.8"
+val Scala213 = "2.13.11"
 
 ThisBuild / crossScalaVersions := Seq("2.12.15", "3.2.2", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
