@@ -12,9 +12,9 @@ ThisBuild / developers := List(
 ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 
-val Scala213 = "2.13.8"
+val Scala213 = "2.13.12"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "3.2.2", Scala213)
+ThisBuild / crossScalaVersions := Seq("2.12.18", "3.2.2", Scala213)
 ThisBuild / scalaVersion := crossScalaVersions.value.last
 
 lazy val `epimetheus` = tlCrossRootProject
@@ -32,7 +32,7 @@ lazy val site = project.in(file("site"))
   .dependsOn(core)
 
 
-val prometheusV = "0.16.0"
+val prometheusV = "1.1.0"
 val catsV = "2.9.0"
 val catsEffectV = "3.4.8"
 val shapelessV = "2.3.9"
@@ -51,14 +51,13 @@ lazy val commonSettings = Seq(
   Compile / doc / scalacOptions ++= Opts.doc.title("epimetheus"),
 
   libraryDependencies ++= Seq(
-    "io.prometheus"               % "simpleclient"                % prometheusV,
-    "io.prometheus"               % "simpleclient_common"         % prometheusV,
-    "io.prometheus"               % "simpleclient_hotspot"        % prometheusV,
+    "io.prometheus"               % "prometheus-metrics-core"                % prometheusV,
+    "io.prometheus"               % "prometheus-metrics-instrumentation-jvm" % prometheusV,
 
-    "org.typelevel"               %% "cats-core"                  % catsV,
-    "org.typelevel"               %% "cats-effect"                % catsEffectV,
+    "org.typelevel"               %% "cats-core"                             % catsV,
+    "org.typelevel"               %% "cats-effect"                           % catsEffectV,
 
-    "org.typelevel"               %%% "munit-cats-effect-3"       % munitCatsEffectV  % Test
+    "org.typelevel"               %%% "munit-cats-effect-3"                  % munitCatsEffectV  % Test
   ),
   libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
       Seq(

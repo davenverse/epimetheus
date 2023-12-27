@@ -6,8 +6,8 @@ class CounterSpec extends munit.CatsEffectSuite {
 
     test("Counter No Labels: Register cleanly in the collector") {
       val test = for {
-        cr <- CollectorRegistry.build[IO]
-        counter <- Counter.noLabels[IO](cr, Name("boo"), "Boo Counter")
+        pr <- PrometheusRegistry.build[IO]
+        counter <- Counter.noLabels[IO](pr, Name("boo"), "Boo Counter")
       } yield counter
 
       test.attempt.map(_.isRight).assert
@@ -15,8 +15,8 @@ class CounterSpec extends munit.CatsEffectSuite {
 
     test("Counter No Labels: Increase correctly") {
       val test = for {
-        cr <- CollectorRegistry.build[IO]
-        counter <- Counter.noLabels[IO](cr, Name("boo"), "Boo Counter")
+        pr <- PrometheusRegistry.build[IO]
+        counter <- Counter.noLabels[IO](pr, Name("boo"), "Boo Counter")
         _ <- counter.inc
         out <- counter.get
       } yield out
@@ -26,8 +26,8 @@ class CounterSpec extends munit.CatsEffectSuite {
 
     test("Counter Labelled: Register cleanly in the collector") {
       val test = for {
-        cr <- CollectorRegistry.build[IO]
-        counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
+        pr <- PrometheusRegistry.build[IO]
+        counter <- Counter.labelled(pr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
       } yield counter
 
       test.attempt.map(_.isRight).assert
@@ -35,8 +35,8 @@ class CounterSpec extends munit.CatsEffectSuite {
 
     test("Counter Labelled: Increase correctly") {
       val test = for {
-        cr <- CollectorRegistry.build[IO]
-        counter <- Counter.labelled(cr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
+        pr <- PrometheusRegistry.build[IO]
+        counter <- Counter.labelled(pr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
         _ <- counter.label("foo").inc
         out <- counter.label("foo").get
       } yield out

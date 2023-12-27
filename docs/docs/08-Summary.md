@@ -32,9 +32,9 @@ And Example of a Summary with no labels:
 ```scala mdoc
 val noLabelsSummaryExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     s <- Summary.noLabels(
-      cr,
+      pr,
       Name("example_summary"),
       "Example Summary",
       Summary.quantile(0.5,0.05)
@@ -42,7 +42,7 @@ val noLabelsSummaryExample = {
     _ <- s.observe(0.1)
     _ <- s.observe(0.2)
     _ <- s.observe(1.0)
-    currentMetrics <- cr.write004
+    currentMetrics <- pr.write004
     _ <- IO(println(currentMetrics))
   } yield ()
 }
@@ -55,9 +55,9 @@ An Example of a Summary with labels:
 ```scala mdoc
 val withLabelsSummaryExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     s <- Summary.labelled(
-      cr,
+      pr,
       Name("example_summary"),
       "Example Summary",
       Sized(Label("foo")),
@@ -67,7 +67,7 @@ val withLabelsSummaryExample = {
     _ <- s.label("bar").observe(0.1)
     _ <- s.label("baz").observe(0.2)
     _ <- s.label("baz").observe(1.0)
-    currentMetrics <- cr.write004
+    currentMetrics <- pr.write004
     _ <- IO(println(currentMetrics))
   } yield ()
 }

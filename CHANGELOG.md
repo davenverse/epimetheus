@@ -11,7 +11,7 @@ This file summarizes **notable** changes for each release, but does not describe
 Initial Stable Release of Epimetheus. This exposes a set of tools for safely abstacting over Prometheus metrics.
 We start with the epic of epimetheus to walk through all the tools you need to know, where we expose the core mechanics.
 
-A central collection of the shared mutable state of the metrics being aggregated called a `CollectorRegistry`.
+A central collection of the shared mutable state of the metrics being aggregated called a `PrometheusRegistry`.
 
 There are 4 metric types Counter, Gauge, Histogram and Summary.
 
