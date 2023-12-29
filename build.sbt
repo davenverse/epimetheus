@@ -1,3 +1,5 @@
+import com.typesafe.tools.mima.core._
+
 ThisBuild / tlBaseVersion := "0.5" // your current series x.y
 
 ThisBuild / organization := "io.chrisdavenport"
@@ -42,6 +44,8 @@ val munitCatsEffectV = "1.0.7"
 
 // General Settings
 lazy val commonSettings = Seq(
+
+  mimaBinaryIssueFilters := List({(_: Problem) => false}), // TODO: remove this once switched to next major version
 
   javacOptions ++= Seq("--release", "8"),
 
