@@ -28,26 +28,26 @@ object Collector {
 
     // registers all jvm metrics
     def registerJvmMetrics[F[_] : Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
 
     def registerJvmBufferPoolMetrics[F[_]: Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmBufferPoolMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmBufferPoolMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmClassLoadingMetrics[F[_]: Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmClassLoadingMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmClassLoadingMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmCompilationMetrics[F[_]: Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmCompilationMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmCompilationMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmGarbageCollectorMetrics[F[_]: Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmGarbageCollectorMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmGarbageCollectorMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmMemoryMetrics[F[_] : Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmMemoryMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmMemoryMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmMemoryPoolAllocationMetrics[F[_]: Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmMemoryPoolAllocationMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmMemoryPoolAllocationMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerProcessMetrics[F[_] : Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(ProcessMetrics.builder().register(pr.underlying))
+      Sync[F].delay(ProcessMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmRuntimeInfoMetric[F[_] : Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmRuntimeInfoMetric.builder().register(pr.underlying))
+      Sync[F].delay(JvmRuntimeInfoMetric.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
     def registerJvmThreadsMetrics[F[_]: Sync](pr: PrometheusRegistry[F]): F[Unit] =
-      Sync[F].delay(JvmThreadsMetrics.builder().register(pr.underlying))
+      Sync[F].delay(JvmThreadsMetrics.builder().register(PrometheusRegistry.Unsafe.asJava(pr)))
   }
 
   object Unsafe {

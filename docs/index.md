@@ -51,7 +51,7 @@ noLabelsCounterExample.unsafeRunSync()
 val noLabelsGaugeExample = {
   for {
     pr <- PrometheusRegistry.build[IO]
-    gauge <- Gauge.noLabels(pr, Name("gauge_total"), "Example Gauge")
+    gauge <- Gauge.noLabels(pr, Name("gaugetotal"), "Example Gauge")
     _ <- gauge.inc
     _ <- gauge.inc
     _ <- gauge.dec

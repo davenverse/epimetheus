@@ -24,7 +24,7 @@ An Example of a Gauge with no labels:
 val noLabelsGaugeExample = {
   for {
     pr <- PrometheusRegistry.build[IO]
-    gauge <- Gauge.noLabels(pr, Name("gauge_total"), "Example Gauge")
+    gauge <- Gauge.noLabels(pr, Name("gaugetotal"), "Example Gauge")
     _ <- gauge.inc
     _ <- gauge.inc
     _ <- gauge.dec
@@ -43,7 +43,7 @@ val labelledGaugeExample = {
     pr <- PrometheusRegistry.build[IO]
     gauge <- Gauge.labelled(
       pr,
-      Name("gauge_total"),
+      Name("gaugetotal"),
       "Example Gauge",
       Sized(Label("foo")),
       {s: String => Sized(s)}

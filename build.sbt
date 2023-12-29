@@ -53,6 +53,7 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "io.prometheus"               % "prometheus-metrics-core"                % prometheusV,
     "io.prometheus"               % "prometheus-metrics-instrumentation-jvm" % prometheusV,
+    "io.prometheus"               % "prometheus-metrics-exposition-formats"  % prometheusV,
 
     "org.typelevel"               %% "cats-core"                             % catsV,
     "org.typelevel"               %% "cats-effect"                           % catsEffectV,
