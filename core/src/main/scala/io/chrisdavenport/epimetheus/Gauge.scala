@@ -154,22 +154,18 @@ object Gauge {
   }
 
   private final class LabelledGauge[F[_]: Sync] private[Gauge] (
-      private val underlying: GaugeDataPoint
+      private val underlying: JGauge,
+      private val underlyingDataPoint: GaugeDataPoint
   ) extends Gauge[F] {
-    def dec: F[Unit] = Sync[F].delay(underlying.dec())
-    def decBy(d: Double): F[Unit] = Sync[F].delay(underlying.dec(d))
+    def dec: F[Unit] = Sync[F].delay(underlyingDataPoint.dec())
+    def decBy(d: Double): F[Unit] = Sync[F].delay(underlyingDataPoint.dec(d))
 
-    def inc: F[Unit] = Sync[F].delay(underlying.inc())
-    def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+    def inc: F[Unit] = Sync[F].delay(underlyingDataPoint.inc())
+    def incBy(d: Double): F[Unit] = Sync[F].delay(underlyingDataPoint.inc(d))
 
-    def set(d: Double): F[Unit] = Sync[F].delay(underlying.set(d))
+    def set(d: Double): F[Unit] = Sync[F].delay(underlyingDataPoint.set(d))
 
-    override private[epimetheus] def asJava: F[JGauge] =
-      ApplicativeThrow[F].raiseError(
-        new IllegalArgumentException(
-          "Cannot Get Underlying Parent with Labels Applied"
-        )
-      )
+    override private[epimetheus] def asJava: F[JGauge] = underlying.pure[F]
   }
 
   private final class MapKGauge[F[_], G[_]](
@@ -206,7 +202,7 @@ object Gauge {
       private val f: A => IndexedSeq[String]
   ) extends UnlabelledGauge[F, A] {
     def label(a: A): Gauge[F] =
-      new LabelledGauge[F](underlying.labelValues(f(a): _*))
+      new LabelledGauge[F](underlying, underlying.labelValues(f(a): _*))
   }
 
   final private class MapKUnlabelledGauge[F[_], G[_], A](
@@ -223,7 +219,7 @@ object Gauge {
       case x: MapKUnlabelledGauge[f, _, a] => asJavaUnlabelled(x.base)
     }
     def asJava[F[_]](c: Gauge[F]): F[JGauge] = c.asJava
-    def fromJava[F[_]: Sync](g: GaugeDataPoint): Gauge[F] = new LabelledGauge(g)
+    def fromJava[F[_]: Sync](g: JGauge): Gauge[F] = new LabelledGauge(g, g)
     def fromJavaUnlabelled[F[_]: Sync](g: JGauge): Gauge[F] = new NoLabelsGauge(
       g
     )

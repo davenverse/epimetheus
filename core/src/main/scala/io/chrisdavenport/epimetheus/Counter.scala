@@ -116,17 +116,13 @@ object Counter {
   }
 
   private final class LabelledCounter[F[_]: Sync] private[Counter] (
-      private[Counter] val underlying: CounterDataPoint
+      private[Counter] val underlying: JCounter,
+      private[Counter] val underlyingDataPoint: CounterDataPoint
   ) extends Counter[F] {
-    def inc: F[Unit] = Sync[F].delay(underlying.inc)
-    def incBy(d: Double): F[Unit] = Sync[F].delay(underlying.inc(d))
+    def inc: F[Unit] = Sync[F].delay(underlyingDataPoint.inc)
+    def incBy(d: Double): F[Unit] = Sync[F].delay(underlyingDataPoint.inc(d))
 
-    override private[epimetheus] def asJava: F[JCounter] =
-      ApplicativeThrow[F].raiseError(
-        new IllegalArgumentException(
-          "Cannot Get Underlying Parent with Labels Applied"
-        )
-      )
+    override private[epimetheus] def asJava: F[JCounter] = underlying.pure[F]
   }
 
   private final class MapKCounter[F[_], G[_]](
@@ -155,7 +151,7 @@ object Counter {
       private val f: A => IndexedSeq[String]
   ) extends UnlabelledCounter[F, A] {
     def label(a: A): Counter[F] =
-      new LabelledCounter(underlying.labelValues(f(a): _*))
+      new LabelledCounter(underlying, underlying.labelValues(f(a): _*))
   }
 
   private final class MapKUnlabelledCounter[F[_], G[_], A](
@@ -173,8 +169,8 @@ object Counter {
         case m: UnlabelledCounterImpl[_, _]    => m.underlying
       }
     def asJava[F[_]](c: Counter[F]): F[JCounter] = c.asJava
-    def fromJava[F[_]: Sync](c: CounterDataPoint): Counter[F] =
-      new LabelledCounter(c)
+    def fromJava[F[_]: Sync](c: JCounter): Counter[F] =
+      new LabelledCounter(c, c)
     def fromJavaUnlabelled[F[_]: Sync](c: JCounter): Counter[F] =
       new NoLabelsCounter(c)
   }
