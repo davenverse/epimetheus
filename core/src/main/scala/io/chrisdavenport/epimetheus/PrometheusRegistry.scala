@@ -2,7 +2,11 @@ package io.chrisdavenport.epimetheus
 
 import cats.effect._
 import cats.implicits._
+import io.prometheus.metrics.expositionformats.ExpositionFormats
 import io.prometheus.metrics.model.registry.{PrometheusRegistry => JPrometheusRegistry}
+
+import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 
 /**
  * A [[PrometheusRegistry]] is a registry of Collectors.
@@ -33,11 +37,35 @@ final class PrometheusRegistry[F[_]: Sync] private(private val pr: JPrometheusRe
   def unregister(c: Collector): F[Unit] =
     Sync[F].delay(pr.unregister(Collector.Unsafe.asJava(c)))
 
+  private lazy val expositionFormats = ExpositionFormats.init()
+
   /**
-   * Get Java PrometheusRegistry
+   * Write out the text version Prometheus 0.0.4 of the given MetricFamilySamples
+   * contained in the CollectorRegistry.
+   *
+   * See https://prometheus.io/docs/instrumenting/exposition_formats/
+   * for the output format specification
    */
-  def underlying: JPrometheusRegistry = pr
+  def write004: F[String] = Sync[F].delay {
+    val output = new ByteArrayOutputStream()
+    expositionFormats.getPrometheusTextFormatWriter.write(output, pr.scrape())
+    output.toString(StandardCharsets.UTF_8)
+  }
+
+  /**
+   * Write out the text version OpenMetrics 1.0.0 of the given MetricFamilySamples
+   * contained in the CollectorRegistry.
+   *
+   * See https://github.com/OpenObservability/OpenMetrics/blob/main/specification/OpenMetrics.md#overall-structure
+   * for the output format specification
+   */
+  def writeOpenMetrics100: F[String] = Sync[F].delay {
+    val output = new ByteArrayOutputStream()
+    expositionFormats.getOpenMetricsTextFormatWriter.write(output, pr.scrape())
+    output.toString(StandardCharsets.UTF_8)
+  }
 }
+
 object PrometheusRegistry {
 
   /**
