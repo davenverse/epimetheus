@@ -2,6 +2,8 @@ package io.chrisdavenport.epimetheus
 
 import cats.effect._
 
+import scala.jdk.CollectionConverters._
+
 class CounterSpec extends munit.CatsEffectSuite {
 
     test("Counter No Labels: Register cleanly in the collector") {
@@ -18,7 +20,7 @@ class CounterSpec extends munit.CatsEffectSuite {
         pr <- PrometheusRegistry.build[IO]
         counter <- Counter.noLabels[IO](pr, Name("boo"), "Boo Counter")
         _ <- counter.inc
-        out <- counter.get
+        out <- counter.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
       } yield out
 
       test.assertEquals(1D)
@@ -38,7 +40,7 @@ class CounterSpec extends munit.CatsEffectSuite {
         pr <- PrometheusRegistry.build[IO]
         counter <- Counter.labelled(pr, Name("boo"), "Boo Counter", Sized(Label("foo")), {(s: String) => Sized(s)})
         _ <- counter.label("foo").inc
-        out <- counter.label("foo").get
+        out <- counter.label("foo").asJava.map(_.collect().getDataPoints.asScala.last.getValue)
       } yield out
 
       test.assertEquals(1D)

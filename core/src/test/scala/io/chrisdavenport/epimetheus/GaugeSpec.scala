@@ -2,7 +2,9 @@ package io.chrisdavenport.epimetheus
 
 import cats.effect._
 import io.chrisdavenport.epimetheus.implicits._
+
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
 class GaugeSpec extends munit.CatsEffectSuite {
 
@@ -20,7 +22,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
       pr <- PrometheusRegistry.build[IO]
       gauge <- Gauge.noLabels[IO](pr, Name("boo"), "Boo Gauge")
       _ <- gauge.inc
-      out <- gauge.get
+      out <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield out
 
     test.assertEquals(1D)
@@ -32,7 +34,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
       gauge <- Gauge.noLabels[IO](pr, Name("boo"), "Boo Gauge")
       _ <- gauge.inc
       _ <- gauge.dec
-      out <- gauge.get
+      out <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield out
 
     test.assertEquals(0D)
@@ -44,7 +46,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
       pr <- PrometheusRegistry.build[IO]
       gauge <- Gauge.noLabels[IO](pr, Name("boo"), "Boo Gauge")
       _ <- gauge.set(set)
-      out <- gauge.get
+      out <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield out
 
     test.assertEquals(set)
@@ -64,7 +66,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
       pr <- PrometheusRegistry.build[IO]
       gauge <- Gauge.labelled(pr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
       _ <- gauge.label("boo").inc
-      out <- gauge.label("boo").get
+      out <- gauge.label("boo").asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield out
 
     test.assertEquals(1D)
@@ -76,7 +78,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
       gauge <- Gauge.labelled(pr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
       _ <- gauge.label("boo").inc
       _ <- gauge.label("boo").dec
-      out <- gauge.label("boo").get
+      out <- gauge.label("boo").asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield out
 
     test.assertEquals(0D)
@@ -88,7 +90,7 @@ class GaugeSpec extends munit.CatsEffectSuite {
       pr <- PrometheusRegistry.build[IO]
       gauge <- Gauge.labelled(pr, Name("boo"), "Boo Gauge", Sized(Label("boo")), { (s: String) => Sized(s) })
       _ <- gauge.label("boo").set(set)
-      out <- gauge.label("boo").get
+      out <- gauge.label("boo").asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield out
 
     test.assertEquals(set)
@@ -101,10 +103,10 @@ class GaugeSpec extends munit.CatsEffectSuite {
       defer <- Deferred[IO, Unit]
       fib <- gauge.incIn(defer.get).start
       _ <- IO.sleep(1.second)
-      current <- gauge.get
+      current <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
       _ <- defer.complete(())
       _ <- fib.join
-      after <- gauge.get
+      after <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield (current, after)
 
     test.assertEquals((1D, 0D))
@@ -117,10 +119,10 @@ class GaugeSpec extends munit.CatsEffectSuite {
       defer <- Deferred[IO, Unit]
       fib <- gauge.incByIn(defer.get, 10).start
       _ <- IO.sleep(1.second)
-      current <- gauge.get
+      current <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
       _ <- defer.complete(())
       _ <- fib.join
-      after <- gauge.get
+      after <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield (current, after)
 
     test.assertEquals((10D, 0D))
@@ -134,10 +136,10 @@ class GaugeSpec extends munit.CatsEffectSuite {
       defer <- Deferred[IO, Unit]
       fib <- gauge.decIn(defer.get).start
       _ <- IO.sleep(1.second)
-      current <- gauge.get
+      current <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
       _ <- defer.complete(())
       _ <- fib.join
-      after <- gauge.get
+      after <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield (current, after)
 
     test.assertEquals((0D, 1D))
@@ -151,10 +153,10 @@ class GaugeSpec extends munit.CatsEffectSuite {
       defer <- Deferred[IO, Unit]
       fib <- gauge.decByIn(defer.get, 10).start
       _ <- IO.sleep(1.second)
-      current <- gauge.get
+      current <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
       _ <- defer.complete(())
       _ <- fib.join
-      after <- gauge.get
+      after <- gauge.asJava.map(_.collect().getDataPoints.asScala.last.getValue)
     } yield (current, after)
 
     test.assertEquals((0D, 10D))
