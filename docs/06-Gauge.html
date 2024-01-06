@@ -68,7 +68,7 @@
         <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
         <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Prometheus Registry</a></li>
         <li class="level2"><a href="05-Counter.html">Counter</a></li>
         <li class="level2 active"><a href="#">Gauge</a></li>
         <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
@@ -111,17 +111,17 @@
         <p>An Example of a Gauge with no labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsGaugeExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">gauge</span><span> &lt;- </span><span class="type-name">Gauge</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;gauge_total&quot;</span><span>), </span><span class="string-literal">&quot;Example Gauge&quot;</span><span>)
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">gauge</span><span> &lt;- </span><span class="type-name">Gauge</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;gaugetotal&quot;</span><span>), </span><span class="string-literal">&quot;Example Gauge&quot;</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">dec</span><span>
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// noLabelsGaugeExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@47f86658,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@67fc15a6,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -129,17 +129,17 @@
 // )
 </span><span>
 </span><span class="identifier">noLabelsGaugeExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
-</span><span class="comment">// res0: String = &quot;&quot;&quot;# HELP gauge_total Example Gauge
-// # TYPE gauge_total gauge
-// gauge_total 1.0
+</span><span class="comment">// res0: String = &quot;&quot;&quot;# HELP gaugetotal Example Gauge
+// # TYPE gaugetotal gauge
+// gaugetotal 1.0
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Gauge with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledGaugeExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">gauge</span><span> &lt;- </span><span class="type-name">Gauge</span><span>.</span><span class="identifier">labelled</span><span>(
-      </span><span class="identifier">cr</span><span>,
-      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;gauge_total&quot;</span><span>),
+      </span><span class="identifier">pr</span><span>,
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;gaugetotal&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Gauge&quot;</span><span>,
       </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
       {</span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="identifier">s</span><span>)}
@@ -149,12 +149,12 @@
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;bar&quot;</span><span>).</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;baz&quot;</span><span>).</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;bar&quot;</span><span>).</span><span class="identifier">dec</span><span>
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// labelledGaugeExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@71efbfa3,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@323d709a,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -162,10 +162,10 @@
 // )
 </span><span>
 </span><span class="identifier">labelledGaugeExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
-</span><span class="comment">// res1: String = &quot;&quot;&quot;# HELP gauge_total Example Gauge
-// # TYPE gauge_total gauge
-// gauge_total{foo=&quot;bar&quot;,} 1.0
-// gauge_total{foo=&quot;baz&quot;,} 2.0
+</span><span class="comment">// res1: String = &quot;&quot;&quot;# HELP gaugetotal Example Gauge
+// # TYPE gaugetotal gauge
+// gaugetotal{foo=&quot;bar&quot;} 1.0
+// gaugetotal{foo=&quot;baz&quot;} 2.0
 // &quot;&quot;&quot;</span></code></pre>
 
         <hr style="margin-top: 30px"/>

@@ -68,7 +68,7 @@
         <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
         <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Prometheus Registry</a></li>
         <li class="level2"><a href="05-Counter.html">Counter</a></li>
         <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
         <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
@@ -124,9 +124,9 @@
         <p>And Example of a Summary with no labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsSummaryExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">s</span><span> &lt;- </span><span class="type-name">Summary</span><span>.</span><span class="identifier">noLabels</span><span>(
-      </span><span class="identifier">cr</span><span>,
+      </span><span class="identifier">pr</span><span>,
       </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_summary&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Summary&quot;</span><span>,
       </span><span class="type-name">Summary</span><span>.</span><span class="identifier">quantile</span><span>(</span><span class="number-literal">0.5</span><span>,</span><span class="number-literal">0.05</span><span>)
@@ -134,13 +134,13 @@
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.1</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.2</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">1.0</span><span>)
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">IO</span><span>(</span><span class="identifier">println</span><span>(</span><span class="identifier">currentMetrics</span><span>))
   } </span><span class="keyword">yield</span><span> ()
 }
 </span><span class="comment">// noLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@696237be,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@44705333,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -150,19 +150,16 @@
 </span><span class="identifier">noLabelsSummaryExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
 </span><span class="comment">// # HELP example_summary Example Summary
 // # TYPE example_summary summary
-// example_summary{quantile=&quot;0.5&quot;,} 0.2
-// example_summary_count 3.0
+// example_summary{quantile=&quot;0.5&quot;} 0.2
+// example_summary_count 3
 // example_summary_sum 1.3
-// # HELP example_summary_created Example Summary
-// # TYPE example_summary_created gauge
-// example_summary_created 1.680618912569E9
 //</span></code></pre>
         <p>An Example of a Summary with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">withLabelsSummaryExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">s</span><span> &lt;- </span><span class="type-name">Summary</span><span>.</span><span class="identifier">labelled</span><span>(
-      </span><span class="identifier">cr</span><span>,
+      </span><span class="identifier">pr</span><span>,
       </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_summary&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Summary&quot;</span><span>,
       </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
@@ -172,13 +169,13 @@
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;bar&quot;</span><span>).</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.1</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;baz&quot;</span><span>).</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.2</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;baz&quot;</span><span>).</span><span class="identifier">observe</span><span>(</span><span class="number-literal">1.0</span><span>)
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">IO</span><span>(</span><span class="identifier">println</span><span>(</span><span class="identifier">currentMetrics</span><span>))
   } </span><span class="keyword">yield</span><span> ()
 }
 </span><span class="comment">// withLabelsSummaryExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@4ccc56a,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@7f773cfa,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -188,16 +185,12 @@
 </span><span class="identifier">withLabelsSummaryExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
 </span><span class="comment">// # HELP example_summary Example Summary
 // # TYPE example_summary summary
-// example_summary{foo=&quot;bar&quot;,quantile=&quot;0.5&quot;,} 0.1
-// example_summary_count{foo=&quot;bar&quot;,} 1.0
-// example_summary_sum{foo=&quot;bar&quot;,} 0.1
-// example_summary{foo=&quot;baz&quot;,quantile=&quot;0.5&quot;,} 0.2
-// example_summary_count{foo=&quot;baz&quot;,} 2.0
-// example_summary_sum{foo=&quot;baz&quot;,} 1.2
-// # HELP example_summary_created Example Summary
-// # TYPE example_summary_created gauge
-// example_summary_created{foo=&quot;bar&quot;,} 1.680618912583E9
-// example_summary_created{foo=&quot;baz&quot;,} 1.680618912584E9
+// example_summary{foo=&quot;bar&quot;,quantile=&quot;0.5&quot;} 0.1
+// example_summary_count{foo=&quot;bar&quot;} 1
+// example_summary_sum{foo=&quot;bar&quot;} 0.1
+// example_summary{foo=&quot;baz&quot;,quantile=&quot;0.5&quot;} 0.2
+// example_summary_count{foo=&quot;baz&quot;} 2
+// example_summary_sum{foo=&quot;baz&quot;} 1.2
 //</span></code></pre>
 
         <hr style="margin-top: 30px"/>

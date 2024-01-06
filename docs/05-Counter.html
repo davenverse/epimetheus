@@ -68,7 +68,7 @@
         <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
         <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="04-CollectorRegistry.html">Prometheus Registry</a></li>
         <li class="level2 active"><a href="#">Counter</a></li>
         <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
         <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
@@ -112,14 +112,14 @@
         <p>An Example Counter without Labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">successCounter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(
-      </span><span class="identifier">cr</span><span>,
+      </span><span class="identifier">pr</span><span>,
       </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_success_total&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter of Success&quot;</span><span>
     )
     </span><span class="identifier">failureCounter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(
-      </span><span class="identifier">cr</span><span>,
+      </span><span class="identifier">pr</span><span>,
       </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_failure_total&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter of Failure&quot;</span><span>
     )
@@ -127,12 +127,12 @@
       </span><span class="keyword">case</span><span> </span><span class="type-name">Outcome</span><span>.</span><span class="type-name">Succeeded</span><span>(</span><span class="identifier">_</span><span>) =&gt; </span><span class="identifier">successCounter</span><span>.</span><span class="identifier">inc</span><span>
       </span><span class="keyword">case</span><span> </span><span class="identifier">_</span><span> =&gt; </span><span class="identifier">failureCounter</span><span>.</span><span class="identifier">inc</span><span>
     }
-    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">out</span><span>
 }
 </span><span class="comment">// noLabelsExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@79d13240,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@2b729f8e,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -147,19 +147,13 @@
 // # HELP example_success_total Example Counter of Success
 // # TYPE example_success_total counter
 // example_success_total 1.0
-// # HELP example_failure_created Example Counter of Failure
-// # TYPE example_failure_created gauge
-// example_failure_created 1.68061890764E9
-// # HELP example_success_created Example Counter of Success
-// # TYPE example_success_created gauge
-// example_success_created 1.680618907636E9
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Counter with Labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(
-      </span><span class="identifier">cr</span><span>,
+      </span><span class="identifier">pr</span><span>,
       </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_total&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter&quot;</span><span>,
       </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
@@ -167,12 +161,12 @@
     )
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">counter</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;bar&quot;</span><span>).</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">counter</span><span>.</span><span class="identifier">label</span><span>(</span><span class="string-literal">&quot;baz&quot;</span><span>).</span><span class="identifier">inc</span><span>
-    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">out</span><span>
 }
 </span><span class="comment">// labelledExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@7eedcf56,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@4df5b9e3,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -182,12 +176,8 @@
 </span><span class="identifier">labelledExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
 </span><span class="comment">// res1: String = &quot;&quot;&quot;# HELP example_total Example Counter
 // # TYPE example_total counter
-// example_total{foo=&quot;bar&quot;,} 1.0
-// example_total{foo=&quot;baz&quot;,} 1.0
-// # HELP example_created Example Counter
-// # TYPE example_created gauge
-// example_created{foo=&quot;bar&quot;,} 1.680618907662E9
-// example_created{foo=&quot;baz&quot;,} 1.680618907663E9
+// example_total{foo=&quot;bar&quot;} 1.0
+// example_total{foo=&quot;baz&quot;} 1.0
 // &quot;&quot;&quot;</span></code></pre>
         <p>An Example of a Counter backed algebra.</p>
         <pre><code class="nohighlight"><span class="keyword">sealed</span><span> </span><span class="keyword">trait</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Bar</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;; </span><span class="keyword">case</span><span> </span><span class="keyword">object</span><span> </span><span class="type-name">Baz</span><span> </span><span class="keyword">extends</span><span> </span><span class="type-name">Foo</span><span>;;
@@ -211,9 +201,9 @@
 
 </span><span class="keyword">val</span><span> </span><span class="identifier">fooAgebraExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(
-      </span><span class="identifier">cr</span><span>,
+      </span><span class="identifier">pr</span><span>,
       </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_total&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter&quot;</span><span>,
       </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
@@ -223,12 +213,12 @@
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">foo</span><span>.</span><span class="identifier">bar</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">foo</span><span>.</span><span class="identifier">bar</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">foo</span><span>.</span><span class="identifier">baz</span><span>
-    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">out</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">out</span><span>
 }
 </span><span class="comment">// fooAgebraExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@3287d5e9,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@6bc5acf9,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -238,16 +228,12 @@
 </span><span class="identifier">fooAgebraExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
 </span><span class="comment">// res2: String = &quot;&quot;&quot;# HELP example_total Example Counter
 // # TYPE example_total counter
-// example_total{foo=&quot;bar&quot;,} 2.0
-// example_total{foo=&quot;baz&quot;,} 1.0
-// # HELP example_created Example Counter
-// # TYPE example_created gauge
-// example_created{foo=&quot;bar&quot;,} 1.680618907679E9
-// example_created{foo=&quot;baz&quot;,} 1.680618907683E9
+// example_total{foo=&quot;bar&quot;} 2.0
+// example_total{foo=&quot;baz&quot;} 1.0
 // &quot;&quot;&quot;</span></code></pre>
         <p>We force labels to always match the same size. This will fail to compile.</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">incorrectlySized</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]: </span><span class="type-name">Sync</span><span>](</span><span class="identifier">cr</span><span>: </span><span class="type-name">CollectorRegistry</span><span>[</span><span class="type-name">F</span><span>]) = {
-  </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;fail&quot;</span><span>), </span><span class="string-literal">&quot;Example Failure&quot;</span><span>, </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;color&quot;</span><span>), </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;method&quot;</span><span>)), {</span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="identifier">s</span><span>)})
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">def</span><span> </span><span class="declaration-name">incorrectlySized</span><span>[</span><span class="type-name">F</span><span>[</span><span class="identifier">_</span><span>]: </span><span class="type-name">Sync</span><span>](</span><span class="identifier">pr</span><span>: </span><span class="type-name">PrometheusRegistry</span><span>[</span><span class="type-name">F</span><span>]) = {
+  </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;fail&quot;</span><span>), </span><span class="string-literal">&quot;Example Failure&quot;</span><span>, </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;color&quot;</span><span>), </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;method&quot;</span><span>)), {</span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="identifier">s</span><span>)})
 }</span></code></pre>
 
         <hr style="margin-top: 30px"/>

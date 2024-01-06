@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
-    <title>Collector Registry</title>
+    <title>Prometheus Registry</title>
     
       <meta name="author" content="Christopher Davenport"/>
     
@@ -68,7 +68,7 @@
         <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
         <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2 active"><a href="#">Collector Registry</a></li>
+        <li class="level2 active"><a href="#">Prometheus Registry</a></li>
         <li class="level2"><a href="05-Counter.html">Counter</a></li>
         <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
         <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
@@ -87,13 +87,12 @@
     <div id="container">
 
       <nav id="page-nav">
-        <p class="header"><a href="#">Collector Registry</a></p>
+        <p class="header"><a href="#">Prometheus Registry</a></p>
 
         <ul class="nav-list">
           <li class="level1"><a href="#on-creation">On Creation</a></li>
           <li class="level2"><a href="#creating-your-own-registry">Creating Your Own Registry</a></li>
           <li class="level2"><a href="#dealing-with-the-global">Dealing with the global</a></li>
-          <li class="level1"><a href="#exporting-your-metrics">Exporting Your Metrics</a></li>
           <li class="level1"><a href="#conclusion">Conclusion</a></li>
         </ul>
 
@@ -102,16 +101,16 @@
 
       <main class="content">
 
-        <h1 id="collector-registry" class="title">Collector Registry</h1>
-        <p>A <code>CollectorRegistry</code> represents the concurrently shared state which holds the information
+        <h1 id="prometheus-registry" class="title">Prometheus Registry</h1>
+        <p>A <code>PrometheusRegistry</code> represents the concurrently shared state which holds the information
         of the metrics in question.</p>
         <p>You can view this as the entry-point to any metrics. It collects and keeps the relevant data
         for all of the metrics.</p>
-        <p><strong>Caution:</strong> Only a single metric with a given name can be registered with a <code>CollectorRegistry</code>,
+        <p><strong>Caution:</strong> Only a single metric with a given name can be registered with a <code>PrometheusRegistry</code>,
         attempting to register a metric with the same name twice, will yield an error.</p>
         
         <h2 id="on-creation" class="section">On Creation<a class="anchor-link right" href="#on-creation"><i class="icofont-laika">&#xef71;</i></a></h2>
-        <p>Due to how prometheus scraping occurs, only one  <code>CollectorRegistry</code> is generally useful per application. There are generally 2 approaches.</p>
+        <p>Due to how prometheus scraping occurs, only one  <code>PrometheusRegistry</code> is generally useful per application. There are generally 2 approaches.</p>
         <ol class="arabic">
           <li>
             <p>Create your own registry. Register Metrics with it. Expose that.</p>
@@ -120,7 +119,7 @@
             </ul>
           </li>
           <li>
-            <p>Use the global <code>CollectorRegistry.defaultRegistry</code></p>
+            <p>Use the global <code>PrometheusRegistry.defaultRegistry</code></p>
             <ul>
               <li>Advantages: Easier Interop with Java libraries that may not give an option for interaction with arbitrary CollectorRegistries.</li>
             </ul>
@@ -140,12 +139,12 @@
         shared space.</p>
         <pre><code class="nohighlight"><span>{
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-  } </span><span class="keyword">yield</span><span> </span><span class="identifier">cr</span><span>
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+  } </span><span class="keyword">yield</span><span> </span><span class="identifier">pr</span><span>
 }
-</span><span class="comment">// res0: IO[CollectorRegistry[IO]] = Map(
+</span><span class="comment">// res0: IO[PrometheusRegistry[IO]] = Map(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@74c23b3,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@677380e4,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -154,16 +153,16 @@
         <p>You can build your own registry with the default Hotspot Metrics registered with it automatically</p>
         <pre><code class="nohighlight"><span>{
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">buildWithDefaults</span><span>[</span><span class="type-name">IO</span><span>]
-  } </span><span class="keyword">yield</span><span> </span><span class="identifier">cr</span><span>
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">buildWithDefaults</span><span>[</span><span class="type-name">IO</span><span>]
+  } </span><span class="keyword">yield</span><span> </span><span class="identifier">pr</span><span>
 }
-</span><span class="comment">// res1: IO[CollectorRegistry[IO]] = Map(
+</span><span class="comment">// res1: IO[PrometheusRegistry[IO]] = Map(
 //   ioe = FlatMap(
 //     ioe = Delay(
-//       thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@7840217f,
+//       thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@790df759,
 //       event = cats.effect.tracing.TracingEvent$StackTrace
 //     ),
-//     f = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10920/0x0000000802abd260@2b809d9d,
+//     f = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11317/0x00007fa31df33820@723cac95,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -172,13 +171,13 @@
         <p>or you can do it yourself.</p>
         <pre><code class="nohighlight"><span>{
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">Collector</span><span>.</span><span class="type-name">Defaults</span><span>.</span><span class="identifier">registerDefaults</span><span>(</span><span class="identifier">cr</span><span>)
-  } </span><span class="keyword">yield</span><span> </span><span class="identifier">cr</span><span>
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">Collector</span><span>.</span><span class="type-name">Defaults</span><span>.</span><span class="identifier">registerDefaults</span><span>(</span><span class="identifier">pr</span><span>)
+  } </span><span class="keyword">yield</span><span> </span><span class="identifier">pr</span><span>
 }
-</span><span class="comment">// res2: IO[CollectorRegistry[IO]] = FlatMap(
+</span><span class="comment">// res2: IO[PrometheusRegistry[IO]] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@3ee861e0,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@b69a1f3,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -189,190 +188,11 @@
         <p>Most of the rest of the java community however has used a singleton collector registry. We expose this collector,
         as well as a method which initializes the default metrics into the default. This leaves access to the Registry outside of your control, and not necessarily within the call graph of your application.</p>
         <p>You have access to the global pool automatically.</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">defaultRegistry</span><span>[</span><span class="type-name">IO</span><span>]
-</span><span class="comment">// res3: CollectorRegistry[IO] = io.chrisdavenport.epimetheus.CollectorRegistry@47dae49b</span></code></pre>
-        <p>You can also ensure the baseline has been initiated.</p>
-        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">Collector</span><span>.</span><span class="type-name">Defaults</span><span>.</span><span class="identifier">defaultCollectorRegisterDefaults</span><span>[</span><span class="type-name">IO</span><span>]
-</span><span class="comment">// res4: IO[Unit] = Delay(
-//   thunk = io.chrisdavenport.epimetheus.Collector$Defaults$$$Lambda$10921/0x0000000802abf2c0@5a711d05,
-//   event = cats.effect.tracing.TracingEvent$StackTrace
-// )</span></code></pre>
-        
-        <h2 id="exporting-your-metrics" class="section">Exporting Your Metrics<a class="anchor-link right" href="#exporting-your-metrics"><i class="icofont-laika">&#xef71;</i></a></h2>
-        <p>Each <code>CollectorRegistry</code> exposes a <code>write004</code> function which will write out the current value of the metrics with the appropriate encoding for the 004 encoding that Prometheus expects.</p>
-        <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">exportExample</span><span> = {
-  </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">Collector</span><span>.</span><span class="type-name">Defaults</span><span>.</span><span class="identifier">registerDefaults</span><span>(</span><span class="identifier">cr</span><span>)
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
-    </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">IO</span><span>(</span><span class="identifier">println</span><span>(</span><span class="identifier">currentMetrics</span><span>))
-  } </span><span class="keyword">yield</span><span> ()
-}
-</span><span class="comment">// exportExample: IO[Unit] = FlatMap(
-//   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@37854680,
-//     event = cats.effect.tracing.TracingEvent$StackTrace
-//   ),
-//   f = &lt;function1&gt;,
-//   event = cats.effect.tracing.TracingEvent$StackTrace
-// )
-</span><span>
-</span><span class="identifier">exportExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
-</span><span class="comment">// # HELP jvm_classes_currently_loaded The number of classes that are currently loaded in the JVM
-// # TYPE jvm_classes_currently_loaded gauge
-// jvm_classes_currently_loaded 35067.0
-// # HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
-// # TYPE jvm_classes_loaded_total counter
-// jvm_classes_loaded_total 35410.0
-// # HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
-// # TYPE jvm_classes_unloaded_total counter
-// jvm_classes_unloaded_total 340.0
-// # HELP jvm_memory_pool_allocated_bytes_total Total bytes allocated in a given JVM memory pool. Only updated after GC, not continuously.
-// # TYPE jvm_memory_pool_allocated_bytes_total counter
-// # HELP jvm_memory_objects_pending_finalization The number of objects waiting in the finalizer queue.
-// # TYPE jvm_memory_objects_pending_finalization gauge
-// jvm_memory_objects_pending_finalization 0.0
-// # HELP jvm_memory_bytes_used Used bytes of a given JVM memory area.
-// # TYPE jvm_memory_bytes_used gauge
-// jvm_memory_bytes_used{area=&quot;heap&quot;,} 5.15631616E8
-// jvm_memory_bytes_used{area=&quot;nonheap&quot;,} 3.8670436E8
-// # HELP jvm_memory_bytes_committed Committed (bytes) of a given JVM memory area.
-// # TYPE jvm_memory_bytes_committed gauge
-// jvm_memory_bytes_committed{area=&quot;heap&quot;,} 1.073741824E9
-// jvm_memory_bytes_committed{area=&quot;nonheap&quot;,} 3.88038656E8
-// # HELP jvm_memory_bytes_max Max (bytes) of a given JVM memory area.
-// # TYPE jvm_memory_bytes_max gauge
-// jvm_memory_bytes_max{area=&quot;heap&quot;,} 1.073741824E9
-// jvm_memory_bytes_max{area=&quot;nonheap&quot;,} -1.0
-// # HELP jvm_memory_bytes_init Initial bytes of a given JVM memory area.
-// # TYPE jvm_memory_bytes_init gauge
-// jvm_memory_bytes_init{area=&quot;heap&quot;,} 1.073741824E9
-// jvm_memory_bytes_init{area=&quot;nonheap&quot;,} 2555904.0
-// # HELP jvm_memory_pool_bytes_used Used bytes of a given JVM memory pool.
-// # TYPE jvm_memory_pool_bytes_used gauge
-// jvm_memory_pool_bytes_used{pool=&quot;Metaspace&quot;,} 2.6609768E8
-// jvm_memory_pool_bytes_used{pool=&quot;G1 Survivor Space&quot;,} 2.9884416E7
-// jvm_memory_pool_bytes_used{pool=&quot;Compressed Class Space&quot;,} 3.1978016E7
-// jvm_memory_pool_bytes_used{pool=&quot;G1 Eden Space&quot;,} 3.32398592E8
-// jvm_memory_pool_bytes_used{pool=&quot;G1 Old Gen&quot;,} 1.53348608E8
-// jvm_memory_pool_bytes_used{pool=&quot;CodeCache&quot;,} 8.862976E7
-// # HELP jvm_memory_pool_bytes_committed Committed bytes of a given JVM memory pool.
-// # TYPE jvm_memory_pool_bytes_committed gauge
-// jvm_memory_pool_bytes_committed{pool=&quot;Metaspace&quot;,} 2.66993664E8
-// jvm_memory_pool_bytes_committed{pool=&quot;G1 Survivor Space&quot;,} 3.0408704E7
-// jvm_memory_pool_bytes_committed{pool=&quot;Compressed Class Space&quot;,} 3.2374784E7
-// jvm_memory_pool_bytes_committed{pool=&quot;G1 Eden Space&quot;,} 6.45922816E8
-// jvm_memory_pool_bytes_committed{pool=&quot;G1 Old Gen&quot;,} 3.97410304E8
-// jvm_memory_pool_bytes_committed{pool=&quot;CodeCache&quot;,} 8.8735744E7
-// # HELP jvm_memory_pool_bytes_max Max bytes of a given JVM memory pool.
-// # TYPE jvm_memory_pool_bytes_max gauge
-// jvm_memory_pool_bytes_max{pool=&quot;Metaspace&quot;,} -1.0
-// jvm_memory_pool_bytes_max{pool=&quot;G1 Survivor Space&quot;,} -1.0
-// jvm_memory_pool_bytes_max{pool=&quot;Compressed Class Space&quot;,} 1.073741824E9
-// jvm_memory_pool_bytes_max{pool=&quot;G1 Eden Space&quot;,} -1.0
-// jvm_memory_pool_bytes_max{pool=&quot;G1 Old Gen&quot;,} 1.073741824E9
-// jvm_memory_pool_bytes_max{pool=&quot;CodeCache&quot;,} 1.34217728E8
-// # HELP jvm_memory_pool_bytes_init Initial bytes of a given JVM memory pool.
-// # TYPE jvm_memory_pool_bytes_init gauge
-// jvm_memory_pool_bytes_init{pool=&quot;Metaspace&quot;,} 0.0
-// jvm_memory_pool_bytes_init{pool=&quot;G1 Survivor Space&quot;,} 0.0
-// jvm_memory_pool_bytes_init{pool=&quot;Compressed Class Space&quot;,} 0.0
-// jvm_memory_pool_bytes_init{pool=&quot;G1 Eden Space&quot;,} 5.6623104E7
-// jvm_memory_pool_bytes_init{pool=&quot;G1 Old Gen&quot;,} 1.01711872E9
-// jvm_memory_pool_bytes_init{pool=&quot;CodeCache&quot;,} 2555904.0
-// # HELP jvm_memory_pool_collection_used_bytes Used bytes after last collection of a given JVM memory pool.
-// # TYPE jvm_memory_pool_collection_used_bytes gauge
-// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Survivor Space&quot;,} 2.9884416E7
-// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Eden Space&quot;,} 0.0
-// jvm_memory_pool_collection_used_bytes{pool=&quot;G1 Old Gen&quot;,} 1.3178368E8
-// # HELP jvm_memory_pool_collection_committed_bytes Committed after last collection bytes of a given JVM memory pool.
-// # TYPE jvm_memory_pool_collection_committed_bytes gauge
-// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Survivor Space&quot;,} 3.0408704E7
-// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Eden Space&quot;,} 6.45922816E8
-// jvm_memory_pool_collection_committed_bytes{pool=&quot;G1 Old Gen&quot;,} 5.53648128E8
-// # HELP jvm_memory_pool_collection_max_bytes Max bytes after last collection of a given JVM memory pool.
-// # TYPE jvm_memory_pool_collection_max_bytes gauge
-// jvm_memory_pool_collection_max_bytes{pool=&quot;G1 Survivor Space&quot;,} -1.0
-// jvm_memory_pool_collection_max_bytes{pool=&quot;G1 Eden Space&quot;,} -1.0
-// jvm_memory_pool_collection_max_bytes{pool=&quot;G1 Old Gen&quot;,} 1.073741824E9
-// # HELP jvm_memory_pool_collection_init_bytes Initial after last collection bytes of a given JVM memory pool.
-// # TYPE jvm_memory_pool_collection_init_bytes gauge
-// jvm_memory_pool_collection_init_bytes{pool=&quot;G1 Survivor Space&quot;,} 0.0
-// jvm_memory_pool_collection_init_bytes{pool=&quot;G1 Eden Space&quot;,} 5.6623104E7
-// jvm_memory_pool_collection_init_bytes{pool=&quot;G1 Old Gen&quot;,} 1.01711872E9
-// # HELP jvm_threads_current Current thread count of a JVM
-// # TYPE jvm_threads_current gauge
-// jvm_threads_current 64.0
-// # HELP jvm_threads_daemon Daemon thread count of a JVM
-// # TYPE jvm_threads_daemon gauge
-// jvm_threads_daemon 47.0
-// # HELP jvm_threads_peak Peak thread count of a JVM
-// # TYPE jvm_threads_peak gauge
-// jvm_threads_peak 65.0
-// # HELP jvm_threads_started_total Started thread count of a JVM
-// # TYPE jvm_threads_started_total counter
-// jvm_threads_started_total 291.0
-// # HELP jvm_threads_deadlocked Cycles of JVM-threads that are in deadlock waiting to acquire object monitors or ownable synchronizers
-// # TYPE jvm_threads_deadlocked gauge
-// jvm_threads_deadlocked 0.0
-// # HELP jvm_threads_deadlocked_monitor Cycles of JVM-threads that are in deadlock waiting to acquire object monitors
-// # TYPE jvm_threads_deadlocked_monitor gauge
-// jvm_threads_deadlocked_monitor 0.0
-// # HELP jvm_threads_state Current count of threads by state
-// # TYPE jvm_threads_state gauge
-// jvm_threads_state{state=&quot;NEW&quot;,} 0.0
-// jvm_threads_state{state=&quot;TERMINATED&quot;,} 0.0
-// jvm_threads_state{state=&quot;RUNNABLE&quot;,} 9.0
-// jvm_threads_state{state=&quot;BLOCKED&quot;,} 0.0
-// jvm_threads_state{state=&quot;WAITING&quot;,} 21.0
-// jvm_threads_state{state=&quot;TIMED_WAITING&quot;,} 34.0
-// jvm_threads_state{state=&quot;UNKNOWN&quot;,} 0.0
-// # HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
-// # TYPE process_cpu_seconds_total counter
-// process_cpu_seconds_total 94.86
-// # HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
-// # TYPE process_start_time_seconds gauge
-// process_start_time_seconds 1.68061885319E9
-// # HELP process_open_fds Number of open file descriptors.
-// # TYPE process_open_fds gauge
-// process_open_fds 470.0
-// # HELP process_max_fds Maximum number of open file descriptors.
-// # TYPE process_max_fds gauge
-// process_max_fds 65536.0
-// # HELP process_virtual_memory_bytes Virtual memory size in bytes.
-// # TYPE process_virtual_memory_bytes gauge
-// process_virtual_memory_bytes 4.101238784E9
-// # HELP process_resident_memory_bytes Resident memory size in bytes.
-// # TYPE process_resident_memory_bytes gauge
-// process_resident_memory_bytes 1.795715072E9
-// # HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
-// # TYPE jvm_gc_collection_seconds summary
-// jvm_gc_collection_seconds_count{gc=&quot;G1 Young Generation&quot;,} 22.0
-// jvm_gc_collection_seconds_sum{gc=&quot;G1 Young Generation&quot;,} 0.649
-// jvm_gc_collection_seconds_count{gc=&quot;G1 Old Generation&quot;,} 0.0
-// jvm_gc_collection_seconds_sum{gc=&quot;G1 Old Generation&quot;,} 0.0
-// # HELP jvm_buffer_pool_used_bytes Used bytes of a given JVM buffer pool.
-// # TYPE jvm_buffer_pool_used_bytes gauge
-// jvm_buffer_pool_used_bytes{pool=&quot;mapped&quot;,} 0.0
-// jvm_buffer_pool_used_bytes{pool=&quot;direct&quot;,} 1.8429281E7
-// jvm_buffer_pool_used_bytes{pool=&quot;mapped - &#39;non-volatile memory&#39;&quot;,} 0.0
-// # HELP jvm_buffer_pool_capacity_bytes Bytes capacity of a given JVM buffer pool.
-// # TYPE jvm_buffer_pool_capacity_bytes gauge
-// jvm_buffer_pool_capacity_bytes{pool=&quot;mapped&quot;,} 0.0
-// jvm_buffer_pool_capacity_bytes{pool=&quot;direct&quot;,} 1.8429281E7
-// jvm_buffer_pool_capacity_bytes{pool=&quot;mapped - &#39;non-volatile memory&#39;&quot;,} 0.0
-// # HELP jvm_buffer_pool_used_buffers Used buffers of a given JVM buffer pool.
-// # TYPE jvm_buffer_pool_used_buffers gauge
-// jvm_buffer_pool_used_buffers{pool=&quot;mapped&quot;,} 0.0
-// jvm_buffer_pool_used_buffers{pool=&quot;direct&quot;,} 17.0
-// jvm_buffer_pool_used_buffers{pool=&quot;mapped - &#39;non-volatile memory&#39;&quot;,} 0.0
-// # HELP jvm_info VM version info
-// # TYPE jvm_info gauge
-// jvm_info{runtime=&quot;OpenJDK Runtime Environment&quot;,vendor=&quot;Eclipse Adoptium&quot;,version=&quot;17.0.6+10&quot;,} 1.0
-//</span></code></pre>
+        <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">defaultRegistry</span><span>[</span><span class="type-name">IO</span><span>]
+</span><span class="comment">// res3: PrometheusRegistry[IO] = io.chrisdavenport.epimetheus.PrometheusRegistry@1dc828f8</span></code></pre>
         
         <h2 id="conclusion" class="section">Conclusion<a class="anchor-link right" href="#conclusion"><i class="icofont-laika">&#xef71;</i></a></h2>
-        <p>Regardless which strategy you choose to use to get access to your <code>CollectorRegistry</code>, you will need to have one to work and build your metrics moving forward. It is the fundamental shared space on which metrics, and groups of metrics are based upon.</p>
+        <p>Regardless which strategy you choose to use to get access to your <code>PrometheusRegistry</code>, you will need to have one to work and build your metrics moving forward. It is the fundamental shared space on which metrics, and groups of metrics are based upon.</p>
 
         <hr style="margin-top: 30px"/>
         <footer style="font-size: 90%; text-align: center">

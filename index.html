@@ -68,7 +68,7 @@
         <li class="level2"><a href="docs/01-Introduction.html">Introduction</a></li>
         <li class="level2"><a href="docs/02-BigPicture.html">Big Picture</a></li>
         <li class="level2"><a href="docs/03-DataModel.html">Data Model</a></li>
-        <li class="level2"><a href="docs/04-CollectorRegistry.html">Collector Registry</a></li>
+        <li class="level2"><a href="docs/04-CollectorRegistry.html">Prometheus Registry</a></li>
         <li class="level2"><a href="docs/05-Counter.html">Counter</a></li>
         <li class="level2"><a href="docs/06-Gauge.html">Gauge</a></li>
         <li class="level2"><a href="docs/07-Histogram.html">Histogram</a></li>
@@ -128,15 +128,15 @@
         <h3 id="counter-example" class="section">Counter Example<a class="anchor-link right" href="#counter-example"><i class="icofont-laika">&#xef71;</i></a></h3>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsCounterExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;counter_total&quot;</span><span>), </span><span class="string-literal">&quot;Example Counter&quot;</span><span>)
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;counter_total&quot;</span><span>), </span><span class="string-literal">&quot;Example Counter&quot;</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">counter</span><span>.</span><span class="identifier">inc</span><span>
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// noLabelsCounterExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@66b6043d,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@4a1b6408,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -147,25 +147,22 @@
 </span><span class="comment">// res0: String = &quot;&quot;&quot;# HELP counter_total Example Counter
 // # TYPE counter_total counter
 // counter_total 1.0
-// # HELP counter_created Example Counter
-// # TYPE counter_created gauge
-// counter_created 1.680618913795E9
 // &quot;&quot;&quot;</span></code></pre>
         
         <h3 id="gauge-example" class="section">Gauge Example<a class="anchor-link right" href="#gauge-example"><i class="icofont-laika">&#xef71;</i></a></h3>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsGaugeExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">gauge</span><span> &lt;- </span><span class="type-name">Gauge</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;gauge_total&quot;</span><span>), </span><span class="string-literal">&quot;Example Gauge&quot;</span><span>)
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">gauge</span><span> &lt;- </span><span class="type-name">Gauge</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;gaugetotal&quot;</span><span>), </span><span class="string-literal">&quot;Example Gauge&quot;</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">inc</span><span>
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">gauge</span><span>.</span><span class="identifier">dec</span><span>
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// noLabelsGaugeExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@26d1cb60,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@3d30c5c0,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -173,24 +170,24 @@
 // )
 </span><span>
 </span><span class="identifier">noLabelsGaugeExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
-</span><span class="comment">// res1: String = &quot;&quot;&quot;# HELP gauge_total Example Gauge
-// # TYPE gauge_total gauge
-// gauge_total 1.0
+</span><span class="comment">// res1: String = &quot;&quot;&quot;# HELP gaugetotal Example Gauge
+// # TYPE gaugetotal gauge
+// gaugetotal 1.0
 // &quot;&quot;&quot;</span></code></pre>
         
         <h3 id="histogram-example" class="section">Histogram Example<a class="anchor-link right" href="#histogram-example"><i class="icofont-laika">&#xef71;</i></a></h3>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsHistogramExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">h</span><span> &lt;- </span><span class="type-name">Histogram</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_histogram&quot;</span><span>), </span><span class="string-literal">&quot;Example Histogram&quot;</span><span>)
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">h</span><span> &lt;- </span><span class="type-name">Histogram</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_histogram&quot;</span><span>), </span><span class="string-literal">&quot;Example Histogram&quot;</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">h</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.2</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">h</span><span>.</span><span class="identifier">timed</span><span>(</span><span class="type-name">Temporal</span><span>[</span><span class="type-name">IO</span><span>].</span><span class="identifier">sleep</span><span>(</span><span class="number-literal">1</span><span>.</span><span class="identifier">second</span><span>), </span><span class="type-name">SECONDS</span><span>)
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// noLabelsHistogramExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@3505aeae,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@4e069902,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -200,42 +197,39 @@
 </span><span class="identifier">noLabelsHistogramExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
 </span><span class="comment">// res2: String = &quot;&quot;&quot;# HELP example_histogram Example Histogram
 // # TYPE example_histogram histogram
-// example_histogram_bucket{le=&quot;0.005&quot;,} 0.0
-// example_histogram_bucket{le=&quot;0.01&quot;,} 0.0
-// example_histogram_bucket{le=&quot;0.025&quot;,} 0.0
-// example_histogram_bucket{le=&quot;0.05&quot;,} 0.0
-// example_histogram_bucket{le=&quot;0.075&quot;,} 0.0
-// example_histogram_bucket{le=&quot;0.1&quot;,} 0.0
-// example_histogram_bucket{le=&quot;0.25&quot;,} 1.0
-// example_histogram_bucket{le=&quot;0.5&quot;,} 1.0
-// example_histogram_bucket{le=&quot;0.75&quot;,} 1.0
-// example_histogram_bucket{le=&quot;1.0&quot;,} 1.0
-// example_histogram_bucket{le=&quot;2.5&quot;,} 2.0
-// example_histogram_bucket{le=&quot;5.0&quot;,} 2.0
-// example_histogram_bucket{le=&quot;7.5&quot;,} 2.0
-// example_histogram_bucket{le=&quot;10.0&quot;,} 2.0
-// example_histogram_bucket{le=&quot;+Inf&quot;,} 2.0
-// example_histogram_count 2.0
-// example_histogram_sum 1.20049206
-// # HELP example_histogram_created Example Histogram
-// # TYPE example_histogram_created gauge
-// example_histogram_created 1.680618913805E9
+// example_histogram_bucket{le=&quot;0.005&quot;} 0
+// example_histogram_bucket{le=&quot;0.01&quot;} 0
+// example_histogram_bucket{le=&quot;0.025&quot;} 0
+// example_histogram_bucket{le=&quot;0.05&quot;} 0
+// example_histogram_bucket{le=&quot;0.075&quot;} 0
+// example_histogram_bucket{le=&quot;0.1&quot;} 0
+// example_histogram_bucket{le=&quot;0.25&quot;} 1
+// example_histogram_bucket{le=&quot;0.5&quot;} 1
+// example_histogram_bucket{le=&quot;0.75&quot;} 1
+// example_histogram_bucket{le=&quot;1.0&quot;} 1
+// example_histogram_bucket{le=&quot;2.5&quot;} 2
+// example_histogram_bucket{le=&quot;5.0&quot;} 2
+// example_histogram_bucket{le=&quot;7.5&quot;} 2
+// example_histogram_bucket{le=&quot;10.0&quot;} 2
+// example_histogram_bucket{le=&quot;+Inf&quot;} 2
+// example_histogram_count 2
+// example_histogram_sum 1.2004255719999999
 // &quot;&quot;&quot;</span></code></pre>
         
         <h3 id="summary-example" class="section">Summary Example<a class="anchor-link right" href="#summary-example"><i class="icofont-laika">&#xef71;</i></a></h3>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsSummaryExample</span><span> = {
   </span><span class="keyword">for</span><span> {
-    </span><span class="identifier">cr</span><span> &lt;- </span><span class="type-name">CollectorRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">s</span><span> &lt;- </span><span class="type-name">Summary</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">cr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_summary&quot;</span><span>), </span><span class="string-literal">&quot;Example Summary&quot;</span><span>, </span><span class="type-name">Summary</span><span>.</span><span class="identifier">quantile</span><span>(</span><span class="number-literal">0.5</span><span>,</span><span class="number-literal">0.05</span><span>))
+    </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
+    </span><span class="identifier">s</span><span> &lt;- </span><span class="type-name">Summary</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_summary&quot;</span><span>), </span><span class="string-literal">&quot;Example Summary&quot;</span><span>, </span><span class="type-name">Summary</span><span>.</span><span class="identifier">quantile</span><span>(</span><span class="number-literal">0.5</span><span>,</span><span class="number-literal">0.05</span><span>))
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.1</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">0.2</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">s</span><span>.</span><span class="identifier">observe</span><span>(</span><span class="number-literal">1.0</span><span>)
-    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">cr</span><span>.</span><span class="identifier">write004</span><span>
+    </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// noLabelsSummaryExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.CollectorRegistry$$$Lambda$10917/0x0000000802a57300@267829b7,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11314/0x00007fa31decef00@34f59387,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -245,12 +239,9 @@
 </span><span class="identifier">noLabelsSummaryExample</span><span>.</span><span class="identifier">unsafeRunSync</span><span>()
 </span><span class="comment">// res3: String = &quot;&quot;&quot;# HELP example_summary Example Summary
 // # TYPE example_summary summary
-// example_summary{quantile=&quot;0.5&quot;,} 0.2
-// example_summary_count 3.0
+// example_summary{quantile=&quot;0.5&quot;} 0.2
+// example_summary_count 3
 // example_summary_sum 1.3
-// # HELP example_summary_created Example Summary
-// # TYPE example_summary_created gauge
-// example_summary_created 1.680618914813E9
 // &quot;&quot;&quot;</span></code></pre>
 
         <hr style="margin-top: 30px"/>
