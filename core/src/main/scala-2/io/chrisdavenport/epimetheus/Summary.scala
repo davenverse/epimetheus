@@ -1,7 +1,7 @@
 package io.chrisdavenport.epimetheus
 
 import cats._
-import io.prometheus.client.{Summary => JSummary}
+import io.prometheus.metrics.core.metrics.{Summary => JSummary}
 
 import scala.language.experimental.macros
 import scala.reflect.macros.whitebox

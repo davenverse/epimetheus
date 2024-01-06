@@ -36,11 +36,11 @@ And Example of a Histogram with no labels:
 ```scala mdoc
 val noLabelsHistogramExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
-    h <- Histogram.noLabels(cr, Name("example_histogram"), "Example Histogram")
+    pr <- PrometheusRegistry.build[IO]
+    h <- Histogram.noLabels(pr, Name("example_histogram"), "Example Histogram")
     _ <- h.observe(0.2)
     _ <- h.timed(Temporal[IO].sleep(1.second), SECONDS)
-    currentMetrics <- cr.write004
+    currentMetrics <- pr.write004
     _ <- IO(println(currentMetrics))
   } yield ()
 }
@@ -53,9 +53,9 @@ An Example of a Histogram with labels:
 ```scala mdoc
 val labelledHistogramExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     h <- Histogram.labelled(
-      cr,
+      pr,
       Name("example_histogram"),
       "Example Histogram",
       Sized(Label("foo")),
@@ -63,7 +63,7 @@ val labelledHistogramExample = {
     )
     _ <- h.label("bar").observe(0.2)
     _ <- h.label("baz").timed(Temporal[IO].sleep(1.second), SECONDS)
-    currentMetrics <- cr.write004
+    currentMetrics <- pr.write004
     _ <- IO(println(currentMetrics))
   } yield ()
 }
