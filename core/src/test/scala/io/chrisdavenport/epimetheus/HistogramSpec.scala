@@ -23,7 +23,7 @@ class HistogramSpec extends munit.CatsEffectSuite {
 
   test("Histogram: observe with exemplars (map)") {
     val setup = for {
-      cr <- CollectorRegistry.build[IO]
+      cr <- PrometheusRegistry.build[IO]
       h <- Histogram.noLabels(cr, Name("boo"), "Boo ")
     } yield h
 
@@ -38,7 +38,7 @@ class HistogramSpec extends munit.CatsEffectSuite {
 
   test("Histogram: observe with exemplars (tuples)") {
     val setup = for {
-      cr <- CollectorRegistry.build[IO]
+      cr <- PrometheusRegistry.build[IO]
       h <- Histogram.noLabels(cr, Name("boo"), "Boo ")
     } yield h
 

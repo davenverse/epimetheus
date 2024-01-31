@@ -5,10 +5,10 @@ import cats.effect._
 import cats.implicits._
 import io.prometheus.metrics.core.datapoints.DistributionDataPoint
 import io.prometheus.metrics.core.metrics.{Histogram => JHistogram}
+import io.prometheus.metrics.model.snapshots.Labels
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
-import scala.jdk.CollectionConverters.MapHasAsJava
 
 /** Histogram metric, to track distributions of events.
   *
@@ -263,8 +263,11 @@ object Histogram {
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
 
-    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = 
-      Sync[F].delay(underlying.observeWithExemplar(d, exemplarLabels.asJava))
+    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = {
+      val labels = exemplarLabels.toList.flatMap { case (k, v) => List(k, v) }
+      val jLabels = Labels.of(labels:_*)
+      Sync[F].delay(underlying.observeWithExemplar(d, jLabels))
+    }
 
     override private[epimetheus] def asJava: F[JHistogram] = underlying.pure[F]
   }
@@ -274,8 +277,11 @@ object Histogram {
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
 
-    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = 
-      Sync[F].delay(underlying.observeWithExemplar(d, exemplarLabels.asJava))
+    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = {
+      val labels = exemplarLabels.toList.flatMap { case (k, v) => List(k, v) }
+      val jLabels = Labels.of(labels:_*)
+      Sync[F].delay(underlying.observeWithExemplar(d, jLabels))
+    }
 
     override private[epimetheus] def asJava: F[JHistogram] =
       ApplicativeThrow[F].raiseError(
