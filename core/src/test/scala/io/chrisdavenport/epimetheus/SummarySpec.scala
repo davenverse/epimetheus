@@ -5,8 +5,8 @@ import cats.effect._
 class SummarySpec extends munit.CatsEffectSuite {
   test("Summary No Labels: Register cleanly in the collector") {
     val test = for {
-      cr <- CollectorRegistry.build[IO]
-      s <- Summary.noLabels[IO](cr, Name("boo"), "Boo ", Summary.quantile(0.5, 0.05))
+      pr <- PrometheusRegistry.build[IO]
+      s <- Summary.noLabels[IO](pr, Name("boo"), "Boo ", Summary.quantile(0.5, 0.05))
     } yield s
 
     test.attempt.map(_.isRight).assert
@@ -14,8 +14,8 @@ class SummarySpec extends munit.CatsEffectSuite {
 
   test("Summary Labelled: Register cleanly in the collector") {
     val test = for {
-      cr <- CollectorRegistry.build[IO]
-      s <- Summary.labelled(cr, Name("boo"), "Boo ", Sized(Label("boo")), { (s: String) => Sized(s) }, Summary.quantile(0.5, 0.05))
+      pr <- PrometheusRegistry.build[IO]
+      s <- Summary.labelled(pr, Name("boo"), "Boo ", Sized(Label("boo")), { (s: String) => Sized(s) }, Summary.quantile(0.5, 0.05))
     } yield s
 
     test.attempt.map(_.isRight).assert

@@ -23,12 +23,12 @@ An Example of a Gauge with no labels:
 ```scala mdoc
 val noLabelsGaugeExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
-    gauge <- Gauge.noLabels(cr, Name("gauge_total"), "Example Gauge")
+    pr <- PrometheusRegistry.build[IO]
+    gauge <- Gauge.noLabels(pr, Name("gaugetotal"), "Example Gauge")
     _ <- gauge.inc
     _ <- gauge.inc
     _ <- gauge.dec
-    currentMetrics <- cr.write004
+    currentMetrics <- pr.write004
   } yield currentMetrics
 }
 
@@ -40,10 +40,10 @@ An Example of a Gauge with labels:
 ```scala mdoc
 val labelledGaugeExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     gauge <- Gauge.labelled(
-      cr,
-      Name("gauge_total"),
+      pr,
+      Name("gaugetotal"),
       "Example Gauge",
       Sized(Label("foo")),
       {s: String => Sized(s)}
@@ -53,7 +53,7 @@ val labelledGaugeExample = {
     _ <- gauge.label("bar").inc
     _ <- gauge.label("baz").inc
     _ <- gauge.label("bar").dec
-    currentMetrics <- cr.write004
+    currentMetrics <- pr.write004
   } yield currentMetrics
 }
 

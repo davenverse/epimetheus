@@ -24,14 +24,14 @@ An Example Counter without Labels:
 ```scala mdoc
 val noLabelsExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     successCounter <- Counter.noLabels(
-      cr,
+      pr,
       Name("example_success_total"),
       "Example Counter of Success"
     )
     failureCounter <- Counter.noLabels(
-      cr,
+      pr,
       Name("example_failure_total"),
       "Example Counter of Failure"
     )
@@ -39,7 +39,7 @@ val noLabelsExample = {
       case Outcome.Succeeded(_) => successCounter.inc
       case _ => failureCounter.inc
     }
-    out <- cr.write004
+    out <- pr.write004
   } yield out
 }
 
@@ -51,9 +51,9 @@ An Example of a Counter with Labels:
 ```scala mdoc
 val labelledExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     counter <- Counter.labelled(
-      cr,
+      pr,
       Name("example_total"),
       "Example Counter",
       Sized(Label("foo")),
@@ -61,7 +61,7 @@ val labelledExample = {
     )
     _ <- counter.label("bar").inc
     _ <- counter.label("baz").inc
-    out <- cr.write004
+    out <- pr.write004
   } yield out
 }
 
@@ -92,9 +92,9 @@ trait FooAlg[F[_]]{
 
 val fooAgebraExample = {
   for {
-    cr <- CollectorRegistry.build[IO]
+    pr <- PrometheusRegistry.build[IO]
     counter <- Counter.labelled(
-      cr,
+      pr,
       Name("example_total"),
       "Example Counter",
       Sized(Label("foo")),
@@ -104,7 +104,7 @@ val fooAgebraExample = {
     _ <- foo.bar
     _ <- foo.bar
     _ <- foo.baz
-    out <- cr.write004
+    out <- pr.write004
   } yield out
 }
 
@@ -114,7 +114,7 @@ fooAgebraExample.unsafeRunSync()
 We force labels to always match the same size. This will fail to compile.
 
 ```scala
-def incorrectlySized[F[_]: Sync](cr: CollectorRegistry[F]) = {
-  Counter.labelled(cr, Name("fail"), "Example Failure", Sized(Label("color"), Name("method")), {s: String => Sized(s)})
+def incorrectlySized[F[_]: Sync](pr: PrometheusRegistry[F]) = {
+  Counter.labelled(pr, Name("fail"), "Example Failure", Sized(Label("color"), Name("method")), {s: String => Sized(s)})
 }
 ```
