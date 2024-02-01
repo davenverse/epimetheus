@@ -5,6 +5,7 @@ import cats.effect._
 import cats.implicits._
 import io.prometheus.metrics.core.datapoints.DistributionDataPoint
 import io.prometheus.metrics.core.metrics.{Histogram => JHistogram}
+import io.prometheus.metrics.model.snapshots.Labels
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
@@ -23,6 +24,11 @@ sealed abstract class Histogram[F[_]] {
     * @param d The observation to persist
     */
   def observe(d: Double): F[Unit]
+
+  def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] 
+
+  def observeWithExemplar(d: Double, exemplarLabels: (String, String)*): F[Unit] = 
+    observeWithExemplar(d, exemplarLabels.toMap)
 
   def mapK[G[_]](fk: F ~> G): Histogram[G] =
     new Histogram.MapKHistogram[F, G](this, fk)
@@ -257,6 +263,12 @@ object Histogram {
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
 
+    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = {
+      val labels = exemplarLabels.toList.flatMap { case (k, v) => List(k, v) }
+      val jLabels = Labels.of(labels:_*)
+      Sync[F].delay(underlying.observeWithExemplar(d, jLabels))
+    }
+
     override private[epimetheus] def asJava: F[JHistogram] = underlying.pure[F]
   }
 
@@ -264,6 +276,12 @@ object Histogram {
       private val underlying: DistributionDataPoint
   ) extends Histogram[F] {
     def observe(d: Double): F[Unit] = Sync[F].delay(underlying.observe(d))
+
+    def observeWithExemplar(d: Double, exemplarLabels: Map[String, String]): F[Unit] = {
+      val labels = exemplarLabels.toList.flatMap { case (k, v) => List(k, v) }
+      val jLabels = Labels.of(labels:_*)
+      Sync[F].delay(underlying.observeWithExemplar(d, jLabels))
+    }
 
     override private[epimetheus] def asJava: F[JHistogram] =
       ApplicativeThrow[F].raiseError(
@@ -277,7 +295,11 @@ object Histogram {
       private[Histogram] val base: Histogram[F],
       fk: F ~> G
   ) extends Histogram[G] {
+
     def observe(d: Double): G[Unit] = fk(base.observe(d))
+
+    override def observeWithExemplar(d: Double, exemplarLabels: Map[String,String]): G[Unit] = 
+      fk(base.observeWithExemplar(d, exemplarLabels))
 
     override private[epimetheus] def asJava: G[JHistogram] = fk(base.asJava)
   }

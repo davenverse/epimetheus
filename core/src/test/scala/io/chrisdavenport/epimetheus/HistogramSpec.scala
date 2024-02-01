@@ -20,4 +20,35 @@ class HistogramSpec extends munit.CatsEffectSuite {
 
     test.attempt.map(_.isRight).assert
   }
+
+  test("Histogram: observe with exemplars (map)") {
+    val setup = for {
+      cr <- PrometheusRegistry.build[IO]
+      h <- Histogram.noLabels(cr, Name("boo"), "Boo ")
+    } yield h
+
+    val test = for {
+      h <- setup
+      _ <- h.observeWithExemplar(0.1, Map("exemplar1" -> "value1"))
+    } yield ()
+
+    test.attempt.map(_.isRight).assert
+
+  }
+
+  test("Histogram: observe with exemplars (tuples)") {
+    val setup = for {
+      cr <- PrometheusRegistry.build[IO]
+      h <- Histogram.noLabels(cr, Name("boo"), "Boo ")
+    } yield h
+
+    val test = for {
+      h <- setup
+      _ <- h.observeWithExemplar(0.1, "exemplar1" -> "value1")
+    } yield ()
+
+    test.attempt.map(_.isRight).assert
+
+  }
+
 }
