@@ -5,9 +5,8 @@ import cats.implicits._
 
 // Mixed into Scala version-specific companion objects
 trait NameCommons {
-  implicit val nameInstances
-      : Show[Name] with Semigroup[Name] with Eq[Name] with Order[Name] =
-    new Show[Name] with Semigroup[Name] with Eq[Name] with Order[Name] {
+  implicit val nameInstances: Show[Name] with Semigroup[Name] with Eq[Name] with Order[Name] =
+    new Show[Name] with Semigroup[Name] with Eq[Name] with Order[Name]{
       // Members declared in cats.Show.ContravariantShow
       def show(t: Name): String = t.getName
       // Members declared in cats.kernel.Semigroup
@@ -42,12 +41,11 @@ trait NameCommons {
           )
         )
       else Either.right(new Name(string))
-    case _ =>
-      Either.left(
-        new IllegalArgumentException(
-          s"Input String - $s does not match regex - ([a-zA-Z_:][a-zA-Z0-9_:]*)"
-        )
+    case _ => Either.left(
+      new IllegalArgumentException(
+        s"Input String - $s does not match regex - ([a-zA-Z_:][a-zA-Z0-9_:]*)"
       )
+    )
   }
   def implF[F[_]: ApplicativeThrow](s: String): F[Name] = {
     impl(s).liftTo[F]
@@ -57,7 +55,7 @@ trait NameCommons {
     import Name.Suffix
 
     implicit val nameInstances: Show[Suffix] with Semigroup[Suffix] =
-      new Show[Suffix] with Semigroup[Suffix] {
+      new Show[Suffix] with Semigroup[Suffix]{
         // Members declared in cats.Show.ContravariantShow
         def show(t: Suffix): String = t.getSuffix
         // Members declared in cats.kernel.Semigroup
@@ -68,12 +66,11 @@ trait NameCommons {
 
     def impl(s: String): Either[IllegalArgumentException, Suffix] = s match {
       case sufreg(string) => Either.right(new Suffix(string))
-      case _ =>
-        Either.left(
-          new IllegalArgumentException(
-            s"Input String - $s does not match regex - ([a-zA-Z0-9_:]*)"
-          )
+      case _ => Either.left(
+        new IllegalArgumentException(
+          s"Input String - $s does not match regex - ([a-zA-Z0-9_:]*)"
         )
+      )
     }
 
     def implF[F[_]: ApplicativeThrow](s: String): F[Suffix] = {
