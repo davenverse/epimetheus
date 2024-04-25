@@ -129,14 +129,14 @@
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">noLabelsCounterExample</span><span> = {
   </span><span class="keyword">for</span><span> {
     </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
-    </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;counter_total&quot;</span><span>), </span><span class="string-literal">&quot;Example Counter&quot;</span><span>)
+    </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(</span><span class="identifier">pr</span><span>, </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;counter&quot;</span><span>), </span><span class="string-literal">&quot;Example Counter&quot;</span><span>)
     </span><span class="identifier">_</span><span> &lt;- </span><span class="identifier">counter</span><span>.</span><span class="identifier">inc</span><span>
     </span><span class="identifier">currentMetrics</span><span> &lt;- </span><span class="identifier">pr</span><span>.</span><span class="identifier">write004</span><span>
   } </span><span class="keyword">yield</span><span> </span><span class="identifier">currentMetrics</span><span>
 }
 </span><span class="comment">// noLabelsCounterExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@4289438a,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@58de212c,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -162,7 +162,7 @@
 }
 </span><span class="comment">// noLabelsGaugeExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@546171e,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@97d073b,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -187,7 +187,7 @@
 }
 </span><span class="comment">// noLabelsHistogramExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@3e5e9f6f,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@3ed67f1c,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -213,7 +213,7 @@
 // example_histogram_bucket{le=&quot;10.0&quot;} 2
 // example_histogram_bucket{le=&quot;+Inf&quot;} 2
 // example_histogram_count 2
-// example_histogram_sum 1.200357049
+// example_histogram_sum 1.2003785679999999
 // &quot;&quot;&quot;</span></code></pre>
         
         <h3 id="summary-example" class="section">Summary Example<a class="anchor-link right" href="#summary-example"><i class="icofont-laika">&#xef71;</i></a></h3>
@@ -229,7 +229,7 @@
 }
 </span><span class="comment">// noLabelsSummaryExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@35700673,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@77ea54e8,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,

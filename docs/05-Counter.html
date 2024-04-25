@@ -101,7 +101,7 @@
         <p>Counter metric, to track counts, running totals, or events.</p>
         <p>If your use case can go up or down consider using a <code>Gauge</code> instead.
         Use the <code>rate()</code> function in Prometheus to calculate the rate of increase of a Counter.
-        By convention, the names of Counters are suffixed by <code>_total</code>.</p>
+        By convention, the names of Counters are suffixed by <code>_total</code>. This suffix is added to metric&#39;s name by underlying prometheus-metrics library, do not add it yourself.</p>
         <p>A <code>Counter</code> is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart. For example, you can use a counter to represent the number of requests served, tasks completed, or errors.</p>
         <p>Do not use a counter to expose a value that can decrease. For example, do not use a counter for the number of currently running processes; instead use a gauge.</p>
         <p>Imports</p>
@@ -115,12 +115,12 @@
     </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">successCounter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(
       </span><span class="identifier">pr</span><span>,
-      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_success_total&quot;</span><span>),
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_success&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter of Success&quot;</span><span>
     )
     </span><span class="identifier">failureCounter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">noLabels</span><span>(
       </span><span class="identifier">pr</span><span>,
-      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_failure_total&quot;</span><span>),
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_failure&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter of Failure&quot;</span><span>
     )
     </span><span class="identifier">_</span><span> &lt;- </span><span class="type-name">IO</span><span>(</span><span class="identifier">println</span><span>(</span><span class="string-literal">&quot;Action Here&quot;</span><span>)).</span><span class="identifier">guaranteeCase</span><span>{
@@ -132,7 +132,7 @@
 }
 </span><span class="comment">// noLabelsExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@2b45596e,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@144f6d35,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -154,7 +154,7 @@
     </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(
       </span><span class="identifier">pr</span><span>,
-      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_total&quot;</span><span>),
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter&quot;</span><span>,
       </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
       {</span><span class="identifier">s</span><span>: </span><span class="type-name">String</span><span> =&gt; </span><span class="type-name">Sized</span><span>(</span><span class="identifier">s</span><span>)}
@@ -166,7 +166,7 @@
 }
 </span><span class="comment">// labelledExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@2c54725c,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@73a88a1b,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -204,7 +204,7 @@
     </span><span class="identifier">pr</span><span> &lt;- </span><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">build</span><span>[</span><span class="type-name">IO</span><span>]
     </span><span class="identifier">counter</span><span> &lt;- </span><span class="type-name">Counter</span><span>.</span><span class="identifier">labelled</span><span>(
       </span><span class="identifier">pr</span><span>,
-      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example_total&quot;</span><span>),
+      </span><span class="type-name">Name</span><span>(</span><span class="string-literal">&quot;example&quot;</span><span>),
       </span><span class="string-literal">&quot;Example Counter&quot;</span><span>,
       </span><span class="type-name">Sized</span><span>(</span><span class="type-name">Label</span><span>(</span><span class="string-literal">&quot;foo&quot;</span><span>)),
       </span><span class="identifier">fooLabel</span><span>
@@ -218,7 +218,7 @@
 }
 </span><span class="comment">// fooAgebraExample: IO[String] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11305/0x00007f5281ea8c00@2fd1ef8c,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@4268b833,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
