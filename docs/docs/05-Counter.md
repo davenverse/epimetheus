@@ -95,7 +95,7 @@ val fooAgebraExample = {
     pr <- PrometheusRegistry.build[IO]
     counter <- Counter.labelled(
       pr,
-      Name("example_count"),
+      Name("example"),
       "Example Counter",
       Sized(Label("foo")),
       fooLabel
