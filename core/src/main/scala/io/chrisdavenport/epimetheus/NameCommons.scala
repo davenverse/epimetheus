@@ -21,8 +21,26 @@ trait NameCommons {
 
   private val reg = "([a-zA-Z_:][a-zA-Z0-9_:]*)".r
 
+  private val forbiddenSuffixes = List(
+    "_total",
+    "_created",
+    "_bucket",
+    "_info",
+    ".total",
+    ".created",
+    ".bucket",
+    ".info"
+  )
+
   def impl(s: String): Either[IllegalArgumentException, Name] = s match {
-    case reg(string) => Either.right(new Name(string))
+    case reg(string) =>
+      if (forbiddenSuffixes.exists(string.endsWith))
+        Left[IllegalArgumentException, Name](
+          new IllegalArgumentException(
+            s"Input String - $s end with one of the forbidden suffixes(${forbiddenSuffixes.mkString(",")})"
+          )
+        )
+      else Either.right(new Name(string))
     case _ => Either.left(
       new IllegalArgumentException(
         s"Input String - $s does not match regex - ([a-zA-Z_:][a-zA-Z0-9_:]*)"

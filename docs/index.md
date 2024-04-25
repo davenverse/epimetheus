@@ -36,7 +36,7 @@ import cats.effect.unsafe.implicits.global
 val noLabelsCounterExample = {
   for {
     pr <- PrometheusRegistry.build[IO]
-    counter <- Counter.noLabels(pr, Name("counter_total"), "Example Counter")
+    counter <- Counter.noLabels(pr, Name("counter"), "Example Counter")
     _ <- counter.inc
     currentMetrics <- pr.write004
   } yield currentMetrics
