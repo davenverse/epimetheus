@@ -63,7 +63,7 @@ lazy val commonSettings = Seq(
     "org.typelevel"               %% "cats-effect"                           % catsEffectV,
 
     "org.typelevel"               %%% "munit-cats-effect-3"                  % munitCatsEffectV  % Test,
-    "org.scala-lang.modules"      %%% "scala-collection-compat"              % "2.11.0"          % Test
+    "org.scala-lang.modules"      %%% "scala-collection-compat"              % "2.12.0"          % Test
   ),
   libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
       Seq(
