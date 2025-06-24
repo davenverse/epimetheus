@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.core._
 
-ThisBuild / tlBaseVersion := "0.5" // your current series x.y
+ThisBuild / tlBaseVersion := "0.6" // your current series x.y
 
 ThisBuild / organization := "io.chrisdavenport"
 ThisBuild / organizationName := "Christopher Davenport"
@@ -13,11 +13,12 @@ ThisBuild / developers := List(
 // true by default, set to false to publish to s01.oss.sonatype.org
 ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
+ThisBuild / githubWorkflowSbtCommand := "./sbt"
 
 val Scala213 = "2.13.12"
 
 ThisBuild / crossScalaVersions := Seq("2.12.18", "3.3.1", Scala213)
-ThisBuild / scalaVersion := crossScalaVersions.value.last
+ThisBuild / scalaVersion := Scala213
 
 lazy val `epimetheus` = tlCrossRootProject
   .settings(commonSettings)
