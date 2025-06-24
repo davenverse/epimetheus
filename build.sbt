@@ -40,7 +40,7 @@ val catsV = "2.9.0"
 val catsEffectV = "3.4.8"
 val shapelessV = "2.3.9"
 
-val munitCatsEffectV = "1.0.7"
+val munitCatsEffectV = "2.0.0"
 
 
 // General Settings
@@ -63,7 +63,7 @@ lazy val commonSettings = Seq(
     "org.typelevel"               %% "cats-core"                             % catsV,
     "org.typelevel"               %% "cats-effect"                           % catsEffectV,
 
-    "org.typelevel"               %%% "munit-cats-effect-3"                  % munitCatsEffectV  % Test,
+    "org.typelevel"               %%% "munit-cats-effect"                  % munitCatsEffectV  % Test,
     "org.scala-lang.modules"      %%% "scala-collection-compat"              % "2.11.0"          % Test
   ),
   libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
