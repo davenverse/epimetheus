@@ -15,7 +15,7 @@ ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 ThisBuild / githubWorkflowSbtCommand := "./sbt"
 
-val Scala213 = "2.13.12"
+val Scala213 = "2.13.18"
 
 ThisBuild / crossScalaVersions := Seq("2.12.18", "3.3.1", Scala213)
 ThisBuild / scalaVersion := Scala213
@@ -33,11 +33,17 @@ lazy val core = project.in(file("core"))
 lazy val site = project.in(file("site"))
   .enablePlugins(TypelevelSitePlugin)
   .dependsOn(core)
+  .settings(
+    laikaTheme := tlSiteHelium.value.site
+      .topNavigationBar(
+        homeLink = laika.helium.config.IconLink.internal(laika.ast.Path.Root / "index.md", laika.helium.config.HeliumIcon.home)
+      )
+      .build
+  )
 
-
-val prometheusV = "1.2.1"
+val prometheusV = "1.4.3"
 val catsV = "2.9.0"
-val catsEffectV = "3.4.8"
+val catsEffectV = "3.6.3"
 val shapelessV = "2.3.9"
 
 val munitCatsEffectV = "1.0.7"
