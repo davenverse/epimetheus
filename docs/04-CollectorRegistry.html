@@ -1,103 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+  
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Laika 0.18.1 + Helium Theme" />
-    <title>Prometheus Registry</title>
-    
-      <meta name="author" content="Christopher Davenport"/>
-    
-    
-      <meta name="description" content="site"/>
-    
-    
-      <link rel="icon" sizes="32x32" type="image/png" href="https://typelevel.org/img/favicon.png"/>
-    
-    
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
-    
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
-    
-    <link rel="stylesheet" type="text/css" href="../helium/icofont.min.css" />
-    <link rel="stylesheet" type="text/css" href="../helium/laika-helium.css" />
-    <link rel="stylesheet" type="text/css" href="../site/styles.css" />
-    <script src="../helium/laika-helium.js"></script>
-    
-    
-    <script> /* for avoiding page load transitions */ </script>
-  </head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Typelevel Laika + Helium Theme" />
+  <title>Prometheus Registry</title>
+  
+  <meta name="author" content="Christopher Davenport"/>
+  
+  
+  <meta name="description" content="site"/>
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono:500">
+  
+  <link rel="stylesheet" type="text/css" href="../helium/site/icofont.min.css" />
+    <link rel="stylesheet" type="text/css" href="../helium/site/laika-helium.css" />
+  <script src="../helium/site/laika-helium.js"></script>
+  
+  
+  <script> /* for avoiding page load transitions */ </script>
+</head>
 
   <body>
 
-    <header id="top-bar">
+    <header id="top-bar" class="light-default dark-default">
 
-      <div class="row">
-        <a id="nav-icon">
-          <i class="icofont-laika" title="Navigation">&#xefa2;</i>
-        </a>
-        
-      </div>
+  <div class="row">
+    <a id="nav-icon">
+      <i class="icofont-laika navigationMenu" title="Navigation">&#xefa2;</i>
+    </a>
+    
+    
+  </div>
 
-      <a class="image-link" href="https://typelevel.org"><img src="https://typelevel.org/img/logo.svg"></a>
+  <a class="icon-link glyph-link" href="../"><i class="icofont-laika home" title="Home">&#xef47;</i></a>
 
-      <span class="row links"><a class="icon-link svg-link" href="https://github.com/davenverse/epimetheus"><span title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <div class="row links">
+    
+    <a class="icon-link svg-link" href="https://github.com/davenverse/epimetheus"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
   <g class="svg-shape">
     <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
   </g>
-</svg></span></a><a class="icon-link" href="https://discord.gg/XF3CXcMzqD"><i class="icofont-laika" title="Chat">&#xeed5;</i></a><a class="icon-link" href="https://twitter.com/typelevel"><i class="icofont-laika" title="Twitter">&#xed7a;</i></a></span>
+</svg></span></a>
+    
+  </div>  
 
-    </header>
-
+</header>
+    
     <nav id="sidebar">
 
-      <div class="row">
-        <a class="icon-link svg-link" href="https://github.com/davenverse/epimetheus"><span title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+  <div class="row">
+    
+    <a class="icon-link svg-link" href="https://github.com/davenverse/epimetheus"><span class="github" title="Source Code"><svg class="svg-icon" width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
   <g class="svg-shape">
     <path d="M49.995,1c-27.609,-0 -49.995,22.386 -49.995,50.002c-0,22.09 14.325,40.83 34.194,47.444c2.501,0.458 3.413,-1.086 3.413,-2.412c0,-1.185 -0.043,-4.331 -0.067,-8.503c-13.908,3.021 -16.843,-6.704 -16.843,-6.704c-2.274,-5.773 -5.552,-7.311 -5.552,-7.311c-4.54,-3.103 0.344,-3.042 0.344,-3.042c5.018,0.356 7.658,5.154 7.658,5.154c4.46,7.64 11.704,5.433 14.552,4.156c0.454,-3.232 1.744,-5.436 3.174,-6.685c-11.102,-1.262 -22.775,-5.553 -22.775,-24.713c-0,-5.457 1.949,-9.92 5.147,-13.416c-0.516,-1.265 -2.231,-6.348 0.488,-13.233c0,0 4.199,-1.344 13.751,5.126c3.988,-1.108 8.266,-1.663 12.518,-1.682c4.245,0.019 8.523,0.574 12.517,1.682c9.546,-6.47 13.736,-5.126 13.736,-5.126c2.728,6.885 1.013,11.968 0.497,13.233c3.204,3.496 5.141,7.959 5.141,13.416c0,19.209 -11.691,23.436 -22.83,24.673c1.795,1.544 3.394,4.595 3.394,9.26c0,6.682 -0.061,12.076 -0.061,13.715c0,1.338 0.899,2.894 3.438,2.406c19.853,-6.627 34.166,-25.354 34.166,-47.438c-0,-27.616 -22.389,-50.002 -50.005,-50.002"/>
   </g>
-</svg></span></a><a class="icon-link" href="https://discord.gg/XF3CXcMzqD"><i class="icofont-laika" title="Chat">&#xeed5;</i></a><a class="icon-link" href="https://twitter.com/typelevel"><i class="icofont-laika" title="Twitter">&#xed7a;</i></a>
-      </div>
+</svg></span></a>
+    
+  </div>
 
-      <ul class="nav-list">
-        <li class="level1"><a href="../ecosystem.html">The Epimetheus Ecosystem</a></li>
-        <li class="level1"><a href="../epic.html">layout: docs</a></li>
-        <li class="level1"><a href="../index.html">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
-        <li class="level1 nav-header">docs</li>
-        <li class="level2"><a href="01-Introduction.html">Introduction</a></li>
-        <li class="level2"><a href="02-BigPicture.html">Big Picture</a></li>
-        <li class="level2"><a href="03-DataModel.html">Data Model</a></li>
-        <li class="level2 active"><a href="#">Prometheus Registry</a></li>
-        <li class="level2"><a href="05-Counter.html">Counter</a></li>
-        <li class="level2"><a href="06-Gauge.html">Gauge</a></li>
-        <li class="level2"><a href="07-Histogram.html">Histogram</a></li>
-        <li class="level2"><a href="08-Summary.html">Summary</a></li>
-      </ul>
+  <ul class="nav-list">
+    <li class="level1 nav-leaf"><a href="../ecosystem.html">The Epimetheus Ecosystem</a></li>
+    <li class="level1 nav-leaf"><a href="../epic.html">layout: docs</a></li>
+    <li class="level1 nav-leaf"><a href="../">epimetheus - An Afterthought of Prometheus <a href="https://travis-ci.com/ChristopherDavenport/epimetheus"><img src="https://travis-ci.com/ChristopherDavenport/epimetheus.svg?branch=master" alt="Build Status"></a> <a href="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12"><img src="https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/epimetheus_2.12/badge.svg" alt="Maven Central"></a></a></li>
+    <li class="level1 nav-header">docs</li>
+    <li class="level2 nav-leaf"><a href="01-Introduction.html">Introduction</a></li>
+    <li class="level2 nav-leaf"><a href="02-BigPicture.html">Big Picture</a></li>
+    <li class="level2 nav-leaf"><a href="03-DataModel.html">Data Model</a></li>
+    <li class="level2 active nav-leaf"><a href="#">Prometheus Registry</a></li>
+    <li class="level2 nav-leaf"><a href="05-Counter.html">Counter</a></li>
+    <li class="level2 nav-leaf"><a href="06-Gauge.html">Gauge</a></li>
+    <li class="level2 nav-leaf"><a href="07-Histogram.html">Histogram</a></li>
+    <li class="level2 nav-leaf"><a href="08-Summary.html">Summary</a></li>
+  </ul>
 
-      <ul class="nav-list">
-        <li class="level1 nav-header">Related Projects</li>
-        
-          <li class="level2"><a href="https://typelevel.org/cats/">cats</a></li>
-        
-      </ul>
-
-    </nav>
+</nav>
 
     <div id="container">
 
-      <nav id="page-nav">
-        <p class="header"><a href="#">Prometheus Registry</a></p>
+      
+<nav id="page-nav">
+  <p class="header"><a href="#">Prometheus Registry</a></p>
 
-        <ul class="nav-list">
-          <li class="level1"><a href="#on-creation">On Creation</a></li>
-          <li class="level2"><a href="#creating-your-own-registry">Creating Your Own Registry</a></li>
-          <li class="level2"><a href="#dealing-with-the-global">Dealing with the global</a></li>
-          <li class="level1"><a href="#conclusion">Conclusion</a></li>
-        </ul>
+  <ul class="nav-list">
+    <li class="level1 nav-node"><a href="#on-creation">On Creation</a></li>
+    <li class="level2 nav-leaf"><a href="#creating-your-own-registry">Creating Your Own Registry</a></li>
+    <li class="level2 nav-leaf"><a href="#dealing-with-the-global">Dealing with the global</a></li>
+    <li class="level1 nav-leaf"><a href="#conclusion">Conclusion</a></li>
+  </ul>
 
-        <p class="footer"></p>
-      </nav>
+  <p class="footer"></p>
+</nav>
+
 
       <main class="content">
 
@@ -109,7 +110,7 @@
         <p><strong>Caution:</strong> Only a single metric with a given name can be registered with a <code>PrometheusRegistry</code>,
         attempting to register a metric with the same name twice, will yield an error.</p>
         
-        <h2 id="on-creation" class="section">On Creation<a class="anchor-link right" href="#on-creation"><i class="icofont-laika">&#xef71;</i></a></h2>
+        <h2 id="on-creation" class="section"><a class="anchor-link left" href="#on-creation"><i class="icofont-laika link">&#xef71;</i></a>On Creation</h2>
         <p>Due to how prometheus scraping occurs, only one  <code>PrometheusRegistry</code> is generally useful per application. There are generally 2 approaches.</p>
         <ol class="arabic">
           <li>
@@ -131,7 +132,7 @@
 
 </span><span class="keyword">import</span><span> </span><span class="identifier">cats</span><span>.</span><span class="identifier">effect</span><span>.</span><span class="identifier">unsafe</span><span>.</span><span class="identifier">implicits</span><span>.</span><span class="identifier">global</span></code></pre>
         
-        <h3 id="creating-your-own-registry" class="section">Creating Your Own Registry<a class="anchor-link right" href="#creating-your-own-registry"><i class="icofont-laika">&#xef71;</i></a></h3>
+        <h3 id="creating-your-own-registry" class="section"><a class="anchor-link left" href="#creating-your-own-registry"><i class="icofont-laika link">&#xef71;</i></a>Creating Your Own Registry</h3>
         <p>You can build your own registry. We generally recommend this approach as it keeps
         full control of the metrics in your own hands, as well as testability and repeatability.</p>
         <p>With this approach you will generally create a registry for your application, and pass it down
@@ -144,7 +145,7 @@
 }
 </span><span class="comment">// res0: IO[PrometheusRegistry[IO]] = Map(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@100d5752,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10058/0x00007f4e15ce3fa8@5d5e44c8,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -159,10 +160,10 @@
 </span><span class="comment">// res1: IO[PrometheusRegistry[IO]] = Map(
 //   ioe = FlatMap(
 //     ioe = Delay(
-//       thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@26ae091e,
+//       thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10058/0x00007f4e15ce3fa8@748f5d70,
 //       event = cats.effect.tracing.TracingEvent$StackTrace
 //     ),
-//     f = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11200/0x00007fa08df0e238@2dd90d4d,
+//     f = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10060/0x00007f4e15d499d0@518f3cce,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -177,31 +178,34 @@
 }
 </span><span class="comment">// res2: IO[PrometheusRegistry[IO]] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11197/0x00007fa08dea8210@1b64a60f,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10058/0x00007f4e15ce3fa8@33ece149,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
 //   event = cats.effect.tracing.TracingEvent$StackTrace
 // )</span></code></pre>
         
-        <h3 id="dealing-with-the-global" class="section">Dealing with the global<a class="anchor-link right" href="#dealing-with-the-global"><i class="icofont-laika">&#xef71;</i></a></h3>
+        <h3 id="dealing-with-the-global" class="section"><a class="anchor-link left" href="#dealing-with-the-global"><i class="icofont-laika link">&#xef71;</i></a>Dealing with the global</h3>
         <p>Most of the rest of the java community however has used a singleton collector registry. We expose this collector,
         as well as a method which initializes the default metrics into the default. This leaves access to the Registry outside of your control, and not necessarily within the call graph of your application.</p>
         <p>You have access to the global pool automatically.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">defaultRegistry</span><span>[</span><span class="type-name">IO</span><span>]
-</span><span class="comment">// res3: PrometheusRegistry[IO] = io.chrisdavenport.epimetheus.PrometheusRegistry@4dd4ba84</span></code></pre>
+</span><span class="comment">// res3: PrometheusRegistry[IO] = io.chrisdavenport.epimetheus.PrometheusRegistry@7dbbb5c6</span></code></pre>
         
-        <h2 id="conclusion" class="section">Conclusion<a class="anchor-link right" href="#conclusion"><i class="icofont-laika">&#xef71;</i></a></h2>
+        <h2 id="conclusion" class="section"><a class="anchor-link left" href="#conclusion"><i class="icofont-laika link">&#xef71;</i></a>Conclusion</h2>
         <p>Regardless which strategy you choose to use to get access to your <code>PrometheusRegistry</code>, you will need to have one to work and build your metrics moving forward. It is the fundamental shared space on which metrics, and groups of metrics are based upon.</p>
 
-        <hr style="margin-top: 30px"/>
-        <footer style="font-size: 90%; text-align: center">
-          epimetheus is a <a href="https://typelevel.org/">Typelevel</a> project distributed under the <a href="https://opensource.org/licenses/MIT">MIT</a> license.
-        </footer>
+        
+<hr class="footer-rule"/>
+<footer>
+  Site generated by <a href="https://typelevel.org/Laika/">Laika</a> with the Helium theme.
+</footer>
+
 
       </main>
 
     </div>
 
   </body>
+
 </html>
