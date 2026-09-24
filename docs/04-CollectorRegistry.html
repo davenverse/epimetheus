@@ -145,7 +145,7 @@
 }
 </span><span class="comment">// res0: IO[PrometheusRegistry[IO]] = Map(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10058/0x00007f4e15ce3fa8@5d5e44c8,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10215/0x00007f7d81d3bb90@59398073,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -160,10 +160,10 @@
 </span><span class="comment">// res1: IO[PrometheusRegistry[IO]] = Map(
 //   ioe = FlatMap(
 //     ioe = Delay(
-//       thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10058/0x00007f4e15ce3fa8@748f5d70,
+//       thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10215/0x00007f7d81d3bb90@5d0737e6,
 //       event = cats.effect.tracing.TracingEvent$StackTrace
 //     ),
-//     f = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10060/0x00007f4e15d499d0@518f3cce,
+//     f = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10234/0x00007f7d81da54a0@2ac99768,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -178,7 +178,7 @@
 }
 </span><span class="comment">// res2: IO[PrometheusRegistry[IO]] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10058/0x00007f4e15ce3fa8@33ece149,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10215/0x00007f7d81d3bb90@1eab49bb,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -190,7 +190,7 @@
         as well as a method which initializes the default metrics into the default. This leaves access to the Registry outside of your control, and not necessarily within the call graph of your application.</p>
         <p>You have access to the global pool automatically.</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="type-name">PrometheusRegistry</span><span>.</span><span class="identifier">defaultRegistry</span><span>[</span><span class="type-name">IO</span><span>]
-</span><span class="comment">// res3: PrometheusRegistry[IO] = io.chrisdavenport.epimetheus.PrometheusRegistry@7dbbb5c6</span></code></pre>
+</span><span class="comment">// res3: PrometheusRegistry[IO] = io.chrisdavenport.epimetheus.PrometheusRegistry@5e191599</span></code></pre>
         
         <h2 id="conclusion" class="section"><a class="anchor-link left" href="#conclusion"><i class="icofont-laika link">&#xef71;</i></a>Conclusion</h2>
         <p>Regardless which strategy you choose to use to get access to your <code>PrometheusRegistry</code>, you will need to have one to work and build your metrics moving forward. It is the fundamental shared space on which metrics, and groups of metrics are based upon.</p>
