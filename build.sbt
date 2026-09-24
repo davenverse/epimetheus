@@ -2,6 +2,11 @@ import com.typesafe.tools.mima.core._
 
 ThisBuild / tlBaseVersion := "0.6" // your current series x.y
 
+// v0.6.1 was tagged, but the release failed in CI against the sunset OSSRH
+// endpoint, so the artifact never reached Maven Central. Drop it from the MiMa
+// baseline, which would otherwise fail to resolve it.
+ThisBuild / tlMimaPreviousVersions ~= (_ - "0.6.1")
+
 ThisBuild / organization := "io.chrisdavenport"
 ThisBuild / organizationName := "Christopher Davenport"
 ThisBuild / licenses := Seq(License.MIT)
@@ -10,8 +15,6 @@ ThisBuild / developers := List(
   tlGitHubDev("christopherdavenport", "Christopher Davenport")
 )
 
-// true by default, set to false to publish to s01.oss.sonatype.org
-ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 ThisBuild / githubWorkflowSbtCommand := "./sbt"
 
