@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.core._
 
-ThisBuild / tlBaseVersion := "0.6" // your current series x.y
+ThisBuild / tlBaseVersion := "0.7" // your current series x.y
 
 // v0.6.1 was tagged, but the release failed in CI against the sunset OSSRH
 // endpoint, so the artifact never reached Maven Central. Drop it from the MiMa
@@ -20,7 +20,7 @@ ThisBuild / githubWorkflowSbtCommand := "./sbt"
 
 val Scala213 = "2.13.18"
 
-ThisBuild / crossScalaVersions := Seq("2.12.18", "3.3.1", Scala213)
+ThisBuild / crossScalaVersions := Seq("3.3.8", Scala213)
 ThisBuild / scalaVersion := Scala213
 
 lazy val `epimetheus` = tlCrossRootProject
@@ -45,11 +45,11 @@ lazy val site = project.in(file("site"))
   )
 
 val prometheusV = "1.4.3"
-val catsV = "2.9.0"
-val catsEffectV = "3.6.3"
+val catsV = "2.13.0"
+val catsEffectV = "3.7.1"
 val shapelessV = "2.3.9"
 
-val munitCatsEffectV = "1.0.7"
+val munitCatsEffectV = "2.2.1"
 
 
 // General Settings
@@ -72,7 +72,7 @@ lazy val commonSettings = Seq(
     "org.typelevel"               %% "cats-core"                             % catsV,
     "org.typelevel"               %% "cats-effect"                           % catsEffectV,
 
-    "org.typelevel"               %%% "munit-cats-effect-3"                  % munitCatsEffectV  % Test,
+    "org.typelevel"               %%% "munit-cats-effect"                  % munitCatsEffectV  % Test,
     "org.scala-lang.modules"      %%% "scala-collection-compat"              % "2.11.0"          % Test
   ),
   libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) { case Some((2, _)) =>
