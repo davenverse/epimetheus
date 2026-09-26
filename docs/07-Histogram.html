@@ -133,7 +133,7 @@
 }
 </span><span class="comment">// noLabelsHistogramExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10215/0x00007f7d81d3bb90@243ba4d0,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11239/0x00007f5c51e9de00@76c1bc8b,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -159,7 +159,7 @@
 // example_histogram_bucket{le=&quot;10.0&quot;} 2
 // example_histogram_bucket{le=&quot;+Inf&quot;} 2
 // example_histogram_count 2
-// example_histogram_sum 1.205812814
+// example_histogram_sum 1.207339153
 //</span></code></pre>
         <p>An Example of a Histogram with labels:</p>
         <pre><code class="nohighlight"><span class="keyword">val</span><span> </span><span class="identifier">labelledHistogramExample</span><span> = {
@@ -180,7 +180,7 @@
 }
 </span><span class="comment">// labelledHistogramExample: IO[Unit] = FlatMap(
 //   ioe = Delay(
-//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$10215/0x00007f7d81d3bb90@50929931,
+//     thunk = io.chrisdavenport.epimetheus.PrometheusRegistry$$$Lambda$11239/0x00007f5c51e9de00@23a3bcf,
 //     event = cats.effect.tracing.TracingEvent$StackTrace
 //   ),
 //   f = &lt;function1&gt;,
@@ -223,7 +223,7 @@
 // example_histogram_bucket{foo=&quot;baz&quot;,le=&quot;10.0&quot;} 1
 // example_histogram_bucket{foo=&quot;baz&quot;,le=&quot;+Inf&quot;} 1
 // example_histogram_count{foo=&quot;baz&quot;} 1
-// example_histogram_sum{foo=&quot;baz&quot;} 1.000412768
+// example_histogram_sum{foo=&quot;baz&quot;} 1.000306829
 //</span></code></pre>
 
         
