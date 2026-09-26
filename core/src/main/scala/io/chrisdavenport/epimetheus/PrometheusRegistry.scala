@@ -49,7 +49,7 @@ final class PrometheusRegistry[F[_]: Sync] private(private val pr: JPrometheusRe
   def write004: F[String] = Sync[F].delay {
     val output = new ByteArrayOutputStream()
     expositionFormats.getPrometheusTextFormatWriter.write(output, pr.scrape())
-    output.toString(StandardCharsets.UTF_8)
+    new String(output.toByteArray, StandardCharsets.UTF_8)
   }
 
   /**
@@ -62,7 +62,7 @@ final class PrometheusRegistry[F[_]: Sync] private(private val pr: JPrometheusRe
   def writeOpenMetrics100: F[String] = Sync[F].delay {
     val output = new ByteArrayOutputStream()
     expositionFormats.getOpenMetricsTextFormatWriter.write(output, pr.scrape())
-    output.toString(StandardCharsets.UTF_8)
+    new String(output.toByteArray, StandardCharsets.UTF_8)
   }
 }
 

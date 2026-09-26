@@ -58,6 +58,11 @@ lazy val commonSettings = Seq(
   mimaBinaryIssueFilters := List({(_: Problem) => false}), // TODO: remove this once switched to next major version
 
   javacOptions ++= Seq("--release", "8"),
+  // javac's --release only governs the Java sources. Without the scalac
+  // counterpart the Scala code can link against JDK APIs newer than 8 and
+  // still produce Java 8 bytecode, which then fails at runtime on a Java 8
+  // consumer. That is how write004 shipped calling a Java 10 method.
+  scalacOptions ++= Seq("-release", "8"),
 
   scalacOptions --= List("-source", "future", "-Xfatal-warnings"),
   Compile / doc / scalacOptions ++=
