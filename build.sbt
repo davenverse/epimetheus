@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.core._
 
-ThisBuild / tlBaseVersion := "0.6" // your current series x.y
+ThisBuild / tlBaseVersion := "0.7" // your current series x.y
 
 // v0.6.1 was tagged, but the release failed in CI against the sunset OSSRH
 // endpoint, so the artifact never reached Maven Central. Drop it from the MiMa
